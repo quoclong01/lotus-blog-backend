@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel --presets es2015 -d lib/ src",
+    "test": "cross-env NODE_ENV=test mocha --ui bdd --timeout 360000 --reporter spec --colors tests --recursive",
+    "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
     "migration:reset": "node ./scripts/database.reset.js"
   },
@@ -15,21 +17,35 @@
   "author": "QUANDO & VINGUYEN",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "^6.26.3",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "boom": "^7.2.2",
+    "chai": "^4.2.0",
     "cookie-parser": "^1.4.3",
+    "cross-env": "^5.2.0",
     "csv": "^5.0.1",
     "dotenv": "^6.2.0",
     "fastify": "^1.13.0",
+    "fastify-plugin": "^1.3.0",
     "fastify-swagger": "^0.15.3",
     "fs": "0.0.1-security",
+    "http-status": "^1.3.1",
     "inquirer": "^6.2.1",
     "joi": "^14.3.0",
+    "mocha": "^5.2.0",
     "multer": "^1.4.1",
     "mysql2": "^1.6.4",
     "nodemon": "^1.18.7",
     "sequelize": "^4.42.0",
-    "sequelize-cli": "^5.4.0"
+    "sequelize-cli": "^5.4.0",
+    "supertest": "^3.3.0",
+    "supertest-as-promised": "^4.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0"
   }
 }

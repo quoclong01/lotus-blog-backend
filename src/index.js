@@ -1,5 +1,6 @@
 // Require the fastify framework and instantiate it
 require('dotenv').config();
+require('babel-core/register');
 const cluster = require('cluster');
 const workers = process.env.WORKERS || require('os').cpus().length
 const fastify = require('fastify')({
@@ -7,7 +8,8 @@ const fastify = require('fastify')({
 })
 
 // Worker for unstopped api
-if (cluster.isMaster) {
+if (cluster.isMaster  && !module.parent) {
+
   console.log('start cluster with %s workers', workers)
   for (var i = 0; i < workers; ++i) {
     var worker = cluster.fork().process;
@@ -17,7 +19,8 @@ if (cluster.isMaster) {
     console.log('worker %s died. restart...', worker.process.pid)
     cluster.fork()
   });
-}  else {
+  
+} else {
   const routes = require('./routes')
   const models = require('./models')
   const config = require('./config')
@@ -28,6 +31,9 @@ if (cluster.isMaster) {
   // Register Swagger
   fastify.register(require('fastify-swagger'), swagger.options)
 
+  routes.forEach((route, index) => {
+    fastify.route(route)
+  })
   // Connect to DB
   if (!module.parent) {
     models.sequelize.authenticate().then(() => {
@@ -41,25 +47,22 @@ if (cluster.isMaster) {
       //creates table if they do not already exist
       // models.sequelize.sync({ force: true });//deletes all tables then recreates them useful for testing and development purposes
     }
-  }
-
-  // Loop over each route
-  routes.forEach((route, index) => {
-    fastify.route(route)
-  })
-
-  // Run the server!
-  const start = async () => {
-    try {
-      await fastify.listen(config.port)
-      fastify.swagger()
-      fastify.log.info(`server listening on ${fastify.server.address().port}`)
-    } catch (err) {
-      fastify.log.error(err)
-      process.exit(1)
+    // Run the server!
+    const start = async () => {
+      try {
+        await fastify.listen(config.port)
+        console.log(`===================================`)
+        console.log(`Server start at port ${config.port}`)
+        console.log(`===================================`)
+        fastify.swagger()
+        fastify.log.info(`server listening on ${fastify.server.address().port}`)
+      } catch (err) {
+        fastify.log.error(err)
+        process.exit(1)
+      }
     }
+    start()
   }
-  start()
 }
 
 process.on('uncaughtException', function (err) {
@@ -67,3 +70,5 @@ process.on('uncaughtException', function (err) {
   console.error(err.stack)
   process.exit(1)
 })
+
+module.exports = fastify;

@@ -19,38 +19,36 @@ module.exports = (model) => {
       },
       index: async (req, reply) => {
         try {
-          console.log(23423412)
-          const cars = await obj[model].findAll()
-          return cars
+          const items = await obj[model].findAll()
+          return items
         } catch (err) {
           throw boom.boomify(err)
         }
       },
       detail: async (req, reply) => {
         try {
-          const id = req.params.id
-          const car = await obj[model].findById(id)
-          return car
+          const item = await obj[model].find({
+            where: { id: req.params.id }
+          })
+          return item
         } catch (err) {
           throw boom.boomify(err)
         }
       },
       new: async (req, reply) => {
         try {
-          const objectModel = window[model]
-          const car = new objectModel(req.body)
-          return obj[model].save()
+          const objectModel = obj[model]
+          const createdObj = new objectModel(req.body)
+          return createdObj.save()
         } catch (err) {
           throw boom.boomify(err)
         }
       },
       update: async (req, reply) => {
         try {
-          const id = req.params.id
-          const car = req.body
-          const { ...updateData } = car
-          const update = await obj[model].findByIdAndUpdate(id, updateData, { new: true })
-          return update
+          const updateData = req.body
+          const updateItem = await obj[model].update(updateData, { where: { id: req.params.id } })
+          return updateItem
         } catch (err) {
           throw boom.boomify(err)
         }
@@ -58,8 +56,8 @@ module.exports = (model) => {
       delete: async (req, reply) => {
         try {
           const id = req.params.id
-          const car = await obj[model].findByIdAndRemove(id)
-          return car
+          const item = await obj[model].destroy({where: {id: id}})
+          return item
         } catch (err) {
           throw boom.boomify(err)
         }
