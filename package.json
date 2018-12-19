@@ -1,0 +1,35 @@
+{
+  "name": "fastify-api",
+  "version": "1.0.0",
+  "description": "A blazing fast REST APIs with Node.js, MongoDB, Fastify and Swagger.",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "new": "node ./src/bin/execute.js",
+    "migration:reset": "node ./scripts/database.reset.js"
+  },
+  "bin": {
+    "ns": "./src/bin/execute.js"
+  },
+  "author": "QUANDO & VINGUYEN",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "body-parser": "^1.18.3",
+    "boom": "^7.2.2",
+    "cookie-parser": "^1.4.3",
+    "csv": "^5.0.1",
+    "dotenv": "^6.2.0",
+    "fastify": "^1.13.0",
+    "fastify-swagger": "^0.15.3",
+    "fs": "0.0.1-security",
+    "inquirer": "^6.2.1",
+    "joi": "^14.3.0",
+    "multer": "^1.4.1",
+    "mysql2": "^1.6.4",
+    "nodemon": "^1.18.7",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0"
+  }
+}
