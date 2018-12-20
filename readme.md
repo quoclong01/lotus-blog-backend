@@ -20,7 +20,7 @@ Check it out for install & more details.
 
 MacOS `https://dev.mysql.com/doc/refman/8.0/en/osx-installation.html` .
 
-Ubuntu `https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu/` .
+Ubuntu `https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu` .
 
 You can use MySQL Workbench for GUI
 Check it out at port `3012`
