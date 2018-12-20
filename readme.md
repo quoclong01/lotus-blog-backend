@@ -12,6 +12,7 @@ npm install
 npm start
 ```
 Duplicate `.env.sample` -> rename it to `.env`
+Fill correct information of `.env`, especially the field of Database.
 Check it out at port `3012`
 ## Prerequisites
 - Nodejs
