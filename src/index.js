@@ -1,11 +1,9 @@
-// Require the fastify framework and instantiate it
+// Require the express framework and instantiate it
 require('dotenv').config();
 require('babel-core/register');
 const cluster = require('cluster');
 const workers = process.env.WORKERS || require('os').cpus().length
-const fastify = require('fastify')({
-  logger: true
-})
+const app = require('./lib/express');
 
 // Worker for unstopped api
 if (cluster.isMaster  && !module.parent) {
@@ -21,19 +19,9 @@ if (cluster.isMaster  && !module.parent) {
   });
   
 } else {
-  const routes = require('./routes')
   const models = require('./models')
   const config = require('./config')
 
-  // Import Swagger Options
-  const swagger = require('./config/swagger')
-
-  // Register Swagger
-  fastify.register(require('fastify-swagger'), swagger.options)
-
-  routes.forEach((route, index) => {
-    fastify.route(route)
-  })
   // Connect to DB
   if (!module.parent) {
     models.sequelize.authenticate().then(() => {
@@ -42,24 +30,17 @@ if (cluster.isMaster  && !module.parent) {
     .catch(err => {
       console.error('Unable to connect to SQL database:',config.db.db_name, err)
     })
-    if(config.env === 'dev') {
-      models.sequelize.sync()
-      //creates table if they do not already exist
-      // models.sequelize.sync({ force: true });//deletes all tables then recreates them useful for testing and development purposes
-    }
-    // Run the server!
     const start = async () => {
-      try {
-        await fastify.listen(config.port)
+      await models.sequelize.sync()
+      app.listen(config.port)
+      app.on('listening', () => {
         console.log(`===================================`)
         console.log(`Server start at port ${config.port}`)
         console.log(`===================================`)
-        fastify.swagger()
-        fastify.log.info(`server listening on ${fastify.server.address().port}`)
-      } catch (err) {
-        fastify.log.error(err)
-        process.exit(1)
-      }
+      });
+      app.on('error', (e) => {
+        console.error(`ERROR: ${e.message}`);
+      });
     }
     start()
   }
@@ -71,4 +52,4 @@ process.on('uncaughtException', function (err) {
   process.exit(1)
 })
 
-module.exports = fastify;
+module.exports = app;
