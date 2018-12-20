@@ -11,7 +11,7 @@ npm install
 # serve with hot reload at localhost:8080
 npm start
 ```
-
+Duplicate `.env.sample` -> rename it to `.env`
 Check it out at port `3012`
 ## Prerequisites
 - Nodejs
