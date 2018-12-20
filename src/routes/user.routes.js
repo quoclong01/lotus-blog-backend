@@ -1,50 +1,23 @@
-// Import Swagger documentation
-// const documentation = require('./documentation/carApi')
-const router = require('../core/base/route')
-let { controller, uri, routes } = router('user')
-const Joi = require('joi')
+// Import dependencies
+const express = require('express');
+const router = express.Router();
+const userCtrl = require('../controllers/user.controller');
+const validate = require('express-validation');
+const Validation = require('./documentation/userApi');
 
-/**
- * Adding new route here
- */
+/* GET all users. */
+router.get('/', userCtrl.index);
 
-// Import Swagger documentation
-const documentation = require('./documentation/userApi')
-routes = [
-  {
-    method: 'GET',
-    url: `/api/${uri}`,
-    handler: controller.index
-  },
-  {
-    method: 'GET',
-    url: `/api/${uri}/test`,
-    handler: controller.test
-  },
-  {
-    method: 'GET',
-    url: `/api/${uri}/:id`,
-    handler: controller.detail
-  },
-  {
-    method: 'POST',
-    url: `/api/${uri}`,
-    handler: controller.new,
-    schema: documentation.addUserSchema,
-    schemaCompiler: schema => data => Joi.validate(data, schema)
-  },
-  {
-    method: 'PUT',
-    url: `/api/${uri}/:id`,
-    handler: controller.update,
-    schema: documentation.addUserSchema,
-    schemaCompiler: schema => data => Joi.validate(data, schema)
-  },
-  {
-    method: 'DELETE',
-    url: `/api/${uri}/:id`,
-    handler: controller.delete
-  }
-]
+/* Show a user. */
+router.get('/:id', userCtrl.show);
 
-module.exports = routes
+// /* Create a user. */
+router.post('/', validate(Validation.addUserSchema), userCtrl.new);
+
+/* Update a user. */
+router.put('/:id', userCtrl.update);
+
+/* Delete a user. */
+router.delete('/:id', userCtrl.delete);
+
+module.exports = router
