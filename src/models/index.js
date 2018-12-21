@@ -11,6 +11,8 @@ const sequelize = new Sequelize(config.db.db_name, config.db.db_user, config.db.
   operatorsAliases: false
 });
 
+// sequelize.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`).then(() => logger.info('Database created'));
+
 /** @type {{[x: string]: Sequelize.Model, sequelize: Sequelize.Sequelize, Sequelize: Sequelize.SequelizeStatic}} */
 const db = {};
 

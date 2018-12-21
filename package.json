@@ -9,7 +9,8 @@
     "test": "cross-env NODE_ENV=test mocha --ui bdd --timeout 360000 --reporter spec --colors tests --recursive",
     "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
-    "migration:reset": "node ./scripts/database.reset.js"
+    "migration:reset": "node ./scripts/database.reset.js",
+    "db:create": "node ./scripts/database.create.js"
   },
   "bin": {
     "ns": "./src/bin/execute.js"
