@@ -16,6 +16,7 @@ Explain the `.env`:
 - The information of Auth0 allows you connect and use their service. Try it out if you want. Read more: https://auth0.com/
 
 ## Build Setup
+- If this is the first time you install this project, you can skip this step. Mysql use the latest version, It have much changes of previous version, so if this is please make sure that delete all images, volumes, containers related to old sql version of services. and build again.
 - Duplicate `.env.sample` -> rename it to `.env` and fill your information
 - From the project path, changing the correct database name by the way:
 
