@@ -1,33 +1,51 @@
-# A blazing fast REST APIs with Node.js, MySQL, Express
+# A REST APIs with Node.js, MySQL, Express, Docker
 
 > A Node.js project
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm start
-```
-Duplicate `.env.sample` -> rename it to `.env`
-Fill correct information of `.env`, especially the field of Database.
-
-## Setup Database
-We use MySQL for the main Database. 
-Check it out for install & more details.
-
-MacOS `https://dev.mysql.com/doc/refman/8.0/en/osx-installation.html` .
-
-Ubuntu `https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu` .
-
-You can use MySQL Workbench for GUI
-Check it out at port `3012`
 ## Prerequisites
 - Nodejs
 - MYSQL
 - Express
+- Docker
+
+## Explaination
+Explain the `.env`:
+- *PORT* : Setting default server will run at `3012`. 
+- *WORKERS* : You can change it if your want project run in many threads, it will get your number or the maximum threads in your computer.
+- Fill correct information about Database with DB_USER, DB_PASSWORD, DB_PORT,...
+- The information of Auth0 allows you connect and use their service. Try it out if you want. Read more: https://auth0.com/
+
+## Build Setup
+- Duplicate `.env.sample` -> rename it to `.env` and fill your information
+- From the project path, changing the correct database name by the way:
+
+```
+nano ./db/init_db.sql
+```
+Add this line (change the dbname same as dbname in `.env`):
+```
+CREATE DATABASE IF NOT EXISTS dbname;
+```
+
+- Build & start:
+
+```
+docker-compose build //build the images for services
+
+docker-compose up //run all services
+```
+
+- Tests:
+```
+docker-compose -p tests run -p 3013 express npm run test //only test 
+docker-compose -p tests run -p 3013 express npm run test:watch //test & watch
+```
+
+- *Notice*: The service database will create 2 different containers for test and for development with the same port. Thus, you need to try break down those containers when not used:
+```
+docker-compose down //for normal containers
+docker-compsoe -p tests down // for `tests` containers
+```
 
 ## What project can do
 - Connect with Sequelize.
@@ -47,17 +65,22 @@ node_modules/.bin/sequelize model:generate --name User --attributes firstName:st
 ```
 node_modules/.bin/sequelize seed:generate --name demo-user
 ```
-- To generate controller & routes files:
+
+- To create database: 
 ```
-npm run new
+docker-compose run express npm run db:create
 ```
+
 - To reset database: 
 ```
-npm run migration:reset
+docker-compose run express npm run migration:reset
 ```
-- To Run test: 
-```
-npm run test
 
-npm run test:watch //test for watch changes
-```
+## Setup Database
+We integrate MySQL Database into Docker. However, it you want to set up local sql Database, you can check it out for install & more details. After that, change the correct field in `.env`.
+
+MacOS `https://dev.mysql.com/doc/refman/8.0/en/osx-installation.html` .
+
+Ubuntu `https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu` .
+
+Check `MySQL Workbench` for GUI
