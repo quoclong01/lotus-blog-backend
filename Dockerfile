@@ -19,7 +19,9 @@ EXPOSE 3012
 # Get all the code needed to run the app
 COPY . /express-backend
 
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
+RUN chmod +x /wait
 # Expose the port the app runs in
 
-CMD ["npm", "start"]
+CMD /wait && npm start
 

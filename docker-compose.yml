@@ -23,9 +23,13 @@ services:
     ports:
       - "9999:3012" #specify ports forewarding 3012 is default in .env file
     restart: always
+    links: 
+      - database
     depends_on:
       - database
-
+    environment:
+      WAIT_HOSTS: ${DB_HOST}:${DB_PORT}
+   
 volumes:
   express_webmodule:
   db_data:
