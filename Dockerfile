@@ -1,5 +1,6 @@
  # Create image based on the official Node 6 image from the dockerhub
 FROM node:10
+ARG arg
 
 # Create a directory where our app will be placed
 RUN mkdir -p /express-backend
@@ -19,4 +20,6 @@ EXPOSE 3012
 COPY . /express-backend
 
 # Expose the port the app runs in
+
 CMD ["npm", "start"]
+

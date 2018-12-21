@@ -24,16 +24,16 @@ if (cluster.isMaster  && !module.parent) {
   const config = require('./config')
 
   // Connect to DB
-  if (!module.parent) {
-    const start = async () => {
-      try {
-        await models.sequelize.authenticate()
-        console.log('Connected to SQL database:', config.db.db_name)
-      }
-      catch {
-        console.error('Unable to connect to SQL database:',config.db.db_name)
-      }
-      await models.sequelize.sync()
+  const start = async () => {
+    try {
+      await models.sequelize.authenticate()
+      console.log('Connected to SQL database:', config.db.db_name)
+    }
+    catch {
+      console.error('Unable to connect to SQL database:',config.db.db_name)
+    }
+    await models.sequelize.sync()
+    if (!module.parent) {
       app.listen(config.port, '0.0.0.0')
       app.on('listening', () => {
         console.log(`===================================`)
@@ -44,8 +44,8 @@ if (cluster.isMaster  && !module.parent) {
         console.error(`ERROR: ${e.message}`);
       });
     }
-    start()
   }
+  start()
 }
 
 process.on('uncaughtException', function (err) {
