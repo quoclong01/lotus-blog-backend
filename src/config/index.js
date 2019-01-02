@@ -1,7 +1,7 @@
-const Joi = require('joi');
-const jwtConfig = require('./jwt');
-const dbConfig = require('./db');
-require('dotenv').config();
+const Joi = require('joi')
+const jwtConfig = require('./jwt')
+const dbConfig = require('./db')
+require('dotenv').config()
 
 // define validation for all the env vars
 const envVarsSchema = Joi.object({
@@ -17,31 +17,31 @@ const envVarsSchema = Joi.object({
   JWT_ISSUER: Joi.string().required().description('JWT_ISSUER is required.'),
   JWT_AUDIENCE: Joi.string().required().description('JWT_AUDIENCE is required.'),
   JWT_SECRET: Joi.string().required().description('JWT_SECRET is required.')
-}).unknown().required();
+}).unknown().required()
 
 const {
   error,
   value: envVars
-} = Joi.validate(process.env, envVarsSchema);
+} = Joi.validate(process.env, envVarsSchema)
 
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+  throw new Error(`Config validation error: ${error.message}`)
 }
 
-jwtConfig.issuer = envVars.JWT_ISSUER;
-jwtConfig.audience = envVars.JWT_AUDIENCE;
-jwtConfig.secret = envVars.JWT_SECRET;
+jwtConfig.issuer = envVars.JWT_ISSUER
+jwtConfig.audience = envVars.JWT_AUDIENCE
+jwtConfig.secret = envVars.JWT_SECRET
 
-dbConfig.db_name = envVars.DB_NAME;
-dbConfig.db_user = envVars.DB_USER;
-dbConfig.db_password = envVars.DB_PASSWORD;
-dbConfig.db_host = envVars.DB_HOST;
-dbConfig.db_dialect = envVars.DB_DIALECT;
-dbConfig.db_port = envVars.DB_PORT;
+dbConfig.db_name = envVars.DB_NAME
+dbConfig.db_user = envVars.DB_USER
+dbConfig.db_password = envVars.DB_PASSWORD
+dbConfig.db_host = envVars.DB_HOST
+dbConfig.db_dialect = envVars.DB_DIALECT
+dbConfig.db_port = envVars.DB_PORT
 
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   db: dbConfig,
   jwt: jwtConfig
-};
+}

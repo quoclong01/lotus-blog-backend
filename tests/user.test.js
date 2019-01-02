@@ -11,9 +11,23 @@ const app = require('../src')
 chai.config.includeStack = true;
 
 describe('## user APIs', () => {
+  describe(`# POST ${apiPath.users}`, () => {
+    it('should be fail because age is a string', async () => {
+      const res = await request(app)
+        .post(apiPath.users)
+        .send({
+          name: 'AsianTech',
+          age: 'aaa',
+          comment: 'Test case is working'
+        })
+        .expect(HttpStatus.BAD_REQUEST)
+    });
+  })
+
   let user = {
-    firstName: 'AsianTech',
-    lastName: 'Quan'
+    name: 'Quan Do',
+    age: 23,
+    comment: 'Test case is working'
   }
   describe(`# POST ${apiPath.users}`, () => {
     it('should create a new users', async () => {
@@ -30,25 +44,21 @@ describe('## user APIs', () => {
       const res = await request(app)
         .get(apiPath.user(user.id))
         .expect(HttpStatus.OK)
-      expect(res.body.firstName).to.equal(user.firstName);
-      expect(res.body.lastName).to.equal(user.lastName);
+      expect(res.body.name).to.equal(user.name);
+      expect(res.body.age).to.equal(user.age);
     })
   })
 
-  describe(`# PUT ${apiPath.user(':userId')}`, () => {
-    it('Should return user be edited',  async () => {
+  describe(`# PATCH ${apiPath.user(':userId')}`, () => {
+    it('Should increase user age',  async () => {
       const res = await request(app)
-        .put(apiPath.user(user.id))
-        .send({
-          firstName: 'Edited',
-          lastName: 'Done'
-        })
+        .patch(apiPath.user(user.id))
         .expect(HttpStatus.OK)
     })
   })
 
   describe(`# GET ${apiPath.users}`, () => {
-    it('should get all users', async () => {
+    it('should get list of users', async () => {
       const res = await request(app)
         .get(apiPath.users)
         .expect(HttpStatus.OK)

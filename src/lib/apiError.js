@@ -1,4 +1,4 @@
-const HttpStatus = require('http-status');
+const HttpStatus = require('http-status')
 
 /**
  * Class representing an API error.
@@ -11,13 +11,13 @@ class APIError extends Error {
    * @param {string} message - Custom error message.
    */
   constructor(status = HttpStatus.INTERNAL_SERVER_ERROR, message) {
-    super(message);
-    this.name = this.constructor.name;
-    this.status = status;
-    this.message = message;
-    this.isOperational = true; // This is required since bluebird 4 doesn't append it anymore.
-    Error.captureStackTrace(this, this.constructor.name);
+    super(message)
+    this.name = this.constructor.name
+    this.status = status
+    this.message = message
+    this.isOperational = true // This is required since bluebird 4 doesn't append it anymore.
+    Error.captureStackTrace(this, this.constructor.name)
   }
 }
 
-module.exports = APIError;
+module.exports = APIError

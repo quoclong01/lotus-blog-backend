@@ -1,27 +1,33 @@
-const User = require('../models').User;
+const User = require('../models').User
 const asyncMiddleware = require('../helper/publicFunction')
 
 module.exports = {
   index: asyncMiddleware(async (req, res, next) =>  {
-    const items = await User.findAll()
-    res.json(items)
+    let size = 10
+    let page = req.query.page || 1
+    offset = size * (page - 1)
+    const users = await User.findAll({
+      limit: size,
+      offset: offset,
+      order: [ ['createdAt', 'DESC'] ] 
+    })
+    return users
   }),
-  show: asyncMiddleware(async (req, res, next) =>  {
-    const item = await User.find({
+  show: asyncMiddleware( async (req, res, next) =>  {
+    const user = await User.find({
       where: { id: req.params.id }
     })
-    res.json(item)
+    return user
   }),
   new: asyncMiddleware(async (req, res, next) =>  {
-    let item = new User(req.body)
-    res.json(await item.save())
+    const user = await new User(req.body).save()
+    return user
   }),
-  update: asyncMiddleware(async (req, res, next) =>  {
-    const updateItem = await User.update(req.body, { where: { id: req.params.id } })
-    res.json(updateItem)
+  updateAge: asyncMiddleware(async (req, res, next) =>  {
+    return User.updateAge(req.params.id)
   }),
   delete: asyncMiddleware(async (req, res, next) =>  {
     const item = await User.destroy({where: {id: req.params.id}})
-    res.json(item)
+    return item
   })
 }

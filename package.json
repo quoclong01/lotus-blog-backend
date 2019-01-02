@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A blazing fast REST APIs with Node.js, MongoDB, Express and Swagger.",
   "main": "index.js",
+  "bin": {
+    "sayhello": "./bin/exec.js"
+  },
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js",
     "build": "babel --presets es2015 -d lib/ src",
@@ -10,10 +13,8 @@
     "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
     "migration:reset": "node ./scripts/database.reset.js",
-    "db:create": "node ./scripts/database.create.js"
-  },
-  "bin": {
-    "ns": "./src/bin/execute.js"
+    "db:create": "node ./scripts/database.create.js",
+    "exp": "node_modules/.bin/sequelize"
   },
   "author": "VINGUYEN & ME",
   "license": "ISC",

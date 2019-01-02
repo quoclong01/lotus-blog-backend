@@ -1,16 +1,24 @@
-
+const sequelize = require('sequelize')
 /**
  * @param {Sequelize} sequelize
  * @param {DataTypes} dataTypes
  */
 module.exports = (sequelize, dataTypes) => {
   const User = sequelize.define('User', {
-    firstName: {
+    name: {
       type: dataTypes.STRING
     },
-    lastName: {
+    age: {
+      type: dataTypes.INTEGER
+    },
+    comment: {
       type: dataTypes.STRING
     }
-  }, {});
-  return User;
+  }, {
+    freezeTableName: true
+  })
+  User.updateAge = async (id) => {
+    return await User.update({ age: sequelize.literal('age + 1') }, { where: { id: id } })
+  }
+  return User
 }
