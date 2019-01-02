@@ -58,13 +58,13 @@ docker-compsoe -p tests down // for `tests` containers
 - Unit Test with `Mocha`
 
 ## Command line
-- To generate model & migration:
+- To generate model & migration use `exp`:
 ```
-node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string
+exp model:generate --name User --attributes firstName:string,lastName:string,email:string
 ```
 - To generate seeders:
 ```
-node_modules/.bin/sequelize seed:generate --name demo-user
+exp seed:generate --name demo-user
 ```
 
 - To create database: 
