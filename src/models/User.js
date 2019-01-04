@@ -17,8 +17,13 @@ module.exports = (sequelize, dataTypes) => {
   }, {
     freezeTableName: true
   })
+
   User.updateAge = async (id) => {
-    return await User.update({ age: sequelize.literal('age + 1') }, { where: { id: id } })
+    let result = await User.update({ age: sequelize.literal('age + 1') }, {
+      where: { id: id }
+    })
+    return result[0] === 1 ? await User.find({where: { id: id }}) : null
   }
+
   return User
 }

@@ -8,7 +8,6 @@ exports.addUserSchema = {
         language: {
           number: { max: 'must be less than or equal 3 characters' }
         }
-      }),
-    comment: Joi.string().required()
+      })
   }).required()
 }
