@@ -1,0 +1,25 @@
+{
+  "name": "Express API Documentation",
+  "version": "1.0.0",
+  "description": "",
+  "title": "Express API Documentation",
+  "url": "localhost:9999/api",
+  "header": {
+    "title": "",
+    "filename": ""
+  },
+  "footer": {
+    "title": "",
+    "filename": ""
+  },
+  "order": [
+    "User",
+    "Get User",
+    "Update User",
+    "List User"
+  ],
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  }
+}

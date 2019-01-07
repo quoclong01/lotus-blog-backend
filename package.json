@@ -12,13 +12,16 @@
     "test": "cross-env NODE_ENV=test mocha --ui bdd --timeout 360000 --reporter spec --colors tests --recursive",
     "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
+    "pesky": "sh scripts/mac2unix.sh",
     "migration:reset": "node ./scripts/database.reset.js",
     "db:create": "node ./scripts/database.create.js",
-    "exp": "node_modules/.bin/sequelize"
+    "exp": "node_modules/.bin/sequelize",
+    "apidoc": "apidoc -i src -o docs"
   },
   "author": "VINGUYEN & ME",
   "license": "ISC",
   "dependencies": {
+    "apidoc": "^0.17.7",
     "babel-core": "^6.26.3",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
