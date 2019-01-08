@@ -90,7 +90,7 @@ module.exports = {
   * @apiErrorExample Error-Response:
   *     HTTP/1.1 404 Not Found
   *     {
-  *       "error": "UserNotFound"
+  *       "message": "RecordNotFound"
   *     }
 */
 
@@ -119,12 +119,37 @@ module.exports = {
     "age": 23,
     "comment": "Quan is developer"
   }
-  * @apiError UserNotFound The id of the User was not found.
+  * @apiError RecordNotFound The id of the User was not found.
+  * @apiError NameLengthValidation Name length must be less than or equal to 10 characters long.
+  * @apiError NameRequiredValidation Name length must be less than or equal to 10 characters long.
+  * @apiError AgeTypeValidation Age must be a number.
+  * @apiError AgeLengthValidation Age must be less than or equal 3 characters.
+  * @apiError AgeRequiredValidation Age is required.
   *
   * @apiErrorExample Error-Response:
   *     HTTP/1.1 404 Not Found
   *     {
-  *       "error": "UserNotFound"
+  *       "message": "RecordNotFound"
+  *     }
+  *     HTTP/1.1 400 Bad Request
+  *     {
+  *       "message": "\"name\" length must be less than or equal to 10 characters long"
+  *     }
+  *     HTTP/1.1 400 Bad Request
+  *     {
+  *         "message": "\"name\" is required"
+  *     }
+  *     HTTP/1.1 400 Bad Request
+  *     {
+  *       "message": "\"age\" must be less than or equal 3 characters"
+  *     }
+  *     HTTP/1.1 400 Bad Request
+  *     {
+  *       "message": "\"age\" must be a number"
+  *     }
+  *     HTTP/1.1 400 Bad Request
+  *     {
+  *       "message": "\"age\" is required"
   *     }
 */
 
@@ -156,7 +181,7 @@ module.exports = {
   * @apiErrorExample Error-Response:
   *     HTTP/1.1 404 Not Found
   *     {
-  *       "error": "UserNotFound"
+  *       "message": "RecordNotFound"
   *     }
 */
 
@@ -189,6 +214,6 @@ module.exports = {
   * @apiErrorExample Error-Response:
   *     HTTP/1.1 404 Not Found
   *     {
-  *       "error": "UserNotFound"
+  *       "message": "RecordNotFound"
   *     }
 */
