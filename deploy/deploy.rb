@@ -2,7 +2,7 @@
 lock '3.10.0'
 
 set :app, 'api'
-set :repo_url, 'git@github.com:at-fe-rd/Backend-SkillChecked.git'
+set :repo_url, 'git@github.com:at-fe-rd/p-demo-25012019-api.git'
 set :branch, 'master'
 set :deploy_to, "/var/www/#{fetch(:app)}"
 # set :linked_dirs, %w{.env}

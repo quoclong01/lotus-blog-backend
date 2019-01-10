@@ -5,7 +5,7 @@ module.exports = {
   index: asyncMiddleware(async (req, res, next) =>  {
     // default limit 10 records
     let size = +req.query.size || 10
-    let offset = +req.query.offset + 1 || 0
+    let offset = +req.query.offset || 0
     const users = await User.findAll({
       limit: size,
       offset: offset,
