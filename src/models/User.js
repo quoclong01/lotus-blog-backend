@@ -25,5 +25,11 @@ module.exports = (sequelize, dataTypes) => {
     return result[0] === 1 ? await User.find({where: { id: id }}) : null
   }
 
+  User.createComment = async (data) => {
+    data.comment = data.comment ? data.comment.trim().replace(/(\n){3,}/g, '\n\n') : null
+    let user = new User(data)
+    return await user.save()
+  }
+
   return User
 }

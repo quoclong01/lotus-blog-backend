@@ -20,8 +20,7 @@ module.exports = {
     return user
   }),
   new: asyncMiddleware(async (req, res, next) =>  {
-    const user = await new User(req.body).save()
-    return user
+    return await User.createComment(req.body)
   }),
   updateAge: asyncMiddleware(async (req, res, next) =>  {
     return User.updateAge(req.params.id)
