@@ -36,5 +36,5 @@ namespace :deploy do
 
     after :publishing, 'deploy:fetch'
     # after :publishing, 'deploy:build'
-    after :publishing, 'deploy:start'
+    after :publishing, 'deploy:restart'
 end
