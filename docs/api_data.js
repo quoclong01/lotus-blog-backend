@@ -335,13 +335,20 @@ define({ "api": [
             "optional": false,
             "field": "comment",
             "description": "<p>Comment of the Character.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "loadMore",
+            "description": "<p>Can load more characters or not.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "[\n  {\n    \"id\": 1,\n    \"name\": \"Quan Do H.\"\n    \"age\": 22,\n    \"comment\": \"Quan is developer\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Vi Nguyen H. T.\"\n    \"age\": 29,\n    \"comment\": \"Vi is developer\"\n  }\n]",
+          "content": "{\n  data: [\n    {\n      \"id\": 1,\n      \"name\": \"Quan Do H.\"\n      \"age\": 22,\n      \"comment\": \"Quan is developer\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Vi Nguyen H. T.\"\n      \"age\": 29,\n      \"comment\": \"Vi is developer\"\n    }\n  ],\n  loadMore: true\n}",
           "type": "character"
         }
       ]
