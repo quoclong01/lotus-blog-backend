@@ -1,12 +1,12 @@
 define({ "api": [
   {
     "type": "POST",
-    "url": "/users",
-    "title": "Create User",
-    "name": "Create_User",
-    "group": "User",
+    "url": "/characters",
+    "title": "Create Character",
+    "name": "Create_Character",
+    "group": "Character",
     "version": "1.0.0",
-    "description": "<p>Create new user</p>",
+    "description": "<p>Create new character</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -15,28 +15,28 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Required age of new User with maximum length of 3 characters.</p>"
+            "description": "<p>Required age of new Character with maximum length of 3 characters.</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Required name of new User with maximum length of 10 charecters.</p>"
+            "description": "<p>Required name of new Character with maximum length of 10 charecters.</p>"
           },
           {
             "group": "Parameter",
             "type": "comment",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of new User ( can have linebreak ).</p>"
+            "description": "<p>Comment of new Character ( can have linebreak ).</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "/api/users",
+          "content": "/api/characters",
           "type": "URL"
         }
       ]
@@ -49,21 +49,21 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "description": "<p>Name of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Age of the User.</p>"
+            "description": "<p>Age of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of the User.</p>"
+            "description": "<p>Comment of the Character.</p>"
           }
         ]
       },
@@ -71,7 +71,7 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "{\n  \"id\": 1,\n  \"name\": \"Quan Do H.\"\n  \"age\": 23,\n  \"comment\": \"Quan is developer\"\n}",
-          "type": "user"
+          "type": "character"
         }
       ]
     },
@@ -82,7 +82,7 @@ define({ "api": [
             "group": "Error 4xx",
             "optional": false,
             "field": "RecordNotFound",
-            "description": "<p>The id of the User was not found.</p>"
+            "description": "<p>The id of the Character was not found.</p>"
           },
           {
             "group": "Error 4xx",
@@ -124,17 +124,17 @@ define({ "api": [
         }
       ]
     },
-    "filename": "src/controllers/user.controller.js",
-    "groupTitle": "User"
+    "filename": "src/controllers/character.controller.js",
+    "groupTitle": "Character"
   },
   {
     "type": "DELETE",
-    "url": "/users/:id",
-    "title": "Delete a User",
-    "name": "Delete_a_User",
-    "group": "User",
+    "url": "/characters/:id",
+    "title": "Delete a Character",
+    "name": "Delete_a_Character",
+    "group": "Character",
     "version": "1.0.0",
-    "description": "<p>Delete certain User</p>",
+    "description": "<p>Delete certain Character</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -143,14 +143,14 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Users unique ID.</p>"
+            "description": "<p>Characters unique ID.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "/api/users/1",
+          "content": "/api/characters/1",
           "type": "URL"
         }
       ]
@@ -163,21 +163,21 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "description": "<p>Name of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Age of the User.</p>"
+            "description": "<p>Age of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of the User.</p>"
+            "description": "<p>Comment of the Character.</p>"
           }
         ]
       },
@@ -185,7 +185,7 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "{\n  \"id\": 1,\n  \"name\": \"Quan Do H.\"\n  \"age\": 23,\n  \"comment\": \"Quan is developer\"\n}",
-          "type": "user"
+          "type": "character"
         }
       ]
     },
@@ -195,8 +195,8 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "UserNotFound",
-            "description": "<p>The id of the User was not found.</p>"
+            "field": "CharacterNotFound",
+            "description": "<p>The id of the Character was not found.</p>"
           }
         ]
       },
@@ -208,17 +208,17 @@ define({ "api": [
         }
       ]
     },
-    "filename": "src/controllers/user.controller.js",
-    "groupTitle": "User"
+    "filename": "src/controllers/character.controller.js",
+    "groupTitle": "Character"
   },
   {
     "type": "PATCH",
-    "url": "/users/:id",
-    "title": "Increase Age of a User",
-    "name": "Increase_Age_of_a_User",
-    "group": "User",
+    "url": "/characters/:id",
+    "title": "Increase Age of a Character",
+    "name": "Increase_Age_of_a_Character",
+    "group": "Character",
     "version": "1.0.0",
-    "description": "<p>Increase +1 for the age of certain User</p>",
+    "description": "<p>Increase +1 for the age of certain Character</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -227,14 +227,14 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Users unique ID.</p>"
+            "description": "<p>Characters unique ID.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "/api/users/1",
+          "content": "/api/characters/1",
           "type": "URL"
         }
       ]
@@ -247,21 +247,21 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "description": "<p>Name of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Age of the User.</p>"
+            "description": "<p>Age of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of the User.</p>"
+            "description": "<p>Comment of the Character.</p>"
           }
         ]
       },
@@ -269,7 +269,7 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "{\n  \"id\": 1,\n  \"name\": \"Quan Do H.\"\n  \"age\": 23,\n  \"comment\": \"Quan is developer\"\n}",
-          "type": "user"
+          "type": "character"
         }
       ]
     },
@@ -279,8 +279,8 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "UserNotFound",
-            "description": "<p>The id of the User was not found.</p>"
+            "field": "CharacterNotFound",
+            "description": "<p>The id of the Character was not found.</p>"
           }
         ]
       },
@@ -292,22 +292,22 @@ define({ "api": [
         }
       ]
     },
-    "filename": "src/controllers/user.controller.js",
-    "groupTitle": "User"
+    "filename": "src/controllers/character.controller.js",
+    "groupTitle": "Character"
   },
   {
     "type": "GET",
-    "url": "/users",
-    "title": "List users",
-    "name": "List_users",
-    "group": "User",
+    "url": "/characters",
+    "title": "List characters",
+    "name": "List_characters",
+    "group": "Character",
     "version": "1.0.0",
-    "description": "<p>List All User.</p>",
+    "description": "<p>List All Character.</p>",
     "parameter": {
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "/api/users",
+          "content": "/api/characters",
           "type": "URL"
         }
       ]
@@ -320,21 +320,21 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "description": "<p>Name of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Age of the User.</p>"
+            "description": "<p>Age of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of the User.</p>"
+            "description": "<p>Comment of the Character.</p>"
           }
         ]
       },
@@ -342,21 +342,21 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "[\n  {\n    \"id\": 1,\n    \"name\": \"Quan Do H.\"\n    \"age\": 22,\n    \"comment\": \"Quan is developer\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Vi Nguyen H. T.\"\n    \"age\": 29,\n    \"comment\": \"Vi is developer\"\n  }\n]",
-          "type": "user"
+          "type": "character"
         }
       ]
     },
-    "filename": "src/controllers/user.controller.js",
-    "groupTitle": "User"
+    "filename": "src/controllers/character.controller.js",
+    "groupTitle": "Character"
   },
   {
     "type": "GET",
-    "url": "/users/:id",
-    "title": "Read data of a user",
-    "name": "Read_data_of_a_user",
-    "group": "User",
+    "url": "/characters/:id",
+    "title": "Read data of a character",
+    "name": "Read_data_of_a_character",
+    "group": "Character",
     "version": "1.0.0",
-    "description": "<p>Read full information of a user</p>",
+    "description": "<p>Read full information of a character</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -365,14 +365,14 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>Users unique ID.</p>"
+            "description": "<p>Characters unique ID.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "/api/users/1",
+          "content": "/api/characters/1",
           "type": "URL"
         }
       ]
@@ -385,21 +385,21 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "description": "<p>Name of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "Number",
             "optional": false,
             "field": "age",
-            "description": "<p>Age of the User.</p>"
+            "description": "<p>Age of the Character.</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "comment",
-            "description": "<p>Comment of the User.</p>"
+            "description": "<p>Comment of the Character.</p>"
           }
         ]
       },
@@ -407,7 +407,7 @@ define({ "api": [
         {
           "title": "Success-Response:",
           "content": "{\n  \"id\": 1,\n  \"name\": \"Quan Do H.\"\n  \"age\": 22,\n  \"comment\": \"Quan is developer\"\n}",
-          "type": "user"
+          "type": "character"
         }
       ]
     },
@@ -417,8 +417,8 @@ define({ "api": [
           {
             "group": "Error 4xx",
             "optional": false,
-            "field": "UserNotFound",
-            "description": "<p>The id of the User was not found.</p>"
+            "field": "CharacterNotFound",
+            "description": "<p>The id of the Character was not found.</p>"
           }
         ]
       },
@@ -430,7 +430,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "src/controllers/user.controller.js",
-    "groupTitle": "User"
+    "filename": "src/controllers/character.controller.js",
+    "groupTitle": "Character"
   }
 ] });

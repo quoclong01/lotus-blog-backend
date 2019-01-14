@@ -4,7 +4,7 @@ const sequelize = require('sequelize')
  * @param {DataTypes} dataTypes
  */
 module.exports = (sequelize, dataTypes) => {
-  const User = sequelize.define('User', {
+  const Character = sequelize.define('Character', {
     name: {
       type: dataTypes.STRING
     },
@@ -18,18 +18,18 @@ module.exports = (sequelize, dataTypes) => {
     freezeTableName: true
   })
 
-  User.updateAge = async (id) => {
-    let result = await User.update({ age: sequelize.literal('age + 1') }, {
+  Character.updateAge = async (id) => {
+    let result = await Character.update({ age: sequelize.literal('age + 1') }, {
       where: { id: id }
     })
-    return result[0] === 1 ? await User.find({where: { id: id }}) : null
+    return result[0] === 1 ? await Character.find({where: { id: id }}) : null
   }
 
-  User.createComment = async (data) => {
+  Character.createComment = async (data) => {
     data.comment = data.comment ? data.comment.trim().replace(/(\n){3,}/g, '\n\n') : null
-    let user = new User(data)
-    return await user.save()
+    let character = new Character(data)
+    return await character.save()
   }
 
-  return User
+  return Character
 }
