@@ -30,7 +30,8 @@ namespace :deploy do
 
     task :restart do
       on roles(:app) do
-        execute("cd #{fetch(:deploy_to)}/current && DEBUG='*' pm2 restart api --update-env")
+        execute("pm2 delete api")
+        execute("cd #{fetch(:deploy_to)}/current && DEBUG='*' pm2 start src/index.js --name api")
       end
     end
 

@@ -10,11 +10,11 @@ const app = require('../src')
  */
 chai.config.includeStack = true;
 
-describe('## user APIs', () => {
-  describe(`# POST ${apiPath.users}`, () => {
+describe('## character APIs', () => {
+  describe(`# POST ${apiPath.characters}`, () => {
     it('should be fail because age is a string', async () => {
       const res = await request(app)
-        .post(apiPath.users)
+        .post(apiPath.characters)
         .send({
           name: 'AsianTech',
           age: 'aaa',
@@ -24,52 +24,52 @@ describe('## user APIs', () => {
     });
   })
 
-  let user = {
+  let character = {
     name: 'Quan Do',
     age: 23,
     comment: 'Test case is working'
   }
-  describe(`# POST ${apiPath.users}`, () => {
-    it('should create a new users', async () => {
+  describe(`# POST ${apiPath.characters}`, () => {
+    it('should create a new characters', async () => {
       const res = await request(app)
-        .post(apiPath.users)
-        .send(user)
+        .post(apiPath.characters)
+        .send(character)
         .expect(HttpStatus.OK)
-        user = res.body
+        character = res.body
     });
   })
   
-  describe(`# GET ${apiPath.user(':userId')}`, () => {
-    it('should get user detail', async () => {
+  describe(`# GET ${apiPath.character(':characterId')}`, () => {
+    it('should get character detail', async () => {
       const res = await request(app)
-        .get(apiPath.user(user.id))
+        .get(apiPath.character(character.id))
         .expect(HttpStatus.OK)
-      expect(res.body.name).to.equal(user.name);
-      expect(res.body.age).to.equal(user.age);
+      expect(res.body.name).to.equal(character.name);
+      expect(res.body.age).to.equal(character.age);
     })
   })
 
-  describe(`# PATCH ${apiPath.user(':userId')}`, () => {
-    it('Should increase user age',  async () => {
+  describe(`# PATCH ${apiPath.character(':characterId')}`, () => {
+    it('Should increase character age',  async () => {
       const res = await request(app)
-        .patch(apiPath.user(user.id))
+        .patch(apiPath.character(character.id))
         .expect(HttpStatus.OK)
     })
   })
 
-  describe(`# GET ${apiPath.users}`, () => {
-    it('should get list of users', async () => {
+  describe(`# GET ${apiPath.characters}`, () => {
+    it('should get list of characters', async () => {
       const res = await request(app)
-        .get(apiPath.users)
+        .get(apiPath.characters)
         .expect(HttpStatus.OK)
       expect(res.body).to.be.an('array')
     })
   })
 
-  describe(`# DELETE ${apiPath.user(':userId')}`, () => {
-    it('should delete this user', async () => {
+  describe(`# DELETE ${apiPath.character(':characterId')}`, () => {
+    it('should delete this character', async () => {
       const res = await request(app)
-        .delete(apiPath.user(user.id))
+        .delete(apiPath.character(character.id))
         .expect(HttpStatus.OK)
       expect(res.body).to.equal(1);
     })

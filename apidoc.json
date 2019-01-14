@@ -13,10 +13,10 @@
     "filename": ""
   },
   "order": [
-    "User",
-    "Get User",
-    "Update User",
-    "List User"
+    "Character",
+    "Get Character",
+    "Update Character",
+    "List Character"
   ],
   "template": {
     "withCompare": true,

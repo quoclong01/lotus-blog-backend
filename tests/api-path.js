@@ -1,10 +1,10 @@
 const root = '/api';
-const users = `${root}/users`;
+const characters = `${root}/characters`;
 
 module.exports = {
   root,
-  users,
-  user(userId) {
-    return `${users}/${userId}`;
+  characters,
+  character(characterId) {
+    return `${characters}/${characterId}`;
   }
 };

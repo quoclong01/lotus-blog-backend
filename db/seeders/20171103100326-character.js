@@ -2,9 +2,9 @@ const fs = require('fs');
 const csv = require('csv');
 const path = require('path');
 
-const User = require('../../src/models').User;
+const Character = require('../../src/models').Character;
 
-const input = fs.createReadStream(path.join(__dirname, '../csv/00_User.csv'));
+const input = fs.createReadStream(path.join(__dirname, '../csv/00_Character.csv'));
 const parser = csv.parse({
   delimiter: ',',
   columns: true
@@ -12,7 +12,7 @@ const parser = csv.parse({
 
 const importData = input.pipe(parser).on('data', (row) => {
   importData.pause();
-  User.create({
+  Character.create({
     id: row.id,
     firstName: row.firstName,
     lastName: row.lastName,
@@ -47,6 +47,6 @@ module.exports = {
    * @param {Sequelize} sequelize
    * @returns
    */
-  down: (queryInterface, Sequelize) => queryInterface.bulkDelete('User', null, {})
+  down: (queryInterface, Sequelize) => queryInterface.bulkDelete('Character', null, {})
 };
 

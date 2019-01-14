@@ -13,10 +13,10 @@ define({
     "filename": ""
   },
   "order": [
-    "User",
-    "Get User",
-    "Update User",
-    "List User"
+    "Character",
+    "Get Character",
+    "Update Character",
+    "List Character"
   ],
   "template": {
     "withCompare": true,
@@ -27,7 +27,7 @@ define({
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2019-01-08T01:33:51.503Z",
+    "time": "2019-01-14T06:57:28.092Z",
     "url": "http://apidocjs.com",
     "version": "0.17.7"
   }

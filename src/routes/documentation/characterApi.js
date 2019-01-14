@@ -1,6 +1,6 @@
 const Joi = require('joi')
 
-exports.addUserSchema = {
+exports.addCharacterSchema = {
   body: Joi.object().keys({
     name: Joi.string().max(10).required(),
     age: Joi.number().integer().max(999).required()
