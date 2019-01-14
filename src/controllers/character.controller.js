@@ -13,7 +13,7 @@ module.exports = {
     })
     const length = await Character.count()
     const status = offset + size < length
-    return {data: data, loadMore: status}
+    return {characters: data, loadMore: status}
   }),
   show: asyncMiddleware( async (req, res, next) =>  {
     const character = await Character.find({
