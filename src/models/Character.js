@@ -26,7 +26,7 @@ module.exports = (sequelize, dataTypes) => {
   }
 
   Character.createComment = async (data) => {
-    // data.name = data.name.trim().replace(/\n*/g, ' ')
+    data.name = data.name.trim().replace(/\n+/g, ' ')
     data.comment = data.comment ? data.comment.trim().replace(/(\n){3,}/g, '\n\n') : null
     let character = new Character(data)
     return await character.save()
