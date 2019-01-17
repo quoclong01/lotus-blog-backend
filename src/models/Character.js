@@ -31,5 +31,14 @@ module.exports = (sequelize, dataTypes) => {
     return await character.save()
   }
 
+  Character.removeCharacter = async (id) => {
+    let item = 0
+    let user = await Character.find({where: { id: id }})
+    if (user !== null) {
+      item = await Character.destroy({where: {id: user.id}})
+    }
+    return item !== 0 ? user : null
+  }
+
   return Character
 }

@@ -28,8 +28,7 @@ module.exports = {
     return Character.updateAge(req.params.id)
   }),
   delete: asyncMiddleware(async (req, res, next) =>  {
-    const item = await Character.destroy({where: {id: req.params.id}})
-    return item !== 0? item : null
+    return Character.removeCharacter(req.params.id)
   })
 }
 
@@ -49,7 +48,7 @@ module.exports = {
   *
   * @apiSuccessExample {character} Success-Response:
   {
-    data: [
+    characters: [
       {
         "id": 1,
         "name": "Quan Do H."
