@@ -16,10 +16,9 @@ module.exports = {
     return {characters: data, loadMore: status}
   }),
   show: asyncMiddleware( async (req, res, next) =>  {
-    const character = await Character.find({
+    return await Character.find({
       where: { id: req.params.id }
     })
-    return character
   }),
   new: asyncMiddleware(async (req, res, next) =>  {
     return await Character.createComment(req.body)
