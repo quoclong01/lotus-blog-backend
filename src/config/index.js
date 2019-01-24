@@ -32,12 +32,12 @@ jwtConfig.issuer = envVars.JWT_ISSUER
 jwtConfig.audience = envVars.JWT_AUDIENCE
 jwtConfig.secret = envVars.JWT_SECRET
 
-dbConfig.db_name = envVars.DB_NAME
-dbConfig.db_user = envVars.DB_USER
-dbConfig.db_password = envVars.DB_PASSWORD
-dbConfig.db_host = envVars.DB_HOST
-dbConfig.db_dialect = envVars.DB_DIALECT
-dbConfig.db_port = envVars.DB_PORT
+dbConfig.dbName = envVars.DB_NAME
+dbConfig.dbUser = envVars.DB_USER
+dbConfig.dbPassword = envVars.DB_PASSWORD
+dbConfig.dbHost = envVars.DB_HOST
+dbConfig.dbDialect = envVars.DB_DIALECT
+dbConfig.dbPort = envVars.DB_PORT
 
 module.exports = {
   env: envVars.NODE_ENV,

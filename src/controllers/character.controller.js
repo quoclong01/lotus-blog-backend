@@ -1,10 +1,12 @@
 const Character = require('../models').Character
-const asyncMiddleware = require('../helper/publicFunction')
+const asyncMiddleware = require('../helper/public.function')
+
+const defaultSize = 10;
 
 module.exports = {
   index: asyncMiddleware(async (req, res, next) =>  {
     // default limit 10 records
-    let size = +req.query.size || 10
+    let size = +req.query.size || defaultSize
     let offset = +req.query.offset || 0
     const data = await Character.findAll({
       limit: size,
@@ -21,7 +23,7 @@ module.exports = {
     })
   }),
   new: asyncMiddleware(async (req, res, next) =>  {
-    return await Character.createComment(req.body)
+    return await Character.createCharacter(req.body)
   }),
   updateAge: asyncMiddleware(async (req, res, next) =>  {
     return Character.updateAge(req.params.id)

@@ -27,10 +27,10 @@ if (cluster.isMaster  && !module.parent) {
   const start = async () => {
     try {
       await models.sequelize.authenticate()
-      console.log('Connected to SQL database:', config.db.db_name)
+      console.log('Connected to SQL database:', config.db.dbName)
     }
     catch {
-      console.error('Unable to connect to SQL database:',config.db.db_name)
+      console.error('Unable to connect to SQL database:',config.db.dbName)
     }
     await models.sequelize.sync()
     if (!module.parent) {
