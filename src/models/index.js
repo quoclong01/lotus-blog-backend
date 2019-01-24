@@ -11,8 +11,15 @@ const sequelize = new Sequelize(config.db.db_name, config.db.db_user, config.db.
   operatorsAliases: false
 });
 
-/** @type {{[x: string]: Sequelize.Model, sequelize: Sequelize.Sequelize, Sequelize: Sequelize.SequelizeStatic}} */
-const db = {}
+/** @type 
+ * {
+ *   { [x: string]: Sequelize.Model, 
+ *      sequelize: Sequelize.Sequelize, 
+ *      Sequelize: Sequelize.SequelizeStatic
+ *   }
+ * } 
+ * */
+let db = {}
 
 fs.readdirSync(__dirname)
   .filter((file) => {
@@ -30,6 +37,5 @@ Object.keys(db).forEach((modelName) => {
 })
 
 db.sequelize = sequelize
-db.Sequelize = Sequelize
 
 module.exports = db
