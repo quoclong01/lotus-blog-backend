@@ -4,9 +4,9 @@ const path = require('path')
 
 const router = express.Router();
 
-/** GET / - Check service health */
+/* GET - Check service health */
 router.get('/api', (req, res) =>
-  res.send('OK man')
+  res.send('API Server is running!')
 )
 
 router.use('/api/characters', characterRoutes)

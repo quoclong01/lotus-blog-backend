@@ -4,10 +4,10 @@ const path = require('path')
 const basename  = path.basename(__filename)
 const config = require('../config')
 
-const sequelize = new Sequelize(config.db.db_name, config.db.db_user, config.db.db_password, {
-  host: config.db.db_host,
-  dialect: config.db.db_dialect,
-  port: config.db.db_port,
+const sequelize = new Sequelize(config.db.dbName, config.db.dbUser, config.db.dbPassword, {
+  host: config.db.dbHost,
+  dialect: config.db.dbDialect,
+  port: config.db.dbPort,
   operatorsAliases: false
 });
 

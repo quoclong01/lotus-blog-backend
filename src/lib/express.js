@@ -5,7 +5,7 @@ const cors = require('cors')
 const express = require('express')
 const validate = require('express-validation')
 const HttpStatus = require('http-status')
-const APIError = require('./apiError')
+const APIError = require('./api-error')
 const routes = require('../routes')
 
 const app = express()

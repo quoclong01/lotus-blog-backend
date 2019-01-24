@@ -3,13 +3,13 @@ const express = require('express')
 const router = express.Router()
 const charCtrl = require('../controllers/character.controller')
 const validate = require('express-validation')
-const charValidation = require('./documentation/character.validation')
+const charSchema = require('../schema/character.schema')
 
 /* GET all characters. */
 router.get('/', charCtrl.index)
 
 /* Create a character. */
-router.post('/', validate(charValidation.addCharacterSchema), charCtrl.new)
+router.post('/', validate(charSchema.addCharacter), charCtrl.new)
 
 /* Show a character. */
 router.get('/:id', charCtrl.show)
