@@ -17,9 +17,9 @@ module.exports = {
     /**
      * Validate for load more
      * if loaded records less than total records, turn on load more
-     * loaded records calculate from the offset combined with items perpage
+     * loaded records calculate from the offset combined with items per page
      */
-    const isLoadedAll = (offset + size) < length
+    const status = (offset + size) < length
     return { characters: data, loadMore: status }
   }),
   show: asyncMiddleware( async (req, res, next) =>  {

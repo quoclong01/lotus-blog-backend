@@ -55,16 +55,16 @@ module.exports = (sequelize, dataTypes) => {
   * @params data (Object)
   **/
   Character.removeCharacter = async (id) => {
-    let item = 0
-    let user = await Character.find({ 
+    // find and delete character
+    return Character.find({ 
       where: { id: id } 
+    }).then((character) => {
+      if (character) {
+        return character.destroy()
+      } else {
+        return null
+      }
     })
-    if (user !== null) {
-      item = await Character.destroy({ 
-        where: { id: user.id } 
-      })
-    }
-    return item !== 0 ? user : null
   }
 
   return Character
