@@ -14,8 +14,13 @@ module.exports = {
       order: [ ['createdAt', 'DESC'] ] 
     })
     const length = await Character.count()
-    const status = offset + size < length
-    return {characters: data, loadMore: status}
+    /**
+     * Validate for load more
+     * if loaded records less than total records, turn on load more
+     * loaded records calculate from the offset combined with items perpage
+     */
+    const isLoadedAll = (offset + size) < length
+    return { characters: data, loadMore: status }
   }),
   show: asyncMiddleware( async (req, res, next) =>  {
     return await Character.find({
