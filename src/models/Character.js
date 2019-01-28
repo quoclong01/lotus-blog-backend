@@ -27,11 +27,18 @@ module.exports = (sequelize, dataTypes) => {
   * @params id (Number)
   **/
   Character.updateAge = async (id) => {
-    let result = await Character.update({ 
-      age: sequelize.literal('age + 1') },{ 
+    // find and update character
+    return Character.find({ 
       where: { id: id } 
+    }).then((character) => {
+      if (character) {
+        return character.update({ 
+          age: character.age + 1
+        })
+      } else {
+        return null
+      }
     })
-    return result[0] === 1 ? await Character.find({where: { id: id }}) : null
   }
 
   /**
