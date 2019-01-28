@@ -8,11 +8,13 @@ module.exports = {
     // default limit 10 records
     let size = +req.query.size || defaultSize
     let offset = +req.query.offset || 0
+    // get n record from offset
     const data = await Character.findAll({
       limit: size,
       offset: offset,
       order: [ ['createdAt', 'DESC'] ] 
     })
+    // get total record
     const length = await Character.count()
     /**
      * Validate for load more
