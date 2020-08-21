@@ -1,0 +1,321 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "APIs Document",
+    "description": "your description here",
+    "termsOfService": "",
+    "contact": {
+      "name": "SupremeTech",
+      "email": "quan.do@supremetech.vn",
+      "url": "https://supremetech.vn"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:3012",
+  "basePath": "/v1",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "tags": [
+    {
+      "name": "character",
+      "description": "Everything about your Characters",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "paths": {
+    "/characters": {
+      "get": {
+        "tags": [
+          "character"
+        ],
+        "summary": "List characters",
+        "description": "",
+        "operationId": "listCharacters",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GetCharacters"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "character"
+        ],
+        "summary": "Create a character",
+        "description": "",
+        "operationId": "createCharacter",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Character object that needs to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCharacter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Character"
+            }
+          },
+          "400": {
+            "description": "Wrong Validation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/WrongValidation"
+            }
+          }
+        }
+      }
+    },
+    "/characters/{characterId}": {
+      "get": {
+        "tags": [
+          "character"
+        ],
+        "summary": "Get specific character",
+        "description": "",
+        "operationId": "getCharacter",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "description": "ID of character to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Character"
+            }
+          },
+          "404": {
+            "description": "CharacterNotFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/RecordNotFound"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "character"
+        ],
+        "summary": "Update a character",
+        "description": "",
+        "operationId": "updateCharacter",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Character object that needs to be update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCharacter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Character"
+            }
+          },
+          "404": {
+            "description": "CharacterNotFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/RecordNotFound"
+            }
+          },
+          "400": {
+            "description": "Wrong Validation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/WrongValidation"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "character"
+        ],
+        "summary": "Delete specific character",
+        "description": "",
+        "operationId": "getCharacter",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "description": "ID of character to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Character"
+            }
+          },
+          "404": {
+            "description": "CharacterNotFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/RecordNotFound"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetCharacters": {
+      "type": "object",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Character"
+          }
+        },
+        "loadmore": {
+          "type": "boolean",
+          "description": "Can load more characters or not",
+          "example": true
+        }
+      }
+    },
+    "CreateCharacter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the Character",
+          "example": "QUAN DO H."
+        },
+        "age": {
+          "type": "integer",
+          "description": "Age of the Character",
+          "example": 25
+        },
+        "comment": {
+          "type": "string",
+          "description": "Comment of the Character",
+          "example": "This is a default comment"
+        }
+      },
+      "xml": {
+        "name": "Character"
+      }
+    },
+    "Character": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Id of the Character",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Character",
+          "example": "QUAN DO H."
+        },
+        "age": {
+          "type": "integer",
+          "description": "Age of the Character",
+          "example": 25
+        },
+        "comment": {
+          "type": "string",
+          "description": "Comment of the Character",
+          "example": "This is a default comment"
+        }
+      },
+      "xml": {
+        "name": "Character"
+      }
+    },
+    "RecordNotFound": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "RecordNotFound"
+        }
+      }
+    },
+    "WrongValidation": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "name length must be less than or equal to 10 characters long"
+        }
+      }
+    }
+  }
+}
