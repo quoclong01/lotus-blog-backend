@@ -86,17 +86,6 @@ Ubuntu `https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu` 
 
 Check `MySQL Workbench` for GUI
 
-## Render APIDOC
-- Read more here for writing the apidoc.
-- Because of `^M carriage return control character using tr`, you need to install mac2unix by:
-
-```
-brew install dos2unix
-```
-
-- To render apidoc: 
-```
-npm run pesky
-```
-- You need to change the mac2unix scripts if you are using another OS, such as Window,...
-Read more here: `https://leemendelowitz.github.io/blog/remove-carriage-return-control-character.html`
+## API docs with Swagger
+- To edit please check `docs/swagger.json`
+- To see the apidoc link: `/apidocs`
