@@ -15,4 +15,4 @@ COPY ./init_db.sql /docker-entrypoint-initdb.d/
 
 CMD ["mysqld"]
 
-EXPOSE 3306
+EXPOSE 5432
