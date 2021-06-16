@@ -3,6 +3,7 @@ import path from 'path';
 // import .env variables
 // tslint:disable-next-line: no-var-requires
 require('dotenv-safe').config({
+  allowEmptyValues: true,
   path: path.join(__dirname, '../../.env')
 });
 

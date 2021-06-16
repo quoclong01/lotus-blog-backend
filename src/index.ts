@@ -23,6 +23,7 @@ const start = async () => {
     console.log(`Server start at port ${port}`);
     console.log(`===================================`);
   });
+
   // throw error if can not listen
   app.on('error', (e) => {
     console.error(`ERROR: ${e}`);
