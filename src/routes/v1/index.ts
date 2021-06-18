@@ -1,5 +1,6 @@
 import express from 'express';
 import characterRoutes from './character.routes';
+import userRoutes from './user.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../../../docs/swagger.json';
 
@@ -15,5 +16,8 @@ router.get('/api', (req, res) =>
 );
 
 router.use('/api/characters', characterRoutes);
+
+// USER API
+router.use('/api/users', userRoutes);
 
 export default router;
