@@ -20,5 +20,5 @@ router
   .put(postsController.updateContent)
    /* Delete a character. */
   .delete(postsController.delete);
- 
+
 export default router;
