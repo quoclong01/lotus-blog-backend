@@ -4,5 +4,9 @@ export default {
   addUser: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required()
-  }).required()
+  }).required(),
+  login: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required()
+  })
 };
