@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { Post } from '../models/Posts';
+import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
 
 const defaultSize = 10;
 
-const postsController = {
+const postController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
     // default limit 10 records
     const size = +req.query.size || defaultSize;
@@ -26,7 +26,7 @@ const postsController = {
     return { posts: data, loadMore: status };
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.createPosts(req.body);
+    return await Post.createPost(req.body);
   }),
   show: responseMiddleware( async (req: Request, res: Response, next: NextFunction) =>  {
     return await Post.findOne({
@@ -41,4 +41,4 @@ const postsController = {
   })
 };
 
-export default postsController;
+export default postController;

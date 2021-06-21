@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
 
-interface PostsAttributes {
+interface PostAttributes {
   id: number;
   title: string;
   content: string;
@@ -9,9 +9,9 @@ interface PostsAttributes {
 }
 
 // You can also set multiple attributes optional at once
-interface PostsCreationAttributes extends Optional<PostsAttributes, 'id'> {}
+interface PostCreationAttributes extends Optional<PostAttributes, 'id'> {}
 
-export class Post extends Model<PostsAttributes, PostsCreationAttributes> implements PostsAttributes, PostsCreationAttributes {
+export class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes, PostCreationAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public title!: string;
   public content!: string | null; // for nullable fields
@@ -21,7 +21,7 @@ export class Post extends Model<PostsAttributes, PostsCreationAttributes> implem
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public static async createPosts(data: any) {
+  public static async createPost(data: any) {
     data.title = data.title.trim().replace(/\n+/g, ' ');
     data.content = data.content ? data.content.trim().replace(/(\n){3,}/g, '\n\n') : null;
     data.status = data.status ? data.status.trim().replace(/(\n){3,}/g, '\n\n') : null;
@@ -79,5 +79,5 @@ Post.init({
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'Posts' // We need to choose the model name
+  tableName: 'Post' // We need to choose the model name
 });

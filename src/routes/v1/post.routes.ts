@@ -1,24 +1,24 @@
 import express from 'express';
-import postsController from '../../controllers/post.controller';
+import postController from '../../controllers/post.controller';
 import { validate } from '../../lib/utils';
-import postschema from '../../schema/posts.schema';
+import postchema from '../../schema/post.schema';
 
 const router = express.Router();
 
 router
   .route('/')
   /* GET all posts. */
-  .get(postsController.index)
+  .get(postController.index)
   /* Create a post. */
-  .post(validate(postschema.addPost), postsController.new);
+  .post(validate(postchema.addPost), postController.new);
   
 router
   .route('/:id')
   /* Show a post. */
-  .get(postsController.show)
+  .get(postController.show)
   /* Update content of a post. */
-  .put(postsController.updateContent)
+  .put(postController.updateContent)
    /* Delete a character. */
-  .delete(postsController.delete);
+  .delete(postController.delete);
 
 export default router;
