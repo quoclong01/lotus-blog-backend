@@ -1,5 +1,5 @@
 import express from 'express';
-import postsController from '../../controllers/posts.controller';
+import postsController from '../../controllers/post.controller';
 import { validate } from '../../lib/utils';
 import postschema from '../../schema/posts.schema';
 

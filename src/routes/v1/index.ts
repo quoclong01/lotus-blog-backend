@@ -1,6 +1,6 @@
 import express from 'express';
 import characterRoutes from './character.routes';
-import postsRoutes from './posts.routes';
+import postsRoutes from './post.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../../../docs/swagger.json';
 

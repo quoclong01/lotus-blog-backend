@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Posts } from '../models/Posts';
+import { Post } from '../models/Posts';
 import { responseMiddleware } from '../lib/utils';
 
 const defaultSize = 10;
@@ -10,13 +10,13 @@ const postsController = {
     const size = +req.query.size || defaultSize;
     const offset = +req.query.offset || 0;
     // get n record from offset
-    const data = await Posts.findAll({
+    const data = await Post.findAll({
       limit: size,
       offset,
       order: [ ['createdAt', 'DESC'] ]
     });
     // get total record
-    const length = await Posts.count();
+    const length = await Post.count();
     /**
      * Validate for load more
      * if loaded records less than total records, turn on load more
@@ -26,18 +26,18 @@ const postsController = {
     return { posts: data, loadMore: status };
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Posts.createPosts(req.body);
+    return await Post.createPosts(req.body);
   }),
   show: responseMiddleware( async (req: Request, res: Response, next: NextFunction) =>  {
-    return await Posts.findOne({
+    return await Post.findOne({
       where: { id: req.params.id }
     });
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
-    return Posts.updateContent(req.params.id, req.body);
+    return Post.updateContent(req.params.id, req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Posts.removePost(req.params.id);
+    return Post.removePost(req.params.id);
   })
 };
 

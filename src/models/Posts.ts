@@ -11,7 +11,7 @@ interface PostsAttributes {
 // You can also set multiple attributes optional at once
 interface PostsCreationAttributes extends Optional<PostsAttributes, 'id'> {}
 
-export class Posts extends Model<PostsAttributes, PostsCreationAttributes> implements PostsAttributes, PostsCreationAttributes {
+export class Post extends Model<PostsAttributes, PostsCreationAttributes> implements PostsAttributes, PostsCreationAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public title!: string;
   public content!: string | null; // for nullable fields
@@ -27,14 +27,14 @@ export class Posts extends Model<PostsAttributes, PostsCreationAttributes> imple
     data.status = data.status ? data.status.trim().replace(/(\n){3,}/g, '\n\n') : null;
     data.createdAt = new Date();
     data.updateAt = new Date();
-    const posts = new Posts(data);
-    return await posts.save();
+    const post = new Post(data);
+    return await post.save();
   }
 
   public static async updateContent(id: string, data: any) {
     console.log(data.content);
     // find and update character
-    const idPost = await Posts.findOne({
+    const idPost = await Post.findOne({
       where: { id }
     });
     if (idPost) {
@@ -49,7 +49,7 @@ export class Posts extends Model<PostsAttributes, PostsCreationAttributes> imple
 
   public static async removePost(id: string) {
     // find and delete character
-    return Posts.findOne({
+    return Post.findOne({
       where: { id }
     }).then((post) => {
       return post? post.destroy(): null;
@@ -57,7 +57,7 @@ export class Posts extends Model<PostsAttributes, PostsCreationAttributes> imple
   }
 }
 
-Posts.init({
+Post.init({
   // Model attributes are defined here
   id: {
     type: DataTypes.INTEGER,
