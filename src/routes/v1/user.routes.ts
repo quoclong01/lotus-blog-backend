@@ -10,7 +10,7 @@ router
   .get(userController.index)
 
 router
-  .route('/signup')
+  .route('/register')
   .post(validate(userSchema.addUser), userController.create)
 
 router

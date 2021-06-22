@@ -1,4 +1,9 @@
-const db = require('../src/config').db;
+const path = require('path');
+
+require('dotenv-safe').config({
+  allowEmptyValues: true,
+  path: path.join(__dirname, '../.env')
+});
 
 module.exports = {
   username: process.env.DB_USER,
@@ -8,5 +13,6 @@ module.exports = {
   dialect: 'postgres',
   seederStorage: 'sequelize',
   seederStorageTableName: 'Seeder',
-  autoMigrateOldSchema: true
+  autoMigrateOldSchema: true,
+  
 };

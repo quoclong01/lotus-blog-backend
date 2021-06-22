@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
 import { User } from '../models/User';
-// import bcrypt from 'bcrypt';
 import { hashPassword } from '../lib/utils';
 
 interface AuthAttributes {
@@ -72,12 +71,11 @@ Auth.init({
     type: DataTypes.STRING
   },
   userId: {
-    type: DataTypes.INTEGER
-  }
+    type: DataTypes.INTEGER.UNSIGNED,
+    references: { model: 'User', key: 'id' }
+  },
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Auth' // We need to choose the model name
 });
-
-// Auth.belongsTo(User, { targetKey: 'id', foreignKey: 'user_id', as: 'user'});

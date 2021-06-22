@@ -27,6 +27,10 @@ app.use(helmet());
 app.use(cors());
 
 // mount api v1 routes
-app.use('/v1', routes);
+app.use('/api/v1', routes);
+
+app.use("**", (req, res, next) => {
+  res.status(404).json({message: 'Route not found!'})
+})
 
 export default app;

@@ -50,23 +50,24 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         statusCode: 404
       }
     } else {
-      const passwordHash = await hashPassword(data.password);
-      return User.create(data).then(async(user) => {
-        const auth = new Auth({
-          providerType: 'email',
-          userId: user.id,
-          password: passwordHash,
-          accessToken: null,
-          refreshToken: null
-        });
-
-        await auth.save();
-
-        return {
-          statusCode: 200,
-          message: 'Register successfully.'
-        }
+      const userTemp = new User({
+        ...data,
       });
+      const user = await userTemp.save();
+      const passwordHash = await hashPassword(data.password);
+      const auth = {
+        // TODO handle dynamic providerType
+        providerType: 'email',
+        password: passwordHash,
+        accessToken: '',
+        refreshToken: '',
+        userId: user.id
+      };
+      await Auth.create(auth);
+      return {
+        statusCode: 200,
+        message: 'Create an account successfully'
+      };
     }
   }
 
@@ -171,4 +172,4 @@ User.init({
   tableName: 'User' // We need to choose the model name
 });
 
-User.hasMany(Auth, { as: 'auth', foreignKey: 'userId' });
+User.hasMany(Auth, { as: "auths", foreignKey: "userId" });
