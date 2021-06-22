@@ -3,7 +3,7 @@
 module.exports = {
   up: async(queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.allColumn(
+      queryInterface.addColumn(
         'Auth',
         'password',
         {
@@ -12,7 +12,7 @@ module.exports = {
         }
       ),
       queryInterface.renameColumn(
-        'User',
+        'Auth',
         'saveToken',
         'accessToken'
       )
