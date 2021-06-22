@@ -12,6 +12,7 @@ const userController = {
   }),
   getPost: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const data = await User.findOne({
+      attributes: ['id'],
       where: { id: req.params.id }, include: { model: Post, as: 'Posts', required: false }
     });
     return { users: data };
