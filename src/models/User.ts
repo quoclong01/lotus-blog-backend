@@ -72,32 +72,27 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 
   public static async loginUser(data: any) {
-    return await User.findOne({
+    const userTemp = await User.findOne({
       where: { email: data.email }
-    }).then((user) => {
-      if (user) {
-        // Todo handle dynamic providerType
-        return Auth.findOne({
-          where: { userId: user.id, providerType: 'email' }
-        }).then(async(auth) => {
-          const isValidPassword = await comparePassword(data.password, auth.password);
-  
-          if (isValidPassword) {
-            const accessToken = await generateAccessToken(auth);
-            auth.update({
-              accessToken
-            });
-            user.update({
-              verifyAt: true
-            });
-
-            return{ accessToken };
-          }
-          return { statusCode: 401, message: 'Invalid password.'}
-        });
-      }
-      return null;
     });
+    if (userTemp) {
+      // Todo handle dynamic providerType
+      const authTemp = await Auth.findOne({
+        where: { userId: userTemp.id, providerType: 'email' }
+      });
+
+      const isValidPassword = await comparePassword(data.password, authTemp.password);
+
+      if (isValidPassword) {
+        const accessToken = await generateAccessToken(authTemp);
+        authTemp.update({ accessToken });
+        userTemp.update({ verifyAt: true });
+
+        return{ accessToken };
+      }
+      return { statusCode: 401, message: 'Invalid password.'}
+    }
+    return null;
   }
 
   public static async updateUserInfo(id: string) {
@@ -112,26 +107,25 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   **/
   public static async removeUser(id: string) {
     // find and delete character
-    return User.findOne({
+    const userTemp = await User.findOne({
       where: { id }
-    }).then((user) => {
-      if (user) {
-        return Auth.findOne({
-          where: { userId: user.id, providerType: 'email'}
-        }).then((auth) => {
-          if (auth) {
-            auth.destroy();
-            user.destroy();
-            return {
-              statusCode: 200,
-              message: 'Delete the user successfully.'
-            }
-          }
-          return null;
-        })
+    });
+    if (userTemp) {
+      const authTemp = await Auth.findOne({
+        where: { userId: userTemp.id, providerType: 'email'}
+      });
+      
+      if (authTemp) {
+        authTemp.destroy();
+        userTemp.destroy();
+        return {
+          statusCode: 200,
+          message: 'Delete the user successfully.'
+        }
       }
       return null;
-    });
+    }
+    return null;
   }
 }
 

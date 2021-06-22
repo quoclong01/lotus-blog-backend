@@ -1,7 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
-import { User } from '../models/User';
-import { hashPassword } from '../lib/utils';
 
 interface AuthAttributes {
   id: number;
