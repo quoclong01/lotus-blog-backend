@@ -8,18 +8,18 @@ import swaggerDocument from '../../../docs/swagger.json';
 const router = express.Router();
 
 /* API DOCS with swagger */
-router.use('/apidocs', swaggerUi.serve);
-router.get('/apidocs', swaggerUi.setup(swaggerDocument));
+router.use('/docs', swaggerUi.serve);
+router.get('/docs', swaggerUi.setup(swaggerDocument));
 
 /* GET - Check service health */
-router.get('/api', (req, res) =>
+router.get('/', (req, res) =>
   res.send('API Server is running!')
 );
 
-router.use('/api/characters', characterRoutes);
-router.use('/api/posts', postRoutes);
+router.use('/characters', characterRoutes);
+router.use('/posts', postRoutes);
 
 // USER API
-router.use('/api/users', userRoutes);
+router.use('/users', userRoutes);
 
 export default router;

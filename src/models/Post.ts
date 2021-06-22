@@ -80,6 +80,7 @@ Post.init({
   },
   userId: {
     type: DataTypes.INTEGER.UNSIGNED,
+    references: { model: 'User', key: 'id' }
   },
 }, {
   // Other model options go here
