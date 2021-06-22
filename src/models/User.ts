@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
-import Auth from './Auth';
+import { Auth } from './Auth';
 // import bcrypt from 'bcrypt';
 // import { hashPassword } from '../lib/utils';
 

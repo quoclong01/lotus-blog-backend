@@ -13,7 +13,7 @@ interface AuthAttributes {
 
 interface AuthCreationAttributes extends Optional<AuthAttributes, 'id'> {}
 
-class Auth extends Model<AuthAttributes, AuthCreationAttributes> implements AuthAttributes, AuthCreationAttributes {
+export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implements AuthAttributes, AuthCreationAttributes {
   public id!: number;
   public providerType!: string;
   public saveToken!: string;
@@ -73,5 +73,3 @@ Auth.init({
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Auth' // We need to choose the model name
 });
-
-export default Auth;
