@@ -18,6 +18,10 @@ router
   .post(validate(userSchema.login), userController.login)
 
 router
+  .route('/logout')
+  .post(validate(userSchema.logout), userController.logout)
+
+router
   .route('/:id')
   .patch(userController.update)
   .delete(userController.delete)

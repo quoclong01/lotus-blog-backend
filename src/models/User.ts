@@ -95,6 +95,21 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return null;
   }
 
+  public static async logoutUser({ email }: any) {
+    const userTemp = await User.findOne({
+      where: { email }
+    });
+    const authTemp = await Auth.findOne({
+      where: { userId: userTemp.id, providerType: 'email' }
+    });
+
+    if (authTemp) {
+      authTemp.update({ accessToken: '' });
+      return { statusCode: 200, message: 'Logout successfully.' }
+    }
+    return null;
+  }
+
   public static async updateUserInfo(id: string) {
     return { data: `update user info ${id}` }
   }
