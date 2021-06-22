@@ -8,7 +8,7 @@ module.exports = {
         'userId',
         {
           type: Sequelize.INTEGER,
-          references: { model: 'Users', key: 'id' }
+          references: { model: 'User', key: 'id' }
         }
       ),
       queryInterface.addColumn(
@@ -16,7 +16,7 @@ module.exports = {
         'userId',
         {
           type: Sequelize.INTEGER,
-          references: { model: 'Users', key: 'id' }
+          references: { model: 'User', key: 'id' }
         }
       ),
     ]);
