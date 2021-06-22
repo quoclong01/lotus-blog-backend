@@ -6,6 +6,7 @@ interface PostAttributes {
   title: string;
   content: string;
   status: string;
+  userId: number;
 }
 
 // You can also set multiple attributes optional at once
@@ -16,6 +17,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public title!: string;
   public content!: string | null; // for nullable fields
   public status!: string;
+  public userId!: number;
 
   // timestamps!
   public readonly createdAt!: Date;
@@ -75,7 +77,10 @@ Post.init({
   status: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  userId: {
+    type: DataTypes.INTEGER.UNSIGNED,
+  },
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
