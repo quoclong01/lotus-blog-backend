@@ -1,5 +1,6 @@
+import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
-import db  from '../config/database';
+import db from '../config/database';
 import { Auth } from './Auth';
 // import bcrypt from 'bcrypt';
 // import { hashPassword } from '../lib/utils';
@@ -16,7 +17,7 @@ interface UserAttributes {
   verifyAt: boolean;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes, UserCreationAttributes {
   public id!: number;
@@ -47,7 +48,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       where: { email: data.email }
     });
 
-    if(existUser.length !== 0) {
+    if (existUser.length !== 0) {
       return {
         error: "Account have already exist",
         statusCode: 404
@@ -134,3 +135,6 @@ User.init({
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'User', // We need to choose the model name
 });
+
+Post.belongsTo(User, { targetKey: 'id', foreignKey: 'userId' });
+User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });

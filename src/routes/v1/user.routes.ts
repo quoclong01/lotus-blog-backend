@@ -15,6 +15,7 @@ router
 
 router
   .route('/:id')
+  .get(userController.getPost)
   .patch(userController.updateUser)
   .delete(userController.delete)
 
