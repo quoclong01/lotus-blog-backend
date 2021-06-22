@@ -7,7 +7,7 @@ module.exports = {
         'Auth',
         'password',
         {
-          type: DataTypes.STRING,
+          type: Sequelize.STRING,
           allowNull: false
         }
       ),
