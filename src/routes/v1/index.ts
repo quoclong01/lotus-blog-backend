@@ -1,5 +1,4 @@
 import express from 'express';
-import characterRoutes from './character.routes';
 import userRoutes from './user.routes';
 import postRoutes from './post.routes';
 import swaggerUi from 'swagger-ui-express';
@@ -16,7 +15,6 @@ router.get('/', (req, res) =>
   res.send('API Server is running!')
 );
 
-router.use('/characters', characterRoutes);
 router.use('/posts', postRoutes);
 router.use('/users', userRoutes);
 

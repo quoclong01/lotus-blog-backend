@@ -85,5 +85,5 @@ Post.init({
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'Post' // We need to choose the model name
+  tableName: 'Posts' // We need to choose the model name
 });
