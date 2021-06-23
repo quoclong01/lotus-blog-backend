@@ -41,6 +41,7 @@
     "http-status": "^1.4.2",
     "inquirer": "^6.2.1",
     "joi": "^17.2.1",
+    "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.1",
     "pg": "^8.3.3",
     "pg-hstore": "^2.3.3",
@@ -48,6 +49,8 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.2",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nodemon": "^2.0.1",

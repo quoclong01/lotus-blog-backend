@@ -7,15 +7,23 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(userController.getAll)
+  .get(userController.index)
 
 router
-  .route('/signup')
+  .route('/register')
   .post(validate(userSchema.addUser), userController.create)
 
 router
+  .route('/login')
+  .post(validate(userSchema.login), userController.login)
+
+router
+  .route('/logout')
+  .post(validate(userSchema.logout), userController.logout)
+
+router
   .route('/:id')
-  .patch(userController.updateUser)
+  .patch(userController.update)
   .delete(userController.delete)
 
 export default router;
