@@ -20,10 +20,12 @@ class Database {
       this.sequelize = new Sequelize(process.env.DATABASE_URL, {
         dialect: this.dialect,
         // native: true,
-        ssl: true, 
+        // ssl: true, 
         dialectOptions: {
-          ssl: true,
-          rejectUnauthorized: false
+          ssl: {
+            require: true,
+            rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+          }
         }
       });
     } else {
