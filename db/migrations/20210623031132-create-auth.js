@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       userId: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         references: { model: 'Users', key: 'id' }
       },
       createdAt: {
