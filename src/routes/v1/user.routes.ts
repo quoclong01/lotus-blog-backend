@@ -15,8 +15,11 @@ router
 
 router
   .route('/:id')
-  .get(userController.getPost)
   .patch(userController.updateUser)
   .delete(userController.delete)
+
+router
+  .route('/:id/posts')
+  .get(userController.getPost)
 
 export default router;
