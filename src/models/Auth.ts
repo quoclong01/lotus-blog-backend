@@ -70,7 +70,7 @@ Auth.init({
   },
   userId: {
     type: DataTypes.INTEGER.UNSIGNED,
-    references: { model: 'User', key: 'id' }
+    references: { model: 'Users', key: 'id' }
   },
 }, {
   // Other model options go here
