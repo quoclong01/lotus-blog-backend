@@ -7,7 +7,7 @@
     "sayhello": "./bin/exec.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node dist/index.js",
     "dev": "nodemon -L src/index.ts",
     "build": "tsc",
     "test": "cross-env NODE_ENV=test mocha --ui bdd --timeout 360000 --reporter spec --colors tests --recursive",
