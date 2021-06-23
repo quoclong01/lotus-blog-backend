@@ -79,7 +79,7 @@ Post.init({
     allowNull: false
   },
   userId: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     references: { model: 'Users', key: 'id' }
   },
 }, {
