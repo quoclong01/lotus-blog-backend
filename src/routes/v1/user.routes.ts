@@ -15,6 +15,23 @@ router
 
 router
   .route('/login')
+  /**
+   * @swagger
+   *
+   * /login:
+   *   post:
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: email
+   *         in: body
+   *         required: true
+   *         type: string
+   *       - name: password
+   *         in: body
+   *         required: true
+   *         type: string
+   */
   .post(validate(userSchema.login), userController.login)
 
 router
