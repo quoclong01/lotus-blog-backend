@@ -136,5 +136,4 @@ User.init({
   tableName: 'User', // We need to choose the model name
 });
 
-Post.belongsTo(User, { targetKey: 'id', foreignKey: 'userId' });
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
