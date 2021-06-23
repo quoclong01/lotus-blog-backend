@@ -16,6 +16,8 @@ router
    *   get:
    *     produces:
    *       - application/json
+  *     description:
+  *       Get all posts with status public
    *     responses:
    *       200:
    *         content:
@@ -52,6 +54,8 @@ router
   *   post:
   *     produces:
   *       - application/json
+  *     description:
+  *       Create post
   *     requestBody:
   *       required: true
   *       content:
@@ -96,6 +100,8 @@ router
    *   get:
    *     produces:
    *       - application/json
+   *     description:
+  *       Get post with id
    *     responses:
    *       200:
    *         content:
@@ -168,6 +174,8 @@ router
   *   delete:
   *     produces:
   *       - application/json
+  *     description:
+  *       Delete post with id
   *     responses:
   *       200:
   *         content:
@@ -194,6 +202,8 @@ router
   *   put:
   *     produces:
   *       - application/json
+  *     description:
+  *       Restore deleted post with id
   *     responses:
   *       200:
   *         content:
@@ -209,5 +219,135 @@ router
   *                    example: Restore post successfully.
   *                
  */
+router
+  .route('/:id/like')
+
+  .get(postController.getlikes)
+  /**
+  * @swagger
+  *
+  * /api/v1/posts/:id/like:
+  *   get:
+  *     produces:
+  *       - application/json
+  *     description:
+  *       Get list of users like post with id 
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  status:
+  *                    type: integer
+  *                    example: 200
+  *                  likes:
+  *                    type: array
+  *                    items:
+  *                       type: object
+  *                       properties:
+  *                         userId:
+  *                           type: integer
+  *                           example: 1
+  *                    
+  *                
+ */
+  .put(postController.like)
+/**
+ * @swagger
+ *
+ * /api/v1/posts/:id/like:
+ *   put:
+ *     produces:
+ *       - application/json
+*     description:
+*       Like a post with id, this post will increase attr like and add userId to likeUsers attr 
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  status:
+ *                    type: integer
+ *                    example: 200
+ *                  likes:
+ *                    type: array
+ *                    items:
+ *                       type: object
+ *                       properties:
+ *                         userId:
+ *                           type: integer
+ *                           example: 1
+ *                    
+ *                
+*/
+router
+  .route('/:id/comment')
+
+  .get(postController.getcomments)
+  /**
+ * @swagger
+ *
+ * /api/v1/posts/:id/comment:
+ *   get:
+ *     produces:
+ *       - application/json
+  *     description:
+  *       Get list of users commented post with id 
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  status:
+ *                    type: integer
+ *                    example: 200
+ *                  likes:
+ *                    type: array
+ *                    items:
+ *                       type: object
+ *                       properties:
+ *                         userId:
+ *                           type: integer
+ *                           example: 1
+ *                    
+ *                
+*/
+  .put(postController.comment)
+/**
+* @swagger
+*
+* /api/v1/posts/:id/comment:
+*   put:
+*     produces:
+*       - application/json
+*     description:
+*       Comment a post with id, this post will increase attr Comment and add userId to CommentUser attr 
+*     responses:
+*       200:
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                  status:
+*                    type: integer
+*                    example: 200
+*                  likes:
+*                    type: array
+*                    items:
+*                       type: object
+*                       properties:
+*                         userId:
+*                           type: integer
+*                           example: 1
+*                    
+*                
+*/
 
 export default router;
