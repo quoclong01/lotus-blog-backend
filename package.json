@@ -57,7 +57,7 @@
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nodemon": "^2.0.1",
-    "sequelize": "^6.3.4",
+    "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
     "supertest": "^3.3.0",
     "supertest-as-promised": "^4.0.2",
