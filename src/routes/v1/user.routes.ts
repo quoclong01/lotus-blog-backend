@@ -43,8 +43,4 @@ router
   .patch(userController.update)
   .delete(userController.delete)
 
-router
-  .route('/:id/posts')
-  .get(userController.getPost)
-
 export default router;

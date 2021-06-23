@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import db  from '../config/database';
+import db from '../config/database';
 
 interface PostAttributes {
   id: number;
@@ -10,7 +10,7 @@ interface PostAttributes {
 }
 
 // You can also set multiple attributes optional at once
-interface PostCreationAttributes extends Optional<PostAttributes, 'id'> {}
+interface PostCreationAttributes extends Optional<PostAttributes, 'id'> { }
 
 export class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes, PostCreationAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -54,7 +54,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     return Post.findOne({
       where: { id }
     }).then((post) => {
-      return post? post.destroy(): null;
+      return post ? post.destroy() : null;
     });
   }
 }
@@ -84,6 +84,7 @@ Post.init({
   },
 }, {
   // Other model options go here
+  paranoid: true,
   sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'Posts' // We need to choose the model name
+  tableName: 'Post' // We need to choose the model name
 });
