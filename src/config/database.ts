@@ -19,7 +19,7 @@ class Database {
     if (nodeEnv === 'production') {
       this.sequelize = new Sequelize(process.env.DATABASE_URL, {
         dialect: this.dialect,
-        native: true,
+        // native: true,
         ssl: true, 
         dialectOptions: {
           ssl: true
