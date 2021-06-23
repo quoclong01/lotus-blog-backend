@@ -80,7 +80,7 @@ Post.init({
   },
   userId: {
     type: DataTypes.INTEGER,
-    references: { model: 'User', key: 'id' }
+    references: { model: 'Users', key: 'id' }
   },
 }, {
   // Other model options go here
