@@ -44,7 +44,7 @@ module.exports = {
       queryInterface.removeColumn('Users',
         'gender',
         {
-          type: Sequelize.STRING
+          type: Sequelize.ENUM('male', 'female', 'other'),
         }
       ),
       queryInterface.removeColumn('Users',

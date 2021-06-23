@@ -69,7 +69,7 @@ Auth.init({
     type: DataTypes.STRING
   },
   userId: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     references: { model: 'Users', key: 'id' }
   },
 }, {

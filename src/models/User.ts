@@ -55,7 +55,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       // Todo will check provider if difference provider will be create new one
       return {
         error: "Account have already exist",
-        statusCode: 404
+        status: 404
       }
     } else {
       const userTemp = new User({
@@ -73,7 +73,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       };
       await Auth.create(auth);
       return {
-        statusCode: 200,
+        status: 200,
         message: 'Create an account successfully'
       };
     }
@@ -101,36 +101,36 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
           userInfo: userTemp
         };
       }
-      return { statusCode: 401, message: 'Invalid password.'}
+      return { status: 401, message: 'Invalid password.'}
     }
     return null;
   }
 
-  public static async logoutUser({ email }: any) {
-    const userTemp = await User.findOne({
-      where: { email }
-    });
+  public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: userTemp.id, providerType: 'email' }
+      where: { userId: authInfo.userId, providerType: 'email' }
     });
 
     if (authTemp) {
-      authTemp.update({ accessToken: '' });
-      return { statusCode: 200, message: 'Logout successfully.' }
+      authTemp.update({ accessToken: null });
+      return { status: 200, message: 'Logout successfully.' }
     }
     return null;
   }
 
-  public static async updateUserInfo(id: number, data: any) {
-    const userBody = { ...data };
-    const userTemp = await User.findOne({
-      where: { id }
-    });
-    if (userTemp) {
-      await userTemp.update(userBody);
-      return { userInfo: userTemp };
+  public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
+    if (id === 'me') {
+      const userTemp  = await User.findByPk(authInfo.userId);
+      delete data.email;
+      const userBody = { ...data };
+      if (userTemp) {
+        await userTemp.update(userBody);
+        return userTemp;
+      }
+      return { status: 401, message: 'Could not find this user.' };
+    } else {
+      return { status: 403, message: 'You do not have permission to update this user.' };
     }
-    return { statusCode: 401, message: 'Could not find this user.' };
   }
 
   /*
@@ -153,13 +153,28 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         authTemp.destroy();
         userTemp.destroy();
         return {
-          statusCode: 200,
+          status: 200,
           message: 'Delete the user successfully.'
         }
       }
       return null;
     }
     return null;
+  }
+
+  public static async findUser(paramId: string | number, authInfo: any) {
+    const userId = paramId === 'me' ? authInfo.userId : paramId;
+    const user  = await User.findByPk(userId);
+    return this._showPublicInfo(user);
+  }
+
+  private static _showPublicInfo(user: any) {
+    const userTemp: any = {};
+    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
+    publicField.forEach((x: string) => {
+      userTemp[x] = user[x];
+    })
+    return userTemp;
   }
 }
 
@@ -183,7 +198,7 @@ User.init({
     type: DataTypes.STRING
   },
   gender: {
-    type: DataTypes.STRING
+    type: DataTypes.ENUM('male', 'female', 'other'),
   },
   dob: {
     type: DataTypes.STRING

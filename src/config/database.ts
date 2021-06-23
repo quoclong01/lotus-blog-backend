@@ -1,6 +1,6 @@
 import { Sequelize, Dialect } from 'sequelize';
 import env from './vars';
-const  {dbHost, dbName, dbUser, dbPassword, dbMaxPool, dbMinPool, dbAcquire, dbIdle} = env;
+const  {env: nodeEnv, dbHost, dbName, dbUser, dbPassword, dbMaxPool, dbMinPool, dbAcquire, dbIdle} = env;
 
 class Database {
   sequelize: any;
@@ -16,17 +16,31 @@ class Database {
   [x:string]: any;
 
   constructor() {
-    this.sequelize = new Sequelize(this.database, this.userName, this.password, {
-      host: this.host,
-      dialect: this.dialect,
-      // operatorsAliases: false,
-      pool: {
-        max: this.maxPool,
-        min: this.minPool,
-        acquire: this.acquire,
-        idle: this.idle
-      },
-    });
+    if (nodeEnv === 'production') {
+      this.sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: this.dialect,
+        // native: true,
+        // ssl: true, 
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+          }
+        }
+      });
+    } else {
+      this.sequelize = new Sequelize(this.database, this.userName, this.password, {
+        host: this.host,
+        dialect: this.dialect,
+        // operatorsAliases: false,
+        pool: {
+          max: this.maxPool,
+          min: this.minPool,
+          acquire: this.acquire,
+          idle: this.idle
+        },
+      });
+    }
   }
 
   connect() {
