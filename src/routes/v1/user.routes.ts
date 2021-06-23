@@ -2,8 +2,13 @@ import express from 'express';
 import userController from '../../controllers/user.controller';
 import { validate } from '../../lib/utils';
 import userSchema from '../../schema/user.schema';
+import expressjwt from 'express-jwt';
 
 const router = express.Router();
+const jwtCheck = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256']
+});
 
 router
   .route('/')
@@ -36,11 +41,12 @@ router
 
 router
   .route('/logout')
-  .post(validate(userSchema.logout), userController.logout)
+  .post(jwtCheck, userController.logout)
 
 router
   .route('/:id')
-  .patch(validate(userSchema.updatePersonalInfo), userController.update)
+  .get(jwtCheck, userController.get)
+  .patch(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
 export default router;
