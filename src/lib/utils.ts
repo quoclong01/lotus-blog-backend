@@ -51,6 +51,6 @@ export const generateAccessToken = async(auth: any) => {
   return await jwt.sign(
     { userId: auth.userId },
     'RANDOM_TOKEN_SECRET',
-    { expiresIn: '24h' }
+    { algorithm: 'HS256', expiresIn: '24h' }
   );
 }

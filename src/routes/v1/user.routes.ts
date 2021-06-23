@@ -2,8 +2,13 @@ import express from 'express';
 import userController from '../../controllers/user.controller';
 import { validate } from '../../lib/utils';
 import userSchema from '../../schema/user.schema';
+import expressjwt from 'express-jwt';
 
 const router = express.Router();
+const jwtCheck = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256']
+});
 
 router
   .route('/')
@@ -26,27 +31,36 @@ router
    *                   items:
    *                     type: object
    *                     properties:
-   *                       id:
-   *                         type: integer
-   *                         example: 1
-   *                       email:
+   *                      id:
+   *                        type: integer
+   *                        example: 1
+   *                      email:
+   *                        type: string
+   *                        example: quan.do@supremetech.vn
+   *                      firstName:
    *                         type: string
-   *                         example: quan.do@supremetech.vn
-   *                       firstName:
-   *                          type: string
-   *                          example: do
-   *                       lastName:
-   *                          type: string
-   *                          example: quan
-   *                       displayName:
-   *                          type: string
-   *                          example: quanDo
-   *                       picture:
-   *                          type: string
-   *                          example: ''
-   *                       isActive:
-   *                          type: boolean
-   *                          example: true
+   *                         example: do
+   *                      lastName:
+   *                         type: string
+   *                         example: quan
+   *                      phone:
+   *                         type: string
+   *                         example: ''
+   *                      gender:
+   *                         type: string
+   *                         example: male
+   *                      dob:
+   *                         type: string
+   *                         example: 19/10/1995
+   *                      displayName:
+   *                         type: string
+   *                         example: quanDo
+   *                      picture:
+   *                         type: string
+   *                         example: ''
+   *                      isActive:
+   *                         type: boolean
+   *                         example: true
   */
   .get(userController.index)
 
@@ -72,6 +86,18 @@ router
    *               password:
    *                 type: string
    *                 example: abc@1234
+   *               firstName:
+   *                 type: string
+   *                 example: do
+   *               lastName:
+   *                 type: string
+   *                 example: quan
+   *               gender:
+   *                 type: string
+   *                 example: male
+   *               dob:
+   *                 type: string
+   *                 example: 19/10/1995
    *     responses:
    *       200:
    *         content:
@@ -79,12 +105,12 @@ router
    *             schema:
    *               type: object
    *               properties:
-   *                  statusCode:
+   *                  status:
    *                    type: integer
    *                    example: 200
    *                  message:
    *                    type: string
-   *                    example: Create an account successfully
+   *                    example: Create an account successfully.
   */
   .post(validate(userSchema.addUser), userController.create)
 
@@ -120,6 +146,39 @@ router
    *                  accessToken:
    *                    type: string
    *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDQzOTkwNiwiZXhwIjoxNjI0NTI2MzA2fQ.Mqz4M54mv3bA3RXdSnSgulJnVnCvFSCfUW00qz0yKiA
+   *                  userInfo:
+   *                    type: object
+   *                    properties:
+   *                      id:
+   *                        type: integer
+   *                        example: 1
+   *                      email:
+   *                        type: string
+   *                        example: quan.do@supremetech.vn
+   *                      firstName:
+   *                         type: string
+   *                         example: do
+   *                      lastName:
+   *                         type: string
+   *                         example: quan
+   *                      phone:
+   *                         type: string
+   *                         example: ''
+   *                      gender:
+   *                         type: string
+   *                         example: male
+   *                      dob:
+   *                         type: string
+   *                         example: 19/10/1995
+   *                      displayName:
+   *                         type: string
+   *                         example: quanDo
+   *                      picture:
+   *                         type: string
+   *                         example: ''
+   *                      isActive:
+   *                         type: boolean
+   *                         example: true
   */
   .post(validate(userSchema.login), userController.login)
 
@@ -132,16 +191,6 @@ router
    *   post:
    *     produces:
    *       - application/json
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               email:
-   *                 type: string
-   *                 example: quan.do@supremetech.vn
    *     responses:
    *       200:
    *         content:
@@ -156,7 +205,7 @@ router
    *                    type: string
    *                    example: Logout successfully.
    */
-  .post(validate(userSchema.logout), userController.logout)
+  .post(jwtCheck, userController.logout)
 
 router
   .route('/:id')
@@ -174,6 +223,11 @@ router
    *         description: Numeric ID of the user to retrieve.
    *         schema:
    *           type: integer
+   *       - in: header
+   *         name: token
+   *         required: true
+   *         schema:
+   *           type: string
    *     requestBody:
    *       required: true
    *       content:
@@ -245,14 +299,15 @@ router
    *             schema:
    *               type: object
    *               properties:
-   *                  statusCode:
+   *                  status:
    *                    type: integer
    *                    example: 200
    *                  message:
    *                    type: string
    *                    example: Delete the user successfully.
    */
-  .patch(userController.update)
+  .get(jwtCheck, userController.get)
+  .patch(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
 export default router;
