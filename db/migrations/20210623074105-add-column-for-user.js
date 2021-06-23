@@ -18,7 +18,7 @@ module.exports = {
       queryInterface.addColumn('Users',
         'dob',
         {
-          type: Sequelize.DATE
+          type: Sequelize.STRING
         }
       ),
       queryInterface.addColumn('Users',
@@ -50,7 +50,7 @@ module.exports = {
       queryInterface.removeColumn('Users',
         'dob',
         {
-          type: Sequelize.DATE
+          type: Sequelize.STRING
         }
       ),
       queryInterface.removeColumn('Users',

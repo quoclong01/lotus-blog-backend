@@ -10,7 +10,7 @@ interface UserAttributes {
   email: string;
   phone: string;
   gender: string;
-  dob: Date;
+  dob: string;
   displayName: string;
   picture: string;
   isActive: boolean;
@@ -27,7 +27,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public email!: string;
   public phone!: string;
   public gender!: string;
-  public dob!: Date;
+  public dob!: string;
   public displayName!: string;
   public picture!: string;
   public isActive!: boolean;
@@ -186,7 +186,7 @@ User.init({
     type: DataTypes.STRING
   },
   dob: {
-    type: DataTypes.DATE
+    type: DataTypes.STRING
   },
   displayName: {
     type: DataTypes.STRING

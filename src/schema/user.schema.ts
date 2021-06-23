@@ -17,6 +17,6 @@ export default {
     lastName: Joi.string().required(),
     phone: Joi.string().required(),
     gender: Joi.string().required(),
-    dob: Joi.date().required()
+    dob: Joi.string().required()
   })
 };
