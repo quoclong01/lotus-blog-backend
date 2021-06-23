@@ -74,7 +74,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       await Auth.create(auth);
       return {
         status: 200,
-        message: 'Create an account successfully'
+        message: 'Create an account successfully.'
       };
     }
   }
