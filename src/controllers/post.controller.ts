@@ -5,7 +5,7 @@ import { responseMiddleware } from '../lib/utils';
 const defaultSize = 10;
 
 const postController = {
-  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     // default limit 10 records
     const size = +req.query.size || defaultSize;
     const offset = +req.query.offset || 0;
@@ -13,7 +13,7 @@ const postController = {
     const data = await Post.findAll({
       limit: size,
       offset,
-      order: [ ['createdAt', 'DESC'] ]
+      order: [['createdAt', 'DESC']]
     });
     // get total record
     const length = await Post.count();
@@ -28,17 +28,33 @@ const postController = {
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body);
   }),
-  show: responseMiddleware( async (req: Request, res: Response, next: NextFunction) =>  {
+  show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.findOne({
       where: { id: req.params.id }
     });
   }),
-  updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.updateContent(req.params.id, req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.removePost(req.params.id);
-  })
+  }),
+  restore: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.restorePost(req.params.id);
+  }),
+  like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.likePost(req.params.id);
+  }),
+  getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.getLikes(req.params.id);
+  }),
+  getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.getComments(req.params.id);
+  }),
+  comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.commentPost(req.params.id);
+  }),
+
 };
 
 export default postController;

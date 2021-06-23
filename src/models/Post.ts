@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import db  from '../config/database';
+import db from '../config/database';
 
 interface PostAttributes {
   id: number;
@@ -10,7 +10,7 @@ interface PostAttributes {
 }
 
 // You can also set multiple attributes optional at once
-interface PostCreationAttributes extends Optional<PostAttributes, 'id'> {}
+interface PostCreationAttributes extends Optional<PostAttributes, 'id'> { }
 
 export class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes, PostCreationAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -30,19 +30,27 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     data.createdAt = new Date();
     data.updateAt = new Date();
     const post = new Post(data);
-    return await post.save();
+    await post.save();
+    return {
+      status: 200,
+      message: 'Create a post successfully',
+      post: post
+    };
   }
 
   public static async updateContent(id: string, data: any) {
-    console.log(data.content);
     // find and update character
     const idPost = await Post.findOne({
       where: { id }
     });
     if (idPost) {
-      return idPost.update({
-        content: data.content
+
+      await idPost.update({
+        title: data.title ? data.title : idPost.title,
+        content: data.content ? data.content : idPost.content,
+        status: data.status ? data.status : idPost.status,
       });
+      return { status: 200, message: 'Update successfully', data: idPost }
     }
     else {
       return null;
@@ -51,11 +59,41 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 
   public static async removePost(id: string) {
     // find and delete character
-    return Post.findOne({
+    const idPost = await Post.findOne({
       where: { id }
-    }).then((post) => {
-      return post? post.destroy(): null;
-    });
+    })
+    if (idPost) {
+      idPost.destroy()
+      return { status: 200, message: 'Delete post successfully' }
+    }
+    else return { status: 200, message: 'Not found' };
+  }
+
+  public static async restorePost(id: string) {
+    const idPost = await Post.findOne({
+      where: { id }
+    })
+    if (idPost) {
+      idPost.restore()
+      return { status: 200, message: 'Restore post successfully' }
+    }
+    else return { status: 200, message: 'Not found' };
+  }
+
+  public static async likePost(id: string) {
+    return { status: 200, message: 'Comming soon' }
+  }
+
+  public static async commentPost(id: string) {
+    return { status: 200, message: 'Comming soon' };
+  }
+
+  public static async getLikes(id: string) {
+    return { status: 200, message: 'Comming soon' };
+  }
+
+  public static async getComments(id: string) {
+    return { status: 200, message: 'Comming soon' };
   }
 }
 
@@ -85,5 +123,5 @@ Post.init({
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'Posts' // We need to choose the model name
+  tableName: 'Post' // We need to choose the model name
 });
