@@ -27,7 +27,7 @@ export const validate = (schema: any, property: string = 'body') => {
 
 export const responseMiddleware = (fn: any) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve(fn(req, res, next))
-    .then(data =>  {
+    .then(data => {
       const responseData = data || new APIError(
         HttpStatus['404_NAME'],
         404,
@@ -38,19 +38,28 @@ export const responseMiddleware = (fn: any) => (req: Request, res: Response, nex
     .catch(next);
 };
 
-export const hashPassword = async(password: string) => {
+export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 }
 
-export const comparePassword = async(passwordBody: string, password: string) => {
+export const comparePassword = async (passwordBody: string, password: string) => {
   return await bcrypt.compare(passwordBody, password);
 }
 
-export const generateAccessToken = async(auth: any) => {
+export const generateAccessToken = async (auth: any) => {
   return await jwt.sign(
     { userId: auth.userId },
     'RANDOM_TOKEN_SECRET',
     { expiresIn: '24h' }
   );
+}
+
+export const verifyToken = async (token: any) => {
+  try {
+    const userId = await jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    return userId;
+  } catch (error) {
+    return error
+  }
 }

@@ -49,4 +49,8 @@ router
   .patch(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
+router
+  .route('/:id/posts')
+  .get(userController.getPost)
+
 export default router;
