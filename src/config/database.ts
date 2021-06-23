@@ -17,7 +17,14 @@ class Database {
 
   constructor() {
     if (nodeEnv === 'production') {
-      this.sequelize = new Sequelize(process.env.DATABASE_URL);
+      this.sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: this.dialect,
+        native: true,
+        ssl: true, 
+        dialectOptions: {
+          ssl: true
+        }
+      });
     } else {
       this.sequelize = new Sequelize(this.database, this.userName, this.password, {
         host: this.host,
