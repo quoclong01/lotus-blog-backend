@@ -1,15 +1,13 @@
 import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
-import { Auth } from './Auth';
-// import bcrypt from 'bcrypt';
-// import { hashPassword } from '../lib/utils';
+import { Auth } from '../models/Auth';
+import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils';
 
 interface UserAttributes {
   id: number;
   username: string;
   email: string;
-  password: string;
   displayName: string;
   picture: string;
   isActive: boolean;
@@ -23,7 +21,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public id!: number;
   public username!: string;
   public email!: string;
-  public password!: string;
   public displayName!: string;
   public picture!: string;
   public isActive!: boolean;
@@ -43,12 +40,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @params data (Object)
   */
   public static async createUser(data: any) {
-    // TODO need to bcrypt password
-    const existUser = await User.findAll({
+    const existUser = await User.findOne({
       where: { email: data.email }
     });
 
-    if (existUser.length !== 0) {
+    if (existUser) {
+      // Todo will check provider if difference provider will be create new one
       return {
         error: "Account have already exist",
         statusCode: 404
@@ -58,10 +55,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         ...data,
       });
       const user = await userTemp.save();
+      const passwordHash = await hashPassword(data.password);
       const auth = {
         // TODO handle dynamic providerType
         providerType: 'email',
-        saveToken: '',
+        password: passwordHash,
+        accessToken: '',
         refreshToken: '',
         userId: user.id
       };
@@ -71,6 +70,45 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         message: 'Create an account successfully'
       };
     }
+  }
+
+  public static async loginUser(data: any) {
+    const userTemp = await User.findOne({
+      where: { email: data.email }
+    });
+    if (userTemp) {
+      // Todo handle dynamic providerType
+      const authTemp = await Auth.findOne({
+        where: { userId: userTemp.id, providerType: 'email' }
+      });
+
+      const isValidPassword = await comparePassword(data.password, authTemp.password);
+
+      if (isValidPassword) {
+        const accessToken = await generateAccessToken(authTemp);
+        authTemp.update({ accessToken });
+        userTemp.update({ verifyAt: true });
+
+        return { accessToken };
+      }
+      return { statusCode: 401, message: 'Invalid password.' }
+    }
+    return null;
+  }
+
+  public static async logoutUser({ email }: any) {
+    const userTemp = await User.findOne({
+      where: { email }
+    });
+    const authTemp = await Auth.findOne({
+      where: { userId: userTemp.id, providerType: 'email' }
+    });
+
+    if (authTemp) {
+      authTemp.update({ accessToken: '' });
+      return { statusCode: 200, message: 'Logout successfully.' }
+    }
+    return null;
   }
 
   public static async updateUserInfo(id: string) {
@@ -85,14 +123,25 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   **/
   public static async removeUser(id: string) {
     // find and delete character
-    return User.findOne({
+    const userTemp = await User.findOne({
       where: { id }
-    }).then(() => {
-      return {
-        statusCode: 200,
-        message: 'Delete User Successfully'
-      };
     });
+    if (userTemp) {
+      const authTemp = await Auth.findOne({
+        where: { userId: userTemp.id, providerType: 'email' }
+      });
+
+      if (authTemp) {
+        authTemp.destroy();
+        userTemp.destroy();
+        return {
+          statusCode: 200,
+          message: 'Delete the user successfully.'
+        }
+      }
+      return null;
+    }
+    return null;
   }
 }
 
@@ -104,9 +153,6 @@ User.init({
     primaryKey: true
   },
   email: {
-    type: DataTypes.STRING
-  },
-  password: {
     type: DataTypes.STRING
   },
   username: {
@@ -133,7 +179,7 @@ User.init({
 }, {
   // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'User', // We need to choose the model name
+  tableName: 'Users' // We need to choose the model name
 });
 
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });

@@ -1,25 +1,24 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
-// import bcrypt from 'bcrypt';
-// import { hashPassword } from '../lib/utils';
 
 interface AuthAttributes {
   id: number;
-  providerType: string;
-  saveToken: string;
-  refreshToken: string;
   userId: number;
+  providerType: string;
+  password: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 interface AuthCreationAttributes extends Optional<AuthAttributes, 'id'> {}
 
 export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implements AuthAttributes, AuthCreationAttributes {
   public id!: number;
-  public providerType!: string;
-  public saveToken!: string;
-  public refreshToken!: string;
   public userId!: number;
-
+  public providerType!: string;
+  public password!: string;
+  public accessToken!: string;
+  public refreshToken!: string;
 
   // timestamps!
   public readonly createdAt!: Date;
@@ -59,15 +58,19 @@ Auth.init({
     type: DataTypes.ENUM('facebook', 'google', 'email', 'github'),
     allowNull: false
   },
-  saveToken: {
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  accessToken: {
     type: DataTypes.STRING
   },
   refreshToken: {
     type: DataTypes.STRING
   },
   userId: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    references: { model: 'User', key: 'id' }
+    type: DataTypes.INTEGER,
+    references: { model: 'Users', key: 'id' }
   },
 }, {
   // Other model options go here
