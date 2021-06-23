@@ -5,8 +5,12 @@ import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils
 
 interface UserAttributes {
   id: number;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
+  gender: string;
+  dob: Date;
   displayName: string;
   picture: string;
   isActive: boolean;
@@ -18,8 +22,12 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes, UserCreationAttributes {
   public id!: number;
-  public username!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
+  public phone!: string;
+  public gender!: string;
+  public dob!: Date;
   public displayName!: string;
   public picture!: string;
   public isActive!: boolean;
@@ -88,7 +96,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         authTemp.update({ accessToken });
         userTemp.update({ verifyAt: true });
 
-        return{ accessToken };
+        return{
+          accessToken,
+          userInfo: userTemp
+        };
       }
       return { statusCode: 401, message: 'Invalid password.'}
     }
@@ -110,8 +121,16 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return null;
   }
 
-  public static async updateUserInfo(id: string) {
-    return { data: `update user info ${id}` }
+  public static async updateUserInfo(id: number, data: any) {
+    const userBody = { ...data };
+    const userTemp = await User.findOne({
+      where: { id }
+    });
+    if (userTemp) {
+      await userTemp.update(userBody);
+      return { userInfo: userTemp };
+    }
+    return { statusCode: 401, message: 'Could not find this user.' };
   }
 
   /*
@@ -154,8 +173,20 @@ User.init({
   email: {
     type: DataTypes.STRING
   },
-  username: {
+  firstName: {
     type: DataTypes.STRING
+  },
+  lastName: {
+    type: DataTypes.STRING
+  },
+  phone: {
+    type: DataTypes.STRING
+  },
+  gender: {
+    type: DataTypes.STRING
+  },
+  dob: {
+    type: DataTypes.DATE
   },
   displayName: {
     type: DataTypes.STRING

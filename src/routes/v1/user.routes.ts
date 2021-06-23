@@ -23,7 +23,7 @@ router
 
 router
   .route('/:id')
-  .patch(userController.update)
+  .patch(validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
 export default router;

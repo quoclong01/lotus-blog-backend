@@ -18,8 +18,8 @@ const userController = {
   logout: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.logoutUser(req.body);
   }),
-  update: responseMiddleware(async(req: Request, res: Response, next: NextFunction) =>  {
-    return await User.updateUserInfo(req.params.id);
+  update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+    return await User.updateUserInfo(+req.params.id, req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
     return await User.removeUser(req.params.id);
