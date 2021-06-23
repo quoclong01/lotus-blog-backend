@@ -3,10 +3,8 @@ import userRoutes from './user.routes';
 import postRoutes from './post.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
-// import swaggerDocument from '../../../docs/swagger.json';
 
 const router = express.Router();
-
 
 const options = {
   definition: {

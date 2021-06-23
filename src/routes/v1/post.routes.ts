@@ -11,14 +11,17 @@ router
   .get(postController.index)
   /* Create a post. */
   .post(validate(postchema.addPost), postController.new);
-  
+
 router
   .route('/:id')
   /* Show a post. */
   .get(postController.show)
   /* Update content of a post. */
   .put(postController.updateContent)
-   /* Delete a character. */
+  /* Delete a character. */
   .delete(postController.delete);
+router
+  .route('/:id/restore')
+  .put(postController.restore)
 
 export default router;

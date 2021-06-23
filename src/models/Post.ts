@@ -30,19 +30,26 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     data.createdAt = new Date();
     data.updateAt = new Date();
     const post = new Post(data);
-    return await post.save();
+    await post.save();
+    return {
+      status: 200,
+      message: 'Create a post successfully',
+      post: post
+    };
   }
 
   public static async updateContent(id: string, data: any) {
-    console.log(data.content);
-    // find and update character
     const idPost = await Post.findOne({
       where: { id }
     });
     if (idPost) {
-      return idPost.update({
-        content: data.content
+
+      await idPost.update({
+        title: data.title ? data.title : idPost.title,
+        content: data.content ? data.content : idPost.content,
+        status: data.status ? data.status : idPost.status,
       });
+      return { status: 200, message: 'Update successfully', data: idPost }
     }
     else {
       return null;
@@ -50,12 +57,26 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   }
 
   public static async removePost(id: string) {
-    // find and delete character
-    return Post.findOne({
+    const idPost = await Post.findOne({
       where: { id }
-    }).then((post) => {
-      return post ? post.destroy() : null;
-    });
+    })
+    if (idPost) {
+      idPost.destroy()
+      return { status: 200, message: 'Delete post successfully' }
+    }
+    else return { status: 200, message: 'Not found' };
+  }
+
+  public static async restorePost(id: string) {
+    const idPost = await Post.findOne({
+      where: { id },
+      paranoid: false
+    })
+    if (idPost) {
+      idPost.restore()
+      return { status: 200, message: 'Restore post successfully' }
+    }
+    else return { status: 200, message: 'Not found' };
   }
 }
 

@@ -6,8 +6,12 @@ import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils
 
 interface UserAttributes {
   id: number;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
+  gender: string;
+  dob: string;
   displayName: string;
   picture: string;
   isActive: boolean;
@@ -19,8 +23,12 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes, UserCreationAttributes {
   public id!: number;
-  public username!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
+  public phone!: string;
+  public gender!: string;
+  public dob!: string;
   public displayName!: string;
   public picture!: string;
   public isActive!: boolean;
@@ -48,7 +56,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       // Todo will check provider if difference provider will be create new one
       return {
         error: "Account have already exist",
-        statusCode: 404
+        status: 404
       }
     } else {
       const userTemp = new User({
@@ -66,7 +74,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       };
       await Auth.create(auth);
       return {
-        statusCode: 200,
+        status: 200,
         message: 'Create an account successfully'
       };
     }
@@ -89,30 +97,41 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         authTemp.update({ accessToken });
         userTemp.update({ verifyAt: true });
 
-        return { accessToken };
+        return {
+          accessToken,
+          userInfo: userTemp
+        };
       }
-      return { statusCode: 401, message: 'Invalid password.' }
+      return { status: 401, message: 'Invalid password.' }
     }
     return null;
   }
 
-  public static async logoutUser({ email }: any) {
-    const userTemp = await User.findOne({
-      where: { email }
-    });
+  public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: userTemp.id, providerType: 'email' }
+      where: { userId: authInfo.userId, providerType: 'email' }
     });
 
     if (authTemp) {
-      authTemp.update({ accessToken: '' });
-      return { statusCode: 200, message: 'Logout successfully.' }
+      authTemp.update({ accessToken: null });
+      return { status: 200, message: 'Logout successfully.' }
     }
     return null;
   }
 
-  public static async updateUserInfo(id: string) {
-    return { data: `update user info ${id}` }
+  public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
+    if (id === 'me') {
+      const userTemp = await User.findByPk(authInfo.userId);
+      delete data.email;
+      const userBody = { ...data };
+      if (userTemp) {
+        await userTemp.update(userBody);
+        return userTemp;
+      }
+      return { status: 401, message: 'Could not find this user.' };
+    } else {
+      return { status: 403, message: 'You do not have permission to update this user.' };
+    }
   }
 
   /*
@@ -135,13 +154,28 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         authTemp.destroy();
         userTemp.destroy();
         return {
-          statusCode: 200,
+          status: 200,
           message: 'Delete the user successfully.'
         }
       }
       return null;
     }
     return null;
+  }
+
+  public static async findUser(paramId: string | number, authInfo: any) {
+    const userId = paramId === 'me' ? authInfo.userId : paramId;
+    const user = await User.findByPk(userId);
+    return this._showPublicInfo(user);
+  }
+
+  private static _showPublicInfo(user: any) {
+    const userTemp: any = {};
+    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
+    publicField.forEach((x: string) => {
+      userTemp[x] = user[x];
+    })
+    return userTemp;
   }
 }
 
@@ -155,7 +189,19 @@ User.init({
   email: {
     type: DataTypes.STRING
   },
-  username: {
+  firstName: {
+    type: DataTypes.STRING
+  },
+  lastName: {
+    type: DataTypes.STRING
+  },
+  phone: {
+    type: DataTypes.STRING
+  },
+  gender: {
+    type: DataTypes.ENUM('male', 'female', 'other'),
+  },
+  dob: {
     type: DataTypes.STRING
   },
   displayName: {
