@@ -22,7 +22,8 @@ class Database {
         // native: true,
         ssl: true, 
         dialectOptions: {
-          ssl: true
+          ssl: true,
+          rejectUnauthorized: false
         }
       });
     } else {
