@@ -20,23 +20,6 @@ router
 
 router
   .route('/login')
-  /**
-   * @swagger
-   *
-   * /login:
-   *   post:
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - name: email
-   *         in: body
-   *         required: true
-   *         type: string
-   *       - name: password
-   *         in: body
-   *         required: true
-   *         type: string
-   */
   .post(validate(userSchema.login), userController.login)
 
 router
@@ -49,4 +32,42 @@ router
   .patch(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
+router
+  .route('/:id/post')
+/**
+  * @swagger
+  *
+  * /api/v1/users/:id/post:
+  *   get:
+  *     produces:
+  *       - application/json
+  *     responses:
+  *       200:
+ *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  id:
+  *                    type: integer
+  *                    example: 1
+  *                  posts:
+  *                    type: array
+  *                    items:
+  *                       type: object
+  *                       properties:
+  *                         id:
+  *                           type: integer
+  *                           example: 1
+  *                         title:
+  *                           type: string
+  *                           example: title of post
+  *                         content:
+  *                           type: string
+  *                           example: content of post
+  *                         status:
+  *                           type: string
+  *                           example: public
+  *                       
+ */
 export default router;
