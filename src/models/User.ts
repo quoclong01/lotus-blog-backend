@@ -133,6 +133,19 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
   }
 
+  public static async resetUserPassword(data: any) {
+    const userTemp = await User.findOne({
+      where: { email: data.email }
+    });
+    if (userTemp) {
+      const authTemp = await Auth.findOne({
+        where: { userId: userTemp.id, providerType: 'email' }
+      })
+      return { userTemp };
+    }
+    return { status: 401, message: 'Could not find this user.' };
+  }
+
   /*
     * @functionName removeUser
     * @functionDescription Remove the specific User with id

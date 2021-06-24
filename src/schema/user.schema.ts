@@ -19,5 +19,8 @@ export default {
     phone: Joi.string().required(),
     gender: Joi.string().required(),
     dob: Joi.string().required()
+  }),
+  resetPassword: Joi.object().keys({
+    email: Joi.string().required()
   })
 };

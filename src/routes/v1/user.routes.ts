@@ -208,6 +208,10 @@ router
   .post(jwtCheck, userController.logout)
 
 router
+  .route('/reset-password')
+  .post(validate(userSchema.resetPassword), userController.resetpassword)
+
+router
   .route('/:id')
   /**
    * @swagger

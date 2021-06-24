@@ -24,6 +24,9 @@ const userController = {
   update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
     return await User.updateUserInfo(req.params.id, req.user, req.body);
   }),
+  resetpassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.resetUserPassword(req.body);
+  }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
     return await User.removeUser(req.params.id);
   })
