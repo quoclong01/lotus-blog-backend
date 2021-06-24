@@ -214,7 +214,7 @@ router
    * 
    * /api/v1/users/change-password:
    *   patch:
-   *   tags:
+   *     tags:
    *     - User
    *     produces:
    *       - application/json
