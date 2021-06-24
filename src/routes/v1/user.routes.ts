@@ -223,7 +223,7 @@ router
    * @swagger
    * 
    * /users/reset-password:
-   *   patch:
+   *   post:
    *     tags:
    *     - Auth
    *     produces:
