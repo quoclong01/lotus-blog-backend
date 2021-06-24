@@ -24,10 +24,10 @@ const userController = {
   update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.updateUserInfo(req.params.id, req.user, req.body);
   }),
-  changepassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  changePassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.updateUserPassword(req.user, req.body);
   }),
-  resetpassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  resetPassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.resetUserPassword(req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {

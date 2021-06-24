@@ -144,7 +144,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       await authTemp.update({ password });
       return { status: 200, message: 'Change password successfully.' };
     }
-    return { status: 401, message: 'Could not find this user.' };
+    return { status: 404, message: 'Could not find this user.' };
   }
 
   public static async resetUserPassword(data: any) {
@@ -160,7 +160,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       await authTemp.update({ resetToken });
       return { resetToken };
     }
-    return { status: 401, message: 'Could not find this user.' };
+    return { status: 404, message: 'Could not find this user.' };
   }
 
   /*

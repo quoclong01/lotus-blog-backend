@@ -246,7 +246,7 @@ router
    *                    type: string
    *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDUyNzA3OCwiZXhwIjoxNjI0NTMwNjc4fQ.SWkzEjPQ_9WFQchETQCQOUtLv_HyabblVDQHbwBEZHU
    */
-  .post(validate(userSchema.resetPassword), userController.resetpassword)
+  .post(validate(userSchema.resetPassword), userController.resetPassword)
 
 router
   .route('/change-password')
@@ -282,7 +282,7 @@ router
    *                    type: string
    *                    example: Change password successfully.
    */
-  .patch(jwtCheck, validate(userSchema.changePassword), userController.changepassword)
+  .patch(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
 
 router
   .route('/:id')
