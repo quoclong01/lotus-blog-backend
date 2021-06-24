@@ -254,7 +254,7 @@ router
    * @swagger
    * 
    * /users/change-password:
-   *   patch:
+   *   put:
    *     tags:
    *     - Auth
    *     produces:
@@ -282,7 +282,7 @@ router
    *                    type: string
    *                    example: Change password successfully.
    */
-  .patch(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
+  .put(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
 
 router
   .route('/:id')
