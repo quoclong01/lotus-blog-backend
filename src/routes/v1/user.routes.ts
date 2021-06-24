@@ -17,8 +17,9 @@ router
    *
    * /users/:
    *   get:
-  *     tags:
-  *       - User
+   *     summary: Get all users
+   *     tags:
+   *       - User
    *     produces:
    *       - application/json
    *     responses:
@@ -73,8 +74,9 @@ router
    *
    * /users/register:
    *   post:
-  *     tags:
-  *       - Auth
+   *     summary: Add an user
+   *     tags:
+   *       - Auth
    *     produces:
    *       - application/json
    *     requestBody:
@@ -125,8 +127,9 @@ router
  *
  * /users/login:
  *   post:
-  *     tags:
-  *       - Auth
+ *     summary: Log in user into the system
+ *     tags:
+ *       - Auth
  *     produces:
  *       - application/json
  *     requestBody:
@@ -195,8 +198,9 @@ router
    *
    * /users/logout:
    *   post:
-  *     tags:
-  *       - Auth
+   *     summary: Log out current user
+   *     tags:
+   *       - Auth
    *     produces:
    *       - application/json
    *     security:
@@ -224,6 +228,7 @@ router
    * 
    * /users/reset-password:
    *   post:
+   *     summary: Reset password of an user
    *     tags:
    *     - Auth
    *     produces:
@@ -255,6 +260,7 @@ router
    * 
    * /users/change-password:
    *   put:
+   *     summary: Update password an user
    *     tags:
    *     - Auth
    *     produces:
@@ -291,8 +297,9 @@ router
    *
    * /users/{id}:
    *   put:
-    *     tags:
-    *       - User
+   *     summary: Update personal info an user
+   *     tags:
+   *       - User
    *     produces:
    *       - application/json
    *     parameters:
@@ -370,13 +377,14 @@ router
   *
   * /users/:id/post:
   *   get:
+  *     summary: Get all post by user ID
   *     tags:
   *       - User
   *     produces:
   *       - application/json
   *     responses:
   *       200:
- *         content:
+  *         content:
   *           application/json:
   *             schema:
   *               type: object
