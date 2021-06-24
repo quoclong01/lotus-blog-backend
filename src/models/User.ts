@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
-import { providerType } from '../lib/constants';
+import { providerType } from '../lib/enum';
 
 interface UserAttributes {
   id: number;
