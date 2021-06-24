@@ -74,7 +74,7 @@ router
    * /users/register:
    *   post:
   *     tags:
-  *       - User
+  *       - Auth
    *     produces:
    *       - application/json
    *     requestBody:
@@ -223,7 +223,7 @@ router
    * @swagger
    *
    * /users/{id}:
-   *   patch:
+   *   put:
     *     tags:
     *       - User
    *     produces:
@@ -291,35 +291,9 @@ router
    *                       isActive:
    *                          type: boolean
    *                          example: true
-   * 
-   *   delete:
-  *     tags:
-  *       - User
-   *     produces:
-   *       - application/json
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: Numeric ID of the user to retrieve.
-   *         schema:
-   *           type: integer
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                  status:
-   *                    type: integer
-   *                    example: 200
-   *                  message:
-   *                    type: string
-   *                    example: Delete the user successfully.
    */
   .get(jwtCheck, userController.get)
-  .patch(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
+  .put(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
 router
@@ -330,7 +304,7 @@ router
   * /users/:id/post:
   *   get:
   *     tags:
-  *       - Post
+  *       - User
   *     produces:
   *       - application/json
   *     responses:

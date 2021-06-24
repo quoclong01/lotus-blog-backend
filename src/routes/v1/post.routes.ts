@@ -236,13 +236,13 @@ router
   *                
  */
 router
-  .route('/:id/like')
+  .route('/:id/likes')
 
   .get(postController.getlikes)
   /**
   * @swagger
   *
-  * /posts/:id/like:
+  * /posts/:id/likes:
   *   get:
   *     tags:
   *       - Post
@@ -275,7 +275,7 @@ router
 /**
  * @swagger
  *
- * /posts/:id/like:
+ * /posts/:id/likes:
  *   put:
   *     tags:
   *       - Post
@@ -305,13 +305,13 @@ router
  *                
 */
 router
-  .route('/:id/comment')
+  .route('/:id/comments')
 
   .get(postController.getcomments)
   /**
  * @swagger
  *
- * /posts/:id/comment:
+ * /posts/:id/comments:
  *   get:
   *     tags:
   *       - Post
@@ -344,7 +344,7 @@ router
 /**
 * @swagger
 *
-* /posts/:id/comment:
+* /posts/:id/comments:
 *   put:
 *     tags:
 *       - Post
