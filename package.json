@@ -14,6 +14,7 @@
     "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
     "migration:reset": "node ./scripts/database.reset.js",
+    "migration": "npx sequelize db:migrate",
     "db:create": "node ./scripts/database.create.js",
     "exp": "node_modules/.bin/sequelize"
   },
