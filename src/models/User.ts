@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils';
+import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
   id: number;
@@ -53,31 +54,23 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
 
     if (existUser) {
-      // Todo will check provider if difference provider will be create new one
-      return {
-        error: "Account have already exist",
-        status: 409
-      }
-    } else {
-      const userTemp = new User({
-        ...data,
-      });
-      const user = await userTemp.save();
-      const passwordHash = await hashPassword(data.password);
-      const auth = {
-        // TODO handle dynamic providerType
-        providerType: 'email',
-        password: passwordHash,
-        accessToken: '',
-        refreshToken: '',
-        userId: user.id
-      };
-      await Auth.create(auth);
-      return {
-        status: 200,
-        message: 'Create an account successfully.'
-      };
+      throw UserErrors.ALREADY_USER_EXISTED;
     }
+    const userTemp = new User({
+      ...data,
+    });
+    const user = await userTemp.save();
+    const passwordHash = await hashPassword(data.password);
+    const auth = {
+      // TODO handle dynamic providerType
+      providerType: 'email',
+      password: passwordHash,
+      accessToken: '',
+      refreshToken: '',
+      userId: user.id
+    };
+    await Auth.create(auth);
+    return 'Create an account successfully.';
   }
 
   public static async loginUser(data: any) {
@@ -85,7 +78,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       where: { email: data.email }
     });
     if (userTemp) {
-      // Todo handle dynamic providerType
       const authTemp = await Auth.findOne({
         where: { userId: userTemp.id, providerType: 'email' }
       });
@@ -102,9 +94,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
           userInfo: userTemp
         };
       }
-      return { status: 401, message: 'Invalid password.' }
     }
-    return null;
+    throw UserErrors.LOGIN_FAILED;
   }
 
   public static async logoutUser(authInfo: any) {
@@ -114,7 +105,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (authTemp) {
       authTemp.update({ accessToken: null });
-      return { status: 200, message: 'Logout successfully.' }
+      return 'Logout successfully.';
     }
     return null;
   }
@@ -128,9 +119,9 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         await userTemp.update(userBody);
         return userTemp;
       }
-      return { status: 401, message: 'Could not find this user.' };
+      throw UserErrors.NOT_FOUND;
     } else {
-      return { status: 403, message: 'You do not have permission to update this user.' };
+      throw UserErrors.INTERACT_PERMISSION;
     }
   }
 
@@ -141,7 +132,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @params data (Object)
   **/
   public static async removeUser(id: string) {
-    // find and delete character
     const userTemp = await User.findOne({
       where: { id }
     });
@@ -153,10 +143,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       if (authTemp) {
         authTemp.destroy();
         userTemp.destroy();
-        return {
-          status: 200,
-          message: 'Delete the user successfully.'
-        }
+        return 'Delete the user successfully.';
       }
       return null;
     }
@@ -166,7 +153,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
     const user = await User.findByPk(userId);
-    return this._showPublicInfo(user);
+    if (user) {
+      return this._showPublicInfo(user);
+    } else {
+      throw UserErrors.NOT_FOUND;
+    }
   }
 
   private static _showPublicInfo(user: any) {
@@ -219,11 +210,10 @@ User.init({
     defaultValue: false
   },
   verifyAt: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
-  // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Users' // We need to choose the model name
 });

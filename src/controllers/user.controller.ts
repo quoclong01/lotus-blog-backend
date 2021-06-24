@@ -48,7 +48,7 @@ const userController = {
     return await User.removeUser(req.params.id);
   }),
   restore: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.restorePost(req.params.id);
+    return Post.restorePost(req.params.id, req.user);
   }),
 }
 
