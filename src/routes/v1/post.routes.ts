@@ -2,8 +2,14 @@ import express from 'express';
 import postController from '../../controllers/post.controller';
 import { validate } from '../../lib/utils';
 import postchema from '../../schema/post.schema';
+import expressjwt from 'express-jwt';
 
 const router = express.Router();
+const jwtCheck = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256']
+});
+
 
 router
   .route('/')
@@ -48,7 +54,7 @@ router
    *                         type: number
    *                         example: 1          
   */
-  .post(validate(postchema.addPost), postController.new);
+  .post(jwtCheck, validate(postchema.addPost), postController.new);
 /**
   * @swagger
   *
