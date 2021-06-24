@@ -220,7 +220,7 @@ router
   /**
    * @swagger
    * 
-   * /api/v1/users/reset-password:
+   * /users/reset-password:
    *   patch:
    *     tags:
    *     - Auth
@@ -251,7 +251,7 @@ router
   /**
    * @swagger
    * 
-   * /api/v1/users/change-password:
+   * /users/change-password:
    *   patch:
    *     tags:
    *     - Auth
