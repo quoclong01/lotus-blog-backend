@@ -25,9 +25,21 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:9999",
+        url: "https://vast-lowlands-08945.herokuapp.com/api/v1",
       },
     ],
+    components: {
+      securitySchemes: {
+        jwt: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [{
+      jwt: <any>[]
+    }]
   },
   apis: ["./src/routes/v1/**.routes.ts"],
 };

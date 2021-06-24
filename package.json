@@ -14,6 +14,7 @@
     "test:watch": "npm test -- --watch",
     "new": "node ./src/bin/execute.js",
     "migration:reset": "node ./scripts/database.reset.js",
+    "migration": "npx sequelize db:migrate",
     "db:create": "node ./scripts/database.create.js",
     "exp": "node_modules/.bin/sequelize"
   },
@@ -34,6 +35,7 @@
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
     "csv": "^5.0.1",
+    "csvtojson": "^2.0.10",
     "dotenv": "^6.2.0",
     "dotenv-safe": "^8.2.0",
     "express": "^4.16.4",

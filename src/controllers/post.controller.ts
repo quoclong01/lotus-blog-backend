@@ -43,6 +43,19 @@ const postController = {
   restore: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.restorePost(req.params.id);
   }),
+  like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.likePost(req.params.id);
+  }),
+  getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.getLikes(req.params.id);
+  }),
+  getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.getComments(req.params.id);
+  }),
+  comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Post.commentPost(req.params.id);
+  }),
+
 };
 
 export default postController;

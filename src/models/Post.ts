@@ -39,6 +39,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   }
 
   public static async updateContent(id: string, data: any) {
+    // find and update character
     const idPost = await Post.findOne({
       where: { id }
     });
@@ -57,6 +58,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   }
 
   public static async removePost(id: string) {
+    // find and delete character
     const idPost = await Post.findOne({
       where: { id }
     })
@@ -77,6 +79,22 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       return { status: 200, message: 'Restore post successfully' }
     }
     else return { status: 200, message: 'Not found' };
+  }
+
+  public static async likePost(id: string) {
+    return { status: 200, message: 'Comming soon' }
+  }
+
+  public static async commentPost(id: string) {
+    return { status: 200, message: 'Comming soon' };
+  }
+
+  public static async getLikes(id: string) {
+    return { status: 200, message: 'Comming soon' };
+  }
+
+  public static async getComments(id: string) {
+    return { status: 200, message: 'Comming soon' };
   }
 }
 
