@@ -191,6 +191,8 @@ router
    *   post:
    *     produces:
    *       - application/json
+   *     security:
+   *       - jwt: []
    *     responses:
    *       200:
    *         content:
@@ -222,12 +224,10 @@ router
    *         required: true
    *         description: Numeric ID of the user to retrieve.
    *         schema:
-   *           type: integer
-   *       - in: header
-   *         name: token
-   *         required: true
-   *         schema:
    *           type: string
+   *           example: me
+   *     security:
+   *       - jwt: []
    *     requestBody:
    *       required: true
    *       content:
@@ -243,7 +243,7 @@ router
    *                 example: quan
    *               phone:
    *                 type: string
-   *                 example: 0909090909
+   *                 example: '0909090909'
    *               gender:
    *                 type: string
    *                 example: male

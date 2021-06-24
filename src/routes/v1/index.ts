@@ -28,6 +28,18 @@ const options = {
         url: "http://localhost:9999",
       },
     ],
+    components: {
+      securitySchemes: {
+        jwt: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [{
+      jwt: <any>[]
+    }]
   },
   apis: ["./src/routes/v1/**.routes.ts"],
 };
