@@ -14,6 +14,8 @@ router
    *
    * /api/v1/posts:
    *   get:
+   *     tags:
+   *       - Post
    *     produces:
    *       - application/json
   *     description:
@@ -52,6 +54,8 @@ router
   *
   * /api/v1/posts:
   *   post:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -98,6 +102,8 @@ router
    *
    * /api/v1/posts/:id:
    *   get:
+  *     tags:
+  *       - Post
    *     produces:
    *       - application/json
    *     description:
@@ -131,6 +137,8 @@ router
   *
   * /api/v1/posts/:id:
   *   put:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     requestBody:
@@ -172,6 +180,8 @@ router
   *
   * /api/v1/posts/:id:
   *   delete:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -200,6 +210,8 @@ router
   *
   * /api/v1/posts/:id/restore:
   *   put:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -228,6 +240,8 @@ router
   *
   * /api/v1/posts/:id/like:
   *   get:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -259,6 +273,8 @@ router
  *
  * /api/v1/posts/:id/like:
  *   put:
+  *     tags:
+  *       - Post
  *     produces:
  *       - application/json
 *     description:
@@ -293,6 +309,8 @@ router
  *
  * /api/v1/posts/:id/comment:
  *   get:
+  *     tags:
+  *       - Post
  *     produces:
  *       - application/json
   *     description:
@@ -324,6 +342,8 @@ router
 *
 * /api/v1/posts/:id/comment:
 *   put:
+*     tags:
+*       - Post
 *     produces:
 *       - application/json
 *     description:
