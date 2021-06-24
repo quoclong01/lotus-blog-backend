@@ -129,7 +129,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         await userTemp.update(userBody);
         return userTemp;
       }
-      return { status: 401, message: 'Could not find this user.' };
+      return { status: 404, message: 'Could not find this user.' };
     } else {
       return { status: 403, message: 'You do not have permission to update this user.' };
     }
