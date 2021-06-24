@@ -10,10 +10,8 @@ const jwtCheck = expressjwt({
   algorithms: ['HS256']
 });
 
-
 router
   .route('/')
-
   .get(postController.index)
   /**
    * @swagger
@@ -24,8 +22,8 @@ router
    *       - Post
    *     produces:
    *       - application/json
-  *     description:
-  *       Get all posts with status public
+   *     description:
+   *       Get all posts with status public
    *     responses:
    *       200:
    *         content:
@@ -102,7 +100,7 @@ router
 router
   .route('/:id')
 
-  .get(postController.show)
+  .get(jwtCheck, postController.show)
   /**
    * @swagger
    *
@@ -137,7 +135,7 @@ router
    *                         type: number
    *                         example: 1          
   */
-  .put(postController.updateContent)
+  .put(jwtCheck, postController.updateContent)
   /**
   * @swagger
   *
@@ -180,7 +178,7 @@ router
   *                     type: object
   *                     example: {id: 1, title: update title, content: update content, status: update status}
  */
-  .delete(postController.delete);
+  .delete(jwtCheck, postController.delete);
 /**
   * @swagger
   *
@@ -210,7 +208,7 @@ router
 router
   .route('/:id/restore')
 
-  .put(postController.restore)
+  .put(jwtCheck, postController.restore)
 /**
   * @swagger
   *

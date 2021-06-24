@@ -12,6 +12,7 @@ const postController = {
     // get n record from offset
     const data = await Post.findAll({
       limit: size,
+      where: { status: 'public' },
       offset,
       order: [['createdAt', 'DESC']]
     });
@@ -26,7 +27,7 @@ const postController = {
     return { posts: data, loadMore: status };
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.createPost(req.body);
+    return await Post.createPost(req.body, req.user);
   }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.findOne({
@@ -34,13 +35,13 @@ const postController = {
     });
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.updateContent(req.params.id, req.body);
+    return Post.updateContent(req.params.id, req.body, req.user);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.removePost(req.params.id);
+    return Post.removePost(req.params.id, req.user);
   }),
   restore: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.restorePost(req.params.id);
+    return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.likePost(req.params.id);
