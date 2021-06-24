@@ -15,7 +15,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/:
+   * /users/:
    *   get:
   *     tags:
   *       - User
@@ -71,7 +71,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/register:
+   * /users/register:
    *   post:
   *     tags:
   *       - User
@@ -123,7 +123,7 @@ router
   /**
  * @swagger
  *
- * /api/v1/users/login:
+ * /users/login:
  *   post:
   *     tags:
   *       - Auth
@@ -193,7 +193,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/logout:
+   * /users/logout:
    *   post:
   *     tags:
   *       - Auth
@@ -220,7 +220,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/{id}:
+   * /users/{id}:
    *   patch:
     *     tags:
     *       - User
@@ -327,7 +327,7 @@ router
 /**
   * @swagger
   *
-  * /api/v1/users/:id/post:
+  * /users/:id/post:
   *   get:
   *     tags:
   *       - Post

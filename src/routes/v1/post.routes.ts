@@ -12,7 +12,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/posts:
+   * /posts:
    *   get:
    *     tags:
    *       - Post
@@ -52,7 +52,7 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts:
+  * /posts:
   *   post:
   *     tags:
   *       - Post
@@ -100,7 +100,7 @@ router
   /**
    * @swagger
    *
-   * /api/v1/posts/:id:
+   * /posts/:id:
    *   get:
   *     tags:
   *       - Post
@@ -135,7 +135,7 @@ router
   /**
   * @swagger
   *
-  * /api/v1/posts/:id:
+  * /posts/:id:
   *   put:
   *     tags:
   *       - Post
@@ -178,7 +178,7 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts/:id:
+  * /posts/:id:
   *   delete:
   *     tags:
   *       - Post
@@ -208,7 +208,7 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts/:id/restore:
+  * /posts/:id/restore:
   *   put:
   *     tags:
   *       - Post
@@ -238,7 +238,7 @@ router
   /**
   * @swagger
   *
-  * /api/v1/posts/:id/like:
+  * /posts/:id/like:
   *   get:
   *     tags:
   *       - Post
@@ -271,7 +271,7 @@ router
 /**
  * @swagger
  *
- * /api/v1/posts/:id/like:
+ * /posts/:id/like:
  *   put:
   *     tags:
   *       - Post
@@ -307,7 +307,7 @@ router
   /**
  * @swagger
  *
- * /api/v1/posts/:id/comment:
+ * /posts/:id/comment:
  *   get:
   *     tags:
   *       - Post
@@ -340,7 +340,7 @@ router
 /**
 * @swagger
 *
-* /api/v1/posts/:id/comment:
+* /posts/:id/comment:
 *   put:
 *     tags:
 *       - Post

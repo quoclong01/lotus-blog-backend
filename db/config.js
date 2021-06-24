@@ -19,8 +19,13 @@ if (process.env.NODE_ENV === 'development') {
   };
 } else if (process.env.NODE_ENV === 'production') {
   config = {
-    "use_env_variable": process.env.DATABASE_URL
+    "use_env_variable": 'DATABASE_URL',
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false
+      }
+    }
   };
 }
-
 module.exports = config;
