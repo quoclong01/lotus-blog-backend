@@ -208,6 +208,40 @@ router
   .post(jwtCheck, userController.logout)
 
 router
+  .route('/change-password')
+  /**
+   * @swagger
+   * 
+   * /api/v1/users/change-password:
+   *   patch:
+   *     produces:
+   *       - application/json
+   *     security:
+   *       - jwt: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { password: abc@12345 }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                  status:
+   *                    type: integer
+   *                    example: 200
+   *                  message:
+   *                    type: string
+   *                    example: Change password successfully.
+   */
+  .patch(jwtCheck, validate(userSchema.changePassword), userController.changepassword)
+
+router
   .route('/:id')
   /**
    * @swagger

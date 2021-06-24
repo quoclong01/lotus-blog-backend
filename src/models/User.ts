@@ -2,6 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils';
+import { providerType } from '../lib/constants';
 
 interface UserAttributes {
   id: number;
@@ -65,7 +66,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       const passwordHash = await hashPassword(data.password);
       const auth = {
         // TODO handle dynamic providerType
-        providerType: 'email',
+        providerType: providerType.email,
         password: passwordHash,
         accessToken: '',
         refreshToken: '',
@@ -86,7 +87,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (userTemp) {
       // Todo handle dynamic providerType
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: 'email' }
+        where: { userId: userTemp.id, providerType: providerType.email }
       });
 
       const isValidPassword = await comparePassword(data.password, authTemp.password);
@@ -108,7 +109,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: 'email' }
+      where: { userId: authInfo.userId, providerType: providerType.email }
     });
 
     if (authTemp) {
@@ -133,6 +134,18 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
   }
 
+  public static async updateUserPassword(authInfo: any, data: any ) {
+    const authTemp = await Auth.findOne({
+      where: { userId: authInfo.userId, providerType: providerType.email }
+    });
+    if (authTemp) {
+      const password = await hashPassword(data.password);
+      await authTemp.update({ password })
+      return { status: 200, message: 'Change password successfully.' };
+    }
+    return { status: 401, message: 'Could not find this user.' };
+  }
+
   /*
     * @functionName removeUser
     * @functionDescription Remove the specific User with id
@@ -146,7 +159,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: 'email'}
+        where: { userId: userTemp.id, providerType: providerType.email}
       });
       
       if (authTemp) {
