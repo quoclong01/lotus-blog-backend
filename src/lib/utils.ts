@@ -3,6 +3,7 @@ import HttpStatus from 'http-status';
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import expressjwt from 'express-jwt';
 
 export const validate = (schema: any, property: string = 'body') => {
   return (req: any, res: any, next: any) => {
@@ -27,27 +28,34 @@ export const validate = (schema: any, property: string = 'body') => {
 
 export const responseMiddleware = (fn: any) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve(fn(req, res, next))
-    .then(data =>  {
-      const responseData = data || new APIError(
-        HttpStatus['404_NAME'],
-        404,
-        HttpStatus['404_MESSAGE']
-      );
-      res.json(responseData);
+    .then(data => {
+      res.json(data);
     })
-    .catch(next);
+    .catch((e) => {
+      const statusCode = e.status.toString().substr(0, 3);
+      res.status(statusCode).json(
+        new APIError(
+          // @ts-ignore
+          HttpStatus[`${statusCode}_NAME`],
+          e.status,
+          // @ts-ignore
+          HttpStatus[`${statusCode}_MESSAGE`],
+          e.errors
+        )
+      );
+    });
 };
 
-export const hashPassword = async(password: string) => {
+export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 }
 
-export const comparePassword = async(passwordBody: string, password: string) => {
+export const comparePassword = async (passwordBody: string, password: string) => {
   return await bcrypt.compare(passwordBody, password);
 }
 
-export const generateAccessToken = async(auth: any) => {
+export const generateAccessToken = async (auth: any) => {
   return await jwt.sign(
     { userId: auth.userId },
     'RANDOM_TOKEN_SECRET',
@@ -61,4 +69,13 @@ export const generateResetToken = async(userId: number) => {
     'RANDOM_TOKEN_SECRET',
     { algorithm: 'HS256', expiresIn: '1h' }
   );
+}
+
+export const verifyToken = async (token: any) => {
+  try {
+    const userId = await jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    return userId;
+  } catch (error) {
+    return error
+  }
 }

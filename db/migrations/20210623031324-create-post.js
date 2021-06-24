@@ -11,13 +11,16 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      content: {
+      description: {
         type: Sequelize.STRING
         // allowNull defaults to true
       },
+      content: {
+        type: Sequelize.TEXT
+        // allowNull defaults to true
+      },
       status: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.ENUM('private', 'public'),
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -29,6 +32,9 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE
+      },
+      deletedAt: {
         type: Sequelize.DATE
       }
     });

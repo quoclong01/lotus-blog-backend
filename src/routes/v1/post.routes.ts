@@ -2,12 +2,16 @@ import express from 'express';
 import postController from '../../controllers/post.controller';
 import { validate } from '../../lib/utils';
 import postchema from '../../schema/post.schema';
+import expressjwt from 'express-jwt';
 
 const router = express.Router();
+const jwtCheck = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256']
+});
 
 router
   .route('/')
-
   .get(postController.index)
   /**
    * @swagger
@@ -18,8 +22,8 @@ router
    *       - Post
    *     produces:
    *       - application/json
-  *     description:
-  *       Get all posts with status public
+   *     description:
+   *       Get all posts with status public
    *     responses:
    *       200:
    *         content:
@@ -48,7 +52,7 @@ router
    *                         type: number
    *                         example: 1          
   */
-  .post(validate(postchema.addPost), postController.new);
+  .post(jwtCheck, validate(postchema.addPost), postController.new);
 /**
   * @swagger
   *
@@ -96,7 +100,7 @@ router
 router
   .route('/:id')
 
-  .get(postController.show)
+  .get(jwtCheck, postController.show)
   /**
    * @swagger
    *
@@ -131,7 +135,7 @@ router
    *                         type: number
    *                         example: 1          
   */
-  .put(postController.updateContent)
+  .put(jwtCheck, postController.updateContent)
   /**
   * @swagger
   *
@@ -174,7 +178,7 @@ router
   *                     type: object
   *                     example: {id: 1, title: update title, content: update content, status: update status}
  */
-  .delete(postController.delete);
+  .delete(jwtCheck, postController.delete);
 /**
   * @swagger
   *
@@ -204,7 +208,7 @@ router
 router
   .route('/:id/restore')
 
-  .put(postController.restore)
+  .put(jwtCheck, postController.restore)
 /**
   * @swagger
   *

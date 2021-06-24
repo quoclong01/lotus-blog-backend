@@ -10,10 +10,22 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      username: {
+      firstName: {
+        type: Sequelize.STRING
+      },
+      lastName: {
         type: Sequelize.STRING
       },
       displayName: {
+        type: Sequelize.STRING
+      },
+      dob: {
+        type: Sequelize.STRING
+      },
+      gender: {
+        type: Sequelize.ENUM('male', 'female', 'other'),
+      },
+      phone: {
         type: Sequelize.STRING
       },
       picture: {
@@ -28,8 +40,8 @@ module.exports = {
         defaultValue: false
       },
       verifyAt: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        type: Sequelize.DATE,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

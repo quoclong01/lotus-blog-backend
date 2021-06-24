@@ -1,8 +1,10 @@
+import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
-import db  from '../config/database';
+import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
 import { providerType } from '../lib/enum';
+import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
   id: number;
@@ -19,7 +21,7 @@ interface UserAttributes {
   verifyAt: boolean;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes, UserCreationAttributes {
   public id!: number;
@@ -47,38 +49,30 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @functionReturn return the new object user.
     * @params data (Object)
   */
-  public static async createUser(data : any) {
+  public static async createUser(data: any) {
     const existUser = await User.findOne({
       where: { email: data.email }
     });
-    
+
     if (existUser) {
-      // Todo will check provider if difference provider will be create new one
-      return {
-        error: "Account have already exist",
-        status: 409
-      }
-    } else {
-      const userTemp = new User({
-        ...data,
-      });
-      const user = await userTemp.save();
-      const passwordHash = await hashPassword(data.password);
-      const auth = {
-        // TODO handle dynamic providerType
-        providerType: providerType.email,
-        password: passwordHash,
-        accessToken: '',
-        refreshToken: '',
-        resetToken: '',
-        userId: user.id
-      };
-      await Auth.create(auth);
-      return {
-        status: 200,
-        message: 'Create an account successfully.'
-      };
+      throw UserErrors.ALREADY_USER_EXISTED;
     }
+    const userTemp = new User({
+      ...data,
+    });
+    const user = await userTemp.save();
+    const passwordHash = await hashPassword(data.password);
+    const auth = {
+      // TODO handle dynamic providerType
+      providerType: 'email',
+      password: passwordHash,
+      accessToken: '',
+      refreshToken: '',
+      resetToken: '',
+      userId: user.id
+    };
+    await Auth.create(auth);
+    return 'Create an account successfully.';
   }
 
   public static async loginUser(data: any) {
@@ -86,7 +80,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       where: { email: data.email }
     });
     if (userTemp) {
-      // Todo handle dynamic providerType
       const authTemp = await Auth.findOne({
         where: { userId: userTemp.id, providerType: providerType.email }
       });
@@ -98,14 +91,13 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         authTemp.update({ accessToken });
         userTemp.update({ verifyAt: true });
 
-        return{
+        return {
           accessToken,
           userInfo: userTemp
         };
       }
-      return { status: 401, message: 'Invalid password.'}
     }
-    return null;
+    throw UserErrors.LOGIN_FAILED;
   }
 
   public static async logoutUser(authInfo: any) {
@@ -115,23 +107,23 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (authTemp) {
       authTemp.update({ accessToken: null });
-      return { status: 200, message: 'Logout successfully.' }
+      return 'Logout successfully.';
     }
     return null;
   }
 
   public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
     if (id === 'me') {
-      const userTemp  = await User.findByPk(authInfo.userId);
+      const userTemp = await User.findByPk(authInfo.userId);
       delete data.email;
       const userBody = { ...data };
       if (userTemp) {
         await userTemp.update(userBody);
         return userTemp;
       }
-      return { status: 404, message: 'Could not find this user.' };
+      throw UserErrors.NOT_FOUND;
     } else {
-      return { status: 403, message: 'You do not have permission to update this user.' };
+      throw UserErrors.INTERACT_PERMISSION;
     }
   }
 
@@ -144,7 +136,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       await authTemp.update({ password });
       return { status: 200, message: 'Change password successfully.' };
     }
-    return { status: 404, message: 'Could not find this user.' };
+    throw UserErrors.NOT_FOUND;
   }
 
   public static async resetUserPassword(data: any) {
@@ -160,7 +152,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       await authTemp.update({ resetToken });
       return { resetToken };
     }
-    return { status: 404, message: 'Could not find this user.' };
+    throw UserErrors.NOT_FOUND;
   }
 
   /*
@@ -170,32 +162,32 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @params data (Object)
   **/
   public static async removeUser(id: string) {
-    // find and delete character
     const userTemp = await User.findOne({
       where: { id }
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email}
+        where: { userId: userTemp.id, providerType: providerType.email }
       });
-      
+
       if (authTemp) {
         authTemp.destroy();
         userTemp.destroy();
-        return {
-          status: 200,
-          message: 'Delete the user successfully.'
-        }
+        return 'Delete the user successfully.';
       }
       return null;
     }
-    return null;
+    throw UserErrors.NOT_FOUND;;
   }
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    const user  = await User.findByPk(userId);
-    return this._showPublicInfo(user);
+    const user = await User.findByPk(userId);
+    if (user) {
+      return this._showPublicInfo(user);
+    } else {
+      throw UserErrors.NOT_FOUND;
+    }
   }
 
   private static _showPublicInfo(user: any) {
@@ -248,11 +240,12 @@ User.init({
     defaultValue: false
   },
   verifyAt: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
-  // Other model options go here
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Users' // We need to choose the model name
 });
+
+User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
