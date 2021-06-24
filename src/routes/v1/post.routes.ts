@@ -12,8 +12,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/posts:
+   * /posts:
    *   get:
+   *     tags:
+   *       - Post
    *     produces:
    *       - application/json
   *     description:
@@ -50,8 +52,10 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts:
+  * /posts:
   *   post:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -96,8 +100,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/posts/:id:
+   * /posts/:id:
    *   get:
+  *     tags:
+  *       - Post
    *     produces:
    *       - application/json
    *     description:
@@ -129,8 +135,10 @@ router
   /**
   * @swagger
   *
-  * /api/v1/posts/:id:
+  * /posts/:id:
   *   put:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     requestBody:
@@ -170,8 +178,10 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts/:id:
+  * /posts/:id:
   *   delete:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -198,8 +208,10 @@ router
 /**
   * @swagger
   *
-  * /api/v1/posts/:id/restore:
+  * /posts/:id/restore:
   *   put:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -226,8 +238,10 @@ router
   /**
   * @swagger
   *
-  * /api/v1/posts/:id/like:
+  * /posts/:id/like:
   *   get:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     description:
@@ -257,8 +271,10 @@ router
 /**
  * @swagger
  *
- * /api/v1/posts/:id/like:
+ * /posts/:id/like:
  *   put:
+  *     tags:
+  *       - Post
  *     produces:
  *       - application/json
 *     description:
@@ -291,8 +307,10 @@ router
   /**
  * @swagger
  *
- * /api/v1/posts/:id/comment:
+ * /posts/:id/comment:
  *   get:
+  *     tags:
+  *       - Post
  *     produces:
  *       - application/json
   *     description:
@@ -322,8 +340,10 @@ router
 /**
 * @swagger
 *
-* /api/v1/posts/:id/comment:
+* /posts/:id/comment:
 *   put:
+*     tags:
+*       - Post
 *     produces:
 *       - application/json
 *     description:

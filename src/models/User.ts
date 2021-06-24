@@ -56,7 +56,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       // Todo will check provider if difference provider will be create new one
       return {
         error: "Account have already exist",
-        status: 404
+        status: 409
       }
     } else {
       const userTemp = new User({

@@ -15,8 +15,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/:
+   * /users/:
    *   get:
+  *     tags:
+  *       - User
    *     produces:
    *       - application/json
    *     responses:
@@ -69,8 +71,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/register:
+   * /users/register:
    *   post:
+  *     tags:
+  *       - User
    *     produces:
    *       - application/json
    *     requestBody:
@@ -116,70 +120,72 @@ router
 
 router
   .route('/login')
-    /**
-   * @swagger
-   *
-   * /api/v1/users/login:
-   *   post:
-   *     produces:
-   *       - application/json
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               email:
-   *                 type: string
-   *                 example: quan.do@supremetech.vn
-   *               password:
-   *                 type: string
-   *                 example: abc@1234
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                  accessToken:
-   *                    type: string
-   *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDQzOTkwNiwiZXhwIjoxNjI0NTI2MzA2fQ.Mqz4M54mv3bA3RXdSnSgulJnVnCvFSCfUW00qz0yKiA
-   *                  userInfo:
-   *                    type: object
-   *                    properties:
-   *                      id:
-   *                        type: integer
-   *                        example: 1
-   *                      email:
-   *                        type: string
-   *                        example: quan.do@supremetech.vn
-   *                      firstName:
-   *                         type: string
-   *                         example: do
-   *                      lastName:
-   *                         type: string
-   *                         example: quan
-   *                      phone:
-   *                         type: string
-   *                         example: ''
-   *                      gender:
-   *                         type: string
-   *                         example: male
-   *                      dob:
-   *                         type: string
-   *                         example: 19/10/1995
-   *                      displayName:
-   *                         type: string
-   *                         example: quanDo
-   *                      picture:
-   *                         type: string
-   *                         example: ''
-   *                      isActive:
-   *                         type: boolean
-   *                         example: true
-  */
+  /**
+ * @swagger
+ *
+ * /users/login:
+ *   post:
+  *     tags:
+  *       - Auth
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: quan.do@supremetech.vn
+ *               password:
+ *                 type: string
+ *                 example: abc@1234
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  accessToken:
+ *                    type: string
+ *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDQzOTkwNiwiZXhwIjoxNjI0NTI2MzA2fQ.Mqz4M54mv3bA3RXdSnSgulJnVnCvFSCfUW00qz0yKiA
+ *                  userInfo:
+ *                    type: object
+ *                    properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      email:
+ *                        type: string
+ *                        example: quan.do@supremetech.vn
+ *                      firstName:
+ *                         type: string
+ *                         example: do
+ *                      lastName:
+ *                         type: string
+ *                         example: quan
+ *                      phone:
+ *                         type: string
+ *                         example: ''
+ *                      gender:
+ *                         type: string
+ *                         example: male
+ *                      dob:
+ *                         type: string
+ *                         example: 19/10/1995
+ *                      displayName:
+ *                         type: string
+ *                         example: quanDo
+ *                      picture:
+ *                         type: string
+ *                         example: ''
+ *                      isActive:
+ *                         type: boolean
+ *                         example: true
+*/
   .post(validate(userSchema.login), userController.login)
 
 router
@@ -187,8 +193,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/logout:
+   * /users/logout:
    *   post:
+  *     tags:
+  *       - Auth
    *     produces:
    *       - application/json
    *     responses:
@@ -279,8 +287,10 @@ router
   /**
    * @swagger
    *
-   * /api/v1/users/{id}:
+   * /users/{id}:
    *   patch:
+    *     tags:
+    *       - User
    *     produces:
    *       - application/json
    *     parameters:
@@ -350,6 +360,8 @@ router
    *                          example: true
    * 
    *   delete:
+  *     tags:
+  *       - User
    *     produces:
    *       - application/json
    *     parameters:
@@ -382,8 +394,10 @@ router
 /**
   * @swagger
   *
-  * /api/v1/users/:id/post:
+  * /users/:id/post:
   *   get:
+  *     tags:
+  *       - Post
   *     produces:
   *       - application/json
   *     responses:

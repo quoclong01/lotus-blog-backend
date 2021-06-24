@@ -7,7 +7,8 @@ export default {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     gender: Joi.string().required(),
-    dob: Joi.string().required()
+    dob: Joi.string().required(),
+    phone: Joi.string()
   }).required(),
   login: Joi.object().keys({
     email: Joi.string().required(),
