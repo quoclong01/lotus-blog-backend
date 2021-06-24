@@ -209,7 +209,70 @@ router
 
 router
   .route('/reset-password')
+  /**
+   * @swagger
+   * 
+   * /api/v1/users/reset-password:
+   *   patch:
+   *     tags:
+   *     - Auth
+   *     produces:
+   *       - application/json
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { email: quan.do@supremetech.vn }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                  resetToken:
+   *                    type: string
+   *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDUyNzA3OCwiZXhwIjoxNjI0NTMwNjc4fQ.SWkzEjPQ_9WFQchETQCQOUtLv_HyabblVDQHbwBEZHU
+   */
   .post(validate(userSchema.resetPassword), userController.resetpassword)
+
+router
+  .route('/change-password')
+  /**
+   * @swagger
+   * 
+   * /api/v1/users/change-password:
+   *   patch:
+   *     tags:
+   *     - Auth
+   *     produces:
+   *       - application/json
+   *     security:
+   *       - jwt: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { password: abc@12345 }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                  status:
+   *                    type: integer
+   *                    example: 200
+   *                  message:
+   *                    type: string
+   *                    example: Change password successfully.
+   */
+  .patch(jwtCheck, validate(userSchema.changePassword), userController.changepassword)
 
 router
   .route('/:id')

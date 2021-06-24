@@ -3,16 +3,16 @@ import { User } from '../models/User';
 import { responseMiddleware } from '../lib/utils';
 
 const userController = {
-  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const data = await User.findAll({
       order: [ ['createdAt', 'DESC'] ]
     });
     return { users: data };
   }),
-  get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.findUser(req.params.id, req.user);
   }),
-  create: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  create: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.createUser(req.body);
   }),
   login: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -21,8 +21,11 @@ const userController = {
   logout: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.logoutUser(req.user);
   }),
-  update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) =>  {
+  update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.updateUserInfo(req.params.id, req.user, req.body);
+  }),
+  changepassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.updateUserPassword(req.user, req.body);
   }),
   resetpassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.resetUserPassword(req.body);
