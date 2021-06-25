@@ -316,7 +316,7 @@ router
   *                    
   *                
  */
-  .put(postController.like)
+  .put(jwtCheck, postController.like)
 /**
  * @swagger
  *

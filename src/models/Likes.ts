@@ -22,26 +22,26 @@ export class Likes extends Model<LikesAttributes, LikesCreationAttributes> imple
   public readonly updatedAt!: Date;
 
   public static async getLikes(id: string, authInfo: any) {
-    const currentPost = await Likes.findAll({
-      // where: { postId: id },
+    const currentPost = await Likes.findOne({
+      where: { postId: id },
     })
 
-    console.log(currentPost);
-    const likeTemp = { userId: [authInfo.userId], postId: JSON.parse(id) }
-    // if (!currentPost) {
-    // console.log('LIKE ', 1231223);
-    // const data = new Likes({ ...likeTemp })
-    // const like = await data.save();
-    // return like
-    // }
+    if (!currentPost) {
+      const data = new Likes({ userId: [authInfo.userId], postId: JSON.parse(id) });
+      console.log(data);
+      const like = await data.save();
+    }
 
-    // const likes = [...currentPost.likes];
+    const likes = [...currentPost.userId];
+    if (likes.indexOf(authInfo.userId) !== -1) {
+      likes.splice(likes.indexOf(authInfo.userId), 1);
+    } else { likes.push(authInfo.userId); }
 
-    // if (likes.indexOf(authInfo.userId) !== -1) {
-    //   likes.splice(likes.indexOf(authInfo.userId), 1);
-    // } else { likes.push(authInfo.userId); }
+    await currentPost.update({
+      userId: likes
+    })
 
-    return currentPost;
+    return { status: 200, message: 'Successfully' };
   }
 }
 
