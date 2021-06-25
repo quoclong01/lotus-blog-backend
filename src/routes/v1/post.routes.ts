@@ -11,8 +11,51 @@ const jwtCheck = expressjwt({
 });
 
 router
-  .route('/')
+  .route('/public')
   .get(postController.index)
+/**
+ * @swagger
+ *
+ * /posts/public:
+ *   get:
+ *     tags:
+ *       - Post
+ *     produces:
+ *       - application/json
+ *     summary:
+ *       Get all posts with status public
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+*/
+
+router
+  .route('/')
+  .get(jwtCheck, postController.index)
   /**
    * @swagger
    *
@@ -22,8 +65,8 @@ router
    *       - Post
    *     produces:
    *       - application/json
-   *     description:
-   *       Get all posts with status public
+   *     summary:
+   *       Get all posts of following accounts
    *     responses:
    *       200:
    *         content:
@@ -62,7 +105,7 @@ router
   *       - Post
   *     produces:
   *       - application/json
-  *     description:
+  *     summary:
   *       Create post
   *     requestBody:
   *       required: true
@@ -110,7 +153,7 @@ router
   *       - Post
    *     produces:
    *       - application/json
-   *     description:
+   *     summary:
   *       Get post with id
    *     responses:
    *       200:
@@ -145,6 +188,8 @@ router
   *       - Post
   *     produces:
   *       - application/json
+   *     summary:
+   *       Update post
   *     requestBody:
   *       required: true
   *       content:
@@ -188,7 +233,7 @@ router
   *       - Post
   *     produces:
   *       - application/json
-  *     description:
+  *     summary:
   *       Delete post with id
   *     responses:
   *       200:
@@ -218,7 +263,7 @@ router
   *       - Post
   *     produces:
   *       - application/json
-  *     description:
+  *     summary:
   *       Restore deleted post with id
   *     responses:
   *       200:
@@ -248,7 +293,7 @@ router
   *       - Post
   *     produces:
   *       - application/json
-  *     description:
+  *     summary:
   *       Get list of users like post with id 
   *     responses:
   *       200:
@@ -281,8 +326,8 @@ router
   *       - Post
  *     produces:
  *       - application/json
-*     description:
-*       Like a post with id, this post will increase attr like and add userId to likeUsers attr 
+*     summary:
+*       Like a post with id, this post will add userId to likes attr 
  *     responses:
  *       200:
  *         content:
@@ -317,7 +362,7 @@ router
   *       - Post
  *     produces:
  *       - application/json
-  *     description:
+  *     summary:
   *       Get list of users commented post with id 
  *     responses:
  *       200:
@@ -350,8 +395,8 @@ router
 *       - Post
 *     produces:
 *       - application/json
-*     description:
-*       Comment a post with id, this post will increase attr Comment and add userId to CommentUser attr 
+*     summary:
+*       Comment a post with id, this post will add userId to comments attr 
 *     responses:
 *       200:
 *         content:

@@ -1,6 +1,9 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional, Op, where, fn, col } from 'sequelize';
 import { PostErrors } from '../lib/api-error';
 import db from '../config/database';
+import { DEFAULT_SIZE } from '../lib/constant';
+import { QueryBuilder } from '../lib/constructors';
+import { literal } from 'sequelize';
 
 interface PostAttributes {
   id: number;
@@ -8,6 +11,7 @@ interface PostAttributes {
   description: string;
   content: string;
   status: string;
+  tags: string[];
   userId: number;
 }
 
@@ -33,20 +37,63 @@ class RequestPost {
   }
 }
 
-// You can also set multiple attributes optional at once
+class PostQueryBuilder extends QueryBuilder {
+  where: any = {};
+  constructor(baseQuery: any, tags: string[]) {
+    super(baseQuery);
+    const whereAnd: any = [
+      { status: 'public' },
+    ]
+    if (tags.length > 0) {
+      whereAnd.push(
+        {
+          [Op.or]: tags.map(x => where(literal(`'${x}'`), fn('ANY', col('tags')))),
+        }
+      );
+    }
+    this.where = {
+      [Op.and]: whereAnd
+    }
+  }
+}
+
 interface PostCreationAttributes extends Optional<PostAttributes, 'id'> { }
 
 export class Post extends Model<PostAttributes, PostCreationAttributes> implements PostAttributes, PostCreationAttributes {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  public id!: number;
   public title!: string;
-  public description!: string | null; // for nullable fields
-  public content!: string | null; // for nullable fields
+  public description!: string | null;
+  public content!: string | null;
   public status!: string;
   public userId!: number;
+  public tags!: string[];
 
-  // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public static async listPosts(query: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+    const tags = query.tags ? query.tags.split(',') : [];
+    const queryStatement = new PostQueryBuilder({
+        limit: size,
+        offset,
+        order: [['createdAt', 'DESC']]
+      }, tags).getPlainObject();
+
+    const data = await Post.findAll(queryStatement);
+    const length = +await Post.count(queryStatement);
+    const totalPage = Math.ceil(length / size);
+
+    return { 
+      data, 
+      totalPage,
+      totalItems: length,
+      itemsPerPage: size,
+      currentPage: +query.page,
+      loadMore: offset < totalPage - 1
+    };
+  }
 
   public static async createPost(data: any, authInfo: any) {
     const dataTemp: any = new RequestPost(data);
@@ -141,6 +188,10 @@ Post.init({
   status: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  tags: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
   },
   userId: {
     type: DataTypes.INTEGER,

@@ -32,17 +32,31 @@ export const responseMiddleware = (fn: any) => (req: Request, res: Response, nex
       res.json(data);
     })
     .catch((e) => {
-      const statusCode = e.status.toString().substr(0, 3);
-      res.status(statusCode).json(
-        new APIError(
-          // @ts-ignore
-          HttpStatus[`${statusCode}_NAME`],
-          e.status,
-          // @ts-ignore
-          HttpStatus[`${statusCode}_MESSAGE`],
-          e.errors
-        )
-      );
+      if (e.status) {
+        const statusCode = `${e.status}`.substr(0, 3);
+        res.status(+statusCode).json(
+          new APIError(
+            // @ts-ignore
+            HttpStatus[`${statusCode}_NAME`],
+            e.status,
+            // @ts-ignore
+            HttpStatus[`${statusCode}_MESSAGE`],
+            e.errors
+          )
+        );
+      } else {
+        console.log(e);
+        res.status(500).json(
+          new APIError(
+            // @ts-ignore
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            e.status,
+            // @ts-ignore
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            e.errors
+          )
+        );
+      }
     });
 };
 

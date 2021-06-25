@@ -22,6 +22,8 @@ router
    *       - User
    *     produces:
    *       - application/json
+   *     summary:
+  *       Get information of account
    *     responses:
    *       200:
    *         content:
@@ -79,6 +81,8 @@ router
    *       - Auth
    *     produces:
    *       - application/json
+   *     summary:
+  *       Register a new account
    *     requestBody:
    *       required: true
    *       content:
@@ -132,6 +136,8 @@ router
  *       - Auth
  *     produces:
  *       - application/json
+   *     summary:
+  *       Login with email and password
  *     requestBody:
  *       required: true
  *       content:
@@ -203,6 +209,8 @@ router
    *       - Auth
    *     produces:
    *       - application/json
+   *     summary:
+  *       Logout
    *     security:
    *       - jwt: []
    *     responses:
@@ -302,6 +310,8 @@ router
    *       - User
    *     produces:
    *       - application/json
+   *     summary:
+  *       Update account's information
    *     parameters:
    *       - in: path
    *         name: id
@@ -382,6 +392,8 @@ router
   *       - User
   *     produces:
   *       - application/json
+   *     summary:
+  *       Get list of posts with userId
   *     responses:
   *       200:
   *         content:

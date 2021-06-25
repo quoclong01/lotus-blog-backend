@@ -6,25 +6,7 @@ const defaultSize = 10;
 
 const postController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    // default limit 10 records
-    const size = +req.query.size || defaultSize;
-    const offset = +req.query.offset || 0;
-    // get n record from offset
-    const data = await Post.findAll({
-      limit: size,
-      where: { status: 'public' },
-      offset,
-      order: [['createdAt', 'DESC']]
-    });
-    // get total record
-    const length = await Post.count();
-    /**
-     * Validate for load more
-     * if loaded records less than total records, turn on load more
-     * loaded records calculate from the offset combined with items per page
-     */
-    const status = (offset + size) < length;
-    return { posts: data, loadMore: status };
+    return await Post.listPosts(req.query);
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
