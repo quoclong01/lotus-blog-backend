@@ -17,9 +17,8 @@ router
    *
    * /users/:
    *   get:
-   *     summary: Get all users
-   *     tags:
-   *       - User
+  *     tags:
+  *       - User
    *     produces:
    *       - application/json
    *     summary:
@@ -76,9 +75,8 @@ router
    *
    * /users/register:
    *   post:
-   *     summary: Add an user
-   *     tags:
-   *       - Auth
+  *     tags:
+  *       - Auth
    *     produces:
    *       - application/json
    *     summary:
@@ -131,9 +129,8 @@ router
  *
  * /users/login:
  *   post:
- *     summary: Log in user into the system
- *     tags:
- *       - Auth
+*     tags:
+*       - Auth
  *     produces:
  *       - application/json
    *     summary:
@@ -204,9 +201,8 @@ router
    *
    * /users/logout:
    *   post:
-   *     summary: Log out current user
-   *     tags:
-   *       - Auth
+  *     tags:
+  *       - Auth
    *     produces:
    *       - application/json
    *     summary:
@@ -230,84 +226,14 @@ router
   .post(jwtCheck, userController.logout)
 
 router
-  .route('/reset-password')
-  /**
-   * @swagger
-   * 
-   * /users/reset-password:
-   *   post:
-   *     summary: Reset password of an user
-   *     tags:
-   *     - Auth
-   *     produces:
-   *       - application/json
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             example: { email: quan.do@supremetech.vn }
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                  resetToken:
-   *                    type: string
-   *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDUyNzA3OCwiZXhwIjoxNjI0NTMwNjc4fQ.SWkzEjPQ_9WFQchETQCQOUtLv_HyabblVDQHbwBEZHU
-   */
-  .post(validate(userSchema.resetPassword), userController.resetPassword)
-
-router
-  .route('/change-password')
-  /**
-   * @swagger
-   * 
-   * /users/change-password:
-   *   put:
-   *     summary: Update password an user
-   *     tags:
-   *     - Auth
-   *     produces:
-   *       - application/json
-   *     security:
-   *       - jwt: []
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             example: { password: abc@12345 }
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                  status:
-   *                    type: integer
-   *                    example: 200
-   *                  message:
-   *                    type: string
-   *                    example: Change password successfully.
-   */
-  .put(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
-
-router
   .route('/:id')
   /**
    * @swagger
    *
    * /users/{id}:
    *   put:
-   *     summary: Update personal info an user
-   *     tags:
-   *       - User
+  *     tags:
+  *       - User
    *     produces:
    *       - application/json
    *     summary:
@@ -387,7 +313,6 @@ router
   *
   * /users/:id/post:
   *   get:
-  *     summary: Get all post by user ID
   *     tags:
   *       - User
   *     produces:
@@ -396,7 +321,7 @@ router
   *       Get list of posts with userId
   *     responses:
   *       200:
-  *         content:
+ *         content:
   *           application/json:
   *             schema:
   *               type: object

@@ -1,10 +1,10 @@
-import { verifyToken } from './../lib/utils';
+import { verifyToken, generateAccessToken } from './../lib/utils';
 import { Post } from './../models/Post';
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/User';
 import { Follower } from '../models/Follower';
-import { responseMiddleware } from '../lib/utils';
 import { UserErrors } from '../lib/api-error';
+import { responseMiddleware } from '../lib/utils';
 
 const userController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -77,12 +77,6 @@ const userController = {
   }),
   update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.updateUserInfo(req.params.id, req.user, req.body);
-  }),
-  changePassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await User.updateUserPassword(req.user, req.body);
-  }),
-  resetPassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await User.resetUserPassword(req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.removeUser(req.params.id);

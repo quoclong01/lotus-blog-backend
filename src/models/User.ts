@@ -2,8 +2,7 @@ import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
-import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
-import { providerType } from '../lib/enum';
+import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils';
 import { UserErrors } from '../lib/api-error';
 import { Follower } from './Follower';
 
@@ -69,7 +68,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
-      resetToken: '',
       userId: user.id
     };
     await Auth.create(auth);
@@ -82,7 +80,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
+        where: { userId: userTemp.id, providerType: 'email' }
       });
 
       const isValidPassword = await comparePassword(data.password, authTemp.password);
@@ -103,7 +101,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: providerType.email }
+      where: { userId: authInfo.userId, providerType: 'email' }
     });
 
     if (authTemp) {
@@ -128,34 +126,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
   }
 
-  public static async updateUserPassword(authInfo: any, data: any ) {
-    const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: providerType.email }
-    });
-    if (authTemp) {
-      const password = await hashPassword(data.password);
-      await authTemp.update({ password });
-      return { status: 200, message: 'Change password successfully.' };
-    }
-    throw UserErrors.NOT_FOUND;
-  }
-
-  public static async resetUserPassword(data: any) {
-    const userTemp = await User.findOne({
-      where: { email: data.email }
-    });
-    if (userTemp) {
-      const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
-      });
-      const resetToken = await generateResetToken(userTemp.id);
-
-      await authTemp.update({ resetToken });
-      return { resetToken };
-    }
-    throw UserErrors.NOT_FOUND;
-  }
-
   /*
     * @functionName removeUser
     * @functionDescription Remove the specific User with id
@@ -168,7 +138,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
+        where: { userId: userTemp.id, providerType: 'email' }
       });
 
       if (authTemp) {
@@ -178,7 +148,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       }
       return null;
     }
-    throw UserErrors.NOT_FOUND;;
+    return null;
   }
 
   public static async findUser(paramId: string | number, authInfo: any) {
