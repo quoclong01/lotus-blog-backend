@@ -21,7 +21,7 @@ export class Likes extends Model<LikesAttributes, LikesCreationAttributes> imple
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public static async getLikes(id: string, authInfo: any) {
+  public static async doLike(id: string, authInfo: any) {
     const currentPost = await Likes.findOne({
       where: { postId: id },
     })
@@ -30,18 +30,20 @@ export class Likes extends Model<LikesAttributes, LikesCreationAttributes> imple
       const data = new Likes({ userId: [authInfo.userId], postId: JSON.parse(id) });
       console.log(data);
       const like = await data.save();
+      return { status: 200, message: 'Successfully', like: currentPost.userId };
     }
+    else {
+      const likes = [...currentPost.userId];
+      if (likes.indexOf(authInfo.userId) !== -1) {
+        likes.splice(likes.indexOf(authInfo.userId), 1);
+      } else { likes.push(authInfo.userId); }
 
-    const likes = [...currentPost.userId];
-    if (likes.indexOf(authInfo.userId) !== -1) {
-      likes.splice(likes.indexOf(authInfo.userId), 1);
-    } else { likes.push(authInfo.userId); }
+      await currentPost.update({
+        userId: likes
+      })
 
-    await currentPost.update({
-      userId: likes
-    })
-
-    return { status: 200, message: 'Successfully' };
+      return { status: 200, message: 'Successfully', likes: currentPost.userId };
+    }
   }
 }
 

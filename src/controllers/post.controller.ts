@@ -27,10 +27,10 @@ const postController = {
     return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Likes.getLikes(req.params.id, req.user);
+    return Likes.doLike(req.params.id, req.user);
   }),
   getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Likes.getLikes(req.params.id, req.user);
+    return Likes.findOne({ attributes: ['userId'], where: { postId: req.params.id } });
   }),
   getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.getComments(req.params.id);
