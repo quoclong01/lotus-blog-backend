@@ -160,6 +160,23 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
   }
 
+  public static async getPosts(paramId: string | number, authInfo: any) {
+    let data;
+    if (paramId === 'me') {
+      data = await User.findOne({
+        attributes: ['id'],
+        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
+      });
+    }
+    else {
+      data = await User.findOne({
+        attributes: ['id'],
+        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
+      });
+    }
+    return { users: data };
+  }
+
   private static _showPublicInfo(user: any) {
     const userTemp: any = {};
     const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];

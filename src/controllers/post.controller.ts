@@ -6,9 +6,13 @@ const defaultSize = 10;
 
 const postController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    // get total record
+    const length = await Post.count({ where: { status: 'public' } });
     // default limit 10 records
     const size = +req.query.size || defaultSize;
-    const offset = +req.query.offset || 0;
+    const page = +req.query.page;
+    const offset = page ? (page - 1) * size : 0;
+    const totalPages = Math.ceil(length / size);
     // get n record from offset
     const data = await Post.findAll({
       limit: size,
@@ -16,15 +20,13 @@ const postController = {
       offset,
       order: [['createdAt', 'DESC']]
     });
-    // get total record
-    const length = await Post.count();
     /**
      * Validate for load more
      * if loaded records less than total records, turn on load more
      * loaded records calculate from the offset combined with items per page
      */
     const status = (offset + size) < length;
-    return { posts: data, loadMore: status };
+    return { posts: data, totalPage: totalPages, currentPage: page, loadMore: status };
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);

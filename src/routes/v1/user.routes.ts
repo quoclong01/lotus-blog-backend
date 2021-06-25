@@ -308,6 +308,7 @@ router
 
 router
   .route('/:id/post')
+  .get(jwtCheck, userController.getPosts)
 /**
   * @swagger
   *
