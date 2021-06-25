@@ -1,3 +1,4 @@
+import { Likes } from './../models/Likes';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
@@ -46,10 +47,10 @@ const postController = {
     return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.likePost(req.params.id);
+    return Likes.getLikes(req.params.id, req.user);
   }),
   getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getLikes(req.params.id);
+    return Likes.getLikes(req.params.id, req.user);
   }),
   getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.getComments(req.params.id);

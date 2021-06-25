@@ -61,7 +61,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public static async updateContent(id: string, data: any, authInfo: any) {
     const currentPost = await Post.findByPk(id);
 
-    if (!currentPost) 
+    if (!currentPost)
       throw PostErrors.NOT_FOUND;
     if (authInfo.userId !== currentPost.userId)
       throw PostErrors.INTERACT_PERMISSION;
