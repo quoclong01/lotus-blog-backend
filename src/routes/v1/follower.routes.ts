@@ -12,4 +12,64 @@ const jwtCheck = expressjwt({
 
 router
   .route('/')
-  .post(validate(followerSchema.addFollower), followerController.create)
+  .get(followerController.index)
+  .post(jwtCheck, validate(followerSchema.addFollower), followerController.create)
+  /**
+   * @swagger
+   *
+   * /followers:
+   *   post:
+   *     tags:
+   *       - Follower
+   *     produces:
+   *       - application/json
+   *     summary: Add following user
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { followerId: 1 }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                  message:
+   *                    type: string
+   *                    example: Following successfully.     
+  */
+  .delete(jwtCheck, validate(followerSchema.addFollower), followerController.delete)
+  /**
+   * @swagger
+   *
+   * /followers:
+   *   delete:
+   *     tags:
+   *       - Follower
+   *     produces:
+   *       - application/json
+   *     summary: Add following user
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { followerId: 1 }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                  message:
+   *                    type: string
+   *                    example: Unfollowing successfully.     
+  */
+
+export default router;

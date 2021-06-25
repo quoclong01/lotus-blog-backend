@@ -7,11 +7,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-      status: {
-        type: Sequelize.ENUM('follow', 'unfollow', 'block', 'normal'),
-        allowNull: false,
-        defaultValue: 'normal'
-      },
       userId: {
         type: Sequelize.INTEGER,
         references: { model: 'Users', key: 'id' }

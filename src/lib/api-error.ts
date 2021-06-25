@@ -45,3 +45,9 @@ export class UserErrors {
   static ALREADY_USER_EXISTED = new ApplicationError('40901', 'This email have already exist.')
   
 }
+
+export class FollowerErrors {
+  static NOT_FOUND = new ApplicationError('40402', 'The requested follower was not found')
+  static INTERACT_PERMISSION = new ApplicationError('40302', 'You do not have permission to interact this user.')
+  static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40901', 'This follower have already exist.')
+}

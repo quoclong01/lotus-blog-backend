@@ -1,11 +1,12 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import db  from '../config/database';
+import { FollowerErrors } from '../lib/api-error';
+import { User } from './User';
 
 interface FollowerAttributes {
   id: number;
   userId: number;
   followerId: number;
-  status: string;
 }
 
 interface FollowerCreationAttributes extends Optional<FollowerAttributes, 'id'> {}
@@ -14,12 +15,49 @@ export class Follower extends Model<FollowerAttributes, FollowerCreationAttribut
   public id!: number;
   public followerId!: number;
   public userId!: number;
-  public status!: string;
 
   // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public static async createFollower(data: any, authInfo: any) {
+    if (authInfo.userId !== data.followerId) {
+      const userTemp = await User.findOne({
+        where: { id: data.followerId }
+      });
+      if (userTemp) {
+        const followerTemp = await Follower.findOne({
+          where: { userId: authInfo.userId, followerId: data.followerId }
+        });
+        if (!followerTemp) {
+          const followerData = new Follower({
+            followerId: data.followerId,
+            userId: authInfo.userId
+          });
   
+          const follower = await followerData.save();
+          return 'Follow successfully.';
+        }
+        return FollowerErrors.ALREADY_FOLLOWER_EXISTED;
+      }
+      throw FollowerErrors.NOT_FOUND;
+    }
+    throw FollowerErrors.INTERACT_PERMISSION;
+  }
+
+  public static async deleteFollower(data: any, authInfo: any) {
+    if (authInfo.userId !== data.followerId) {
+      const followerTemp = await Follower.findOne({
+        where: { userId: authInfo.userId, followerId: data.followerId }
+      });
+      if (followerTemp) {
+        await followerTemp.destroy();
+        return 'Unfolowing successfully.';
+      }
+      throw FollowerErrors.NOT_FOUND;
+    }
+    throw FollowerErrors.INTERACT_PERMISSION;
+  }
 }
 
 Follower.init({
@@ -28,11 +66,6 @@ Follower.init({
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
-  },
-  status: {
-    type: DataTypes.ENUM('follow', 'unfollow', 'block', 'normal'),
-    allowNull: false,
-    defaultValue: 'normal'
   },
   userId: {
     type: DataTypes.INTEGER,

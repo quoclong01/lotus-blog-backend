@@ -5,6 +5,7 @@ import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
 import { providerType } from '../lib/enum';
 import { UserErrors } from '../lib/api-error';
+import { Follower } from './Follower';
 
 interface UserAttributes {
   id: number;
@@ -248,4 +249,7 @@ User.init({
   tableName: 'Users' // We need to choose the model name
 });
 
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'userId', as: 'followings' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followerId', as: 'followers' });
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
+User.hasMany(Auth, { sourceKey: 'id', foreignKey: 'userId', as: 'Auth' });

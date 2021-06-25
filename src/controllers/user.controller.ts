@@ -2,7 +2,9 @@ import { verifyToken } from './../lib/utils';
 import { Post } from './../models/Post';
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/User';
+import { Follower } from '../models/Follower';
 import { responseMiddleware } from '../lib/utils';
+import { UserErrors } from '../lib/api-error';
 
 const userController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -30,9 +32,36 @@ const userController = {
     return { users: data };
   }),
   getFollowers: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    const authInfo = req.user;
+    const authInfo: any = req.user;
+    if (req.params.id === 'me') {
+      const data = await User.findOne({
+        where: { id: authInfo.userId },
+        include: [{
+          model: Follower,
+          as: 'followers',
+          attributes: ['userId']
+        }]
+      });
+      return { users: data };
+    }
     
-    return await { api: 'get all follower user' };
+    throw UserErrors.INTERACT_PERMISSION;
+  }),
+  getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const authInfo: any = req.user;
+    if (req.params.id === 'me') {
+      const data = await User.findOne({
+        where: { id: authInfo.userId },
+        include: [{
+          model: Follower,
+          as: 'followings',
+          attributes: ['followerId']
+        }]
+      });
+      return { users: data };
+    }
+    
+    throw UserErrors.INTERACT_PERMISSION;
   }),
   get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.findUser(req.params.id, req.user);
