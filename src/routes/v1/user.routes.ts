@@ -129,8 +129,8 @@ router
  *
  * /users/login:
  *   post:
-*     tags:
-*       - Auth
+  *     tags:
+  *       - Auth
  *     produces:
  *       - application/json
    *     summary:
@@ -232,8 +232,8 @@ router
    *
    * /users/{id}:
    *   put:
-  *     tags:
-  *       - User
+    *     tags:
+    *       - User
    *     produces:
    *       - application/json
    *     summary:
