@@ -45,13 +45,14 @@ export const responseMiddleware = (fn: any) => (req: Request, res: Response, nex
           )
         );
       } else {
-        res.status(408).json(
+        console.log(e);
+        res.status(500).json(
           new APIError(
             // @ts-ignore
-            HttpStatus.REQUEST_TIMEOUT,
+            HttpStatus.INTERNAL_SERVER_ERROR,
             e.status,
             // @ts-ignore
-            HttpStatus.REQUEST_TIMEOUT,
+            HttpStatus.INTERNAL_SERVER_ERROR,
             e.errors
           )
         );
