@@ -29,6 +29,11 @@ const userController = {
     }
     return { users: data };
   }),
+  getFollowers: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const authInfo = req.user;
+    
+    return await { api: 'get all follower user' };
+  }),
   get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.findUser(req.params.id, req.user);
   }),

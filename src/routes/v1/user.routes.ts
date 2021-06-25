@@ -411,4 +411,8 @@ router
   *                           example: public
   *                       
  */
+
+router
+  .route('/:id/followers')
+  .get(jwtCheck, userController.getFollowers)
 export default router;
