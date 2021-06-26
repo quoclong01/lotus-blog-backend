@@ -44,7 +44,7 @@ router
   */
   .get(userController.index)
 
-  router
+router
   .route('/register')
   /**
    * @swagger
