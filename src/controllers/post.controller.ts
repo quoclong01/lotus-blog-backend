@@ -1,3 +1,4 @@
+import { Comment } from './../models/Comments';
 import { Likes } from './../models/Likes';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
@@ -33,10 +34,10 @@ const postController = {
     return Likes.findOne({ attributes: ['userId'], where: { postId: req.params.id } });
   }),
   getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getComments(req.params.id);
+    return Comment.findAll({ where: { postId: req.params.id } });
   }),
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.commentPost(req.params.id);
+    return Comment.commentPost(req.params.id, req.user, req.body);
   }),
 
 };

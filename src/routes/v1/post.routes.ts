@@ -385,18 +385,28 @@ router
  *                    
  *                
 */
-  .put(postController.comment)
+  .post(jwtCheck, postController.comment)
 /**
 * @swagger
 *
 * /posts/:id/comments:
-*   put:
+*   post:
 *     tags:
 *       - Post
 *     produces:
 *       - application/json
 *     summary:
 *       Comment a post with id, this post will add userId to comments attr 
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               content:
+*                 type: string
+*                 example: This is comment
 *     responses:
 *       200:
 *         content:
@@ -407,14 +417,26 @@ router
 *                  status:
 *                    type: integer
 *                    example: 200
+*                  messages:
+*                    type: string
+*                    example: Successfully
 *                  likes:
 *                    type: array
 *                    items:
 *                       type: object
 *                       properties:
+*                         id:
+*                           type: integer
+*                           example: 1
 *                         userId:
 *                           type: integer
 *                           example: 1
+*                         postId:
+*                           type: integer
+*                           example: 1
+*                         comment:
+*                           type: string
+*                           example: This is comment
 *                    
 *                
 */
