@@ -3,7 +3,6 @@ import HttpStatus from 'http-status';
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import expressjwt from 'express-jwt';
 
 export const validate = (schema: any, property: string = 'body') => {
   return (req: any, res: any, next: any) => {

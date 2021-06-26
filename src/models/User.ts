@@ -64,7 +64,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const passwordHash = await hashPassword(data.password);
     const auth = {
       // TODO handle dynamic providerType
-      providerType: 'email',
+      providerType: providerType.email,
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
@@ -88,8 +88,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
       if (isValidPassword) {
         const accessToken = await generateAccessToken(authTemp);
-        authTemp.update({ accessToken });
-        userTemp.update({ verifyAt: true });
+        await authTemp.update({ accessToken });
+        await userTemp.update({ verifyAt: true });
 
         return {
           accessToken,
@@ -109,7 +109,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       authTemp.update({ accessToken: null });
       return 'Logout successfully.';
     }
-    return null;
+    throw UserErrors.LOGOUT_FAILED;
   }
 
   public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
@@ -171,11 +171,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       });
 
       if (authTemp) {
-        authTemp.destroy();
-        userTemp.destroy();
+        await authTemp.destroy();
+        await userTemp.destroy();
         return 'Delete the user successfully.';
       }
-      return null;
+      throw UserErrors.NOT_FOUND;
     }
     throw UserErrors.NOT_FOUND;;
   }
