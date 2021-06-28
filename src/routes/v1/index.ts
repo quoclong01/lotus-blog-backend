@@ -25,7 +25,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'development' ? process.env.DEV_URL : process.env.PRD_URL,
+        url: process.env.API_URL,
       },
     ],
     components: {

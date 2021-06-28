@@ -191,7 +191,7 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { password: abc@12345 }
+   *             example: { oldPassword: abc@12345, newPassword: abc@123456 }
    *     responses:
    *       200:
    *         content:

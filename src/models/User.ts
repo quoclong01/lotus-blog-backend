@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
-import { providerType } from '../lib/enum';
+import { ProviderType } from '../lib/enum';
 import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
@@ -64,7 +64,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const passwordHash = await hashPassword(data.password);
     const auth = {
       // TODO handle dynamic providerType
-      providerType: providerType.email,
+      providerType: ProviderType.email,
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
@@ -81,7 +81,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
+        where: { userId: userTemp.id, providerType: ProviderType.email }
       });
 
       const isValidPassword = await comparePassword(data.password, authTemp.password);
@@ -102,7 +102,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: providerType.email }
+      where: { userId: authInfo.userId, providerType: ProviderType.email }
     });
 
     if (authTemp) {
@@ -128,13 +128,18 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 
   public static async updateUserPassword(authInfo: any, data: any ) {
+
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: providerType.email }
+      where: { userId: authInfo.userId, providerType: ProviderType.email }
     });
     if (authTemp) {
-      const password = await hashPassword(data.password);
-      await authTemp.update({ password });
-      return { status: 200, message: 'Change password successfully.' };
+      const isValidPassword = await comparePassword(data.oldPassword, authTemp.password);
+      if (isValidPassword) {
+        const password = await hashPassword(data.password);
+        await authTemp.update({ password });
+        return { status: 200, message: 'Change password successfully.' };
+      }
+      throw UserErrors.INVALID_PASSWORD;
     }
     throw UserErrors.NOT_FOUND;
   }
@@ -145,7 +150,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
+        where: { userId: userTemp.id, providerType: ProviderType.email }
       });
       const resetToken = await generateResetToken(userTemp.id);
 
@@ -167,7 +172,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     });
     if (userTemp) {
       const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: providerType.email }
+        where: { userId: userTemp.id, providerType: ProviderType.email }
       });
 
       if (authTemp) {

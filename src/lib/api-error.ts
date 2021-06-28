@@ -40,9 +40,9 @@ export class PostErrors {
 
 export class UserErrors {
   static LOGIN_FAILED = new ApplicationError('40101', 'Invalid email or password.')
-  static LOGOUT_FAILED = new ApplicationError('40101', 'You can not logout with this accoount.')
-  static NOT_FOUND = new ApplicationError('40402', 'The requested user was not found.')
+  static LOGOUT_FAILED = new ApplicationError('40102', 'You can not logout with this account.')
+  static INVALID_PASSWORD = new ApplicationError('40103', 'Invalid password.')
   static INTERACT_PERMISSION = new ApplicationError('40302', 'You do not have permission to interact this user.')
+  static NOT_FOUND = new ApplicationError('40402', 'The requested user was not found.')
   static ALREADY_USER_EXISTED = new ApplicationError('40901', 'This email have already exist.')
-  
 }

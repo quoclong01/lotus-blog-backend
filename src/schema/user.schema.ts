@@ -15,7 +15,8 @@ export default {
     password: Joi.string().required()
   }),
   changePassword: Joi.object().keys({
-    password: Joi.string().required()
+    oldPassword: Joi.string().required(),
+    newPassword: Joi.string().required()
   }),
   updatePersonalInfo: Joi.object().keys({
     firstName: Joi.string().required(),
