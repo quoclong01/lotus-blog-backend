@@ -1,4 +1,4 @@
-import { verifyToken, generateAccessToken } from './../lib/utils';
+import { verifyToken } from './../lib/utils';
 import { User, Post } from './../models';
 import { Request, Response, NextFunction } from 'express';
 import { responseMiddleware } from '../lib/utils';
@@ -42,6 +42,12 @@ const userController = {
   }),
   update: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.updateUserInfo(req.params.id, req.user, req.body);
+  }),
+  changePassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.updateUserPassword(req.user, req.body);
+  }),
+  resetPassword: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.resetUserPassword(req.body);
   }),
   delete: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.removeUser(req.params.id);

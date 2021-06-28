@@ -27,7 +27,7 @@ const options = {
     },
     servers: [
       {
-        url: "https://vast-lowlands-08945.herokuapp.com/api/v1",
+        url: process.env.API_URL,
       },
     ],
     components: {
