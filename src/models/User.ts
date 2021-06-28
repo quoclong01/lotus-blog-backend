@@ -174,7 +174,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
       });
     }
-    return { users: data };
+    return data;
   }
 
   private static _showPublicInfo(user: any) {

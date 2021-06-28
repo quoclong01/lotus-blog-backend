@@ -3,16 +3,16 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { PostErrors } from '../lib/api-error';
 import db from '../config/database';
 
-interface LikesAttributes {
+interface LikeAttributes {
   id: number;
   userId: Array<number>;
   postId: number;
 }
 
 // You can also set multiple attributes optional at once
-interface LikesCreationAttributes extends Optional<LikesAttributes, 'id'> { }
+interface LikeCreationAttributes extends Optional<LikeAttributes, 'id'> { }
 
-export class Likes extends Model<LikesAttributes, LikesCreationAttributes> implements LikesAttributes, LikesCreationAttributes {
+export class Like extends Model<LikeAttributes, LikeCreationAttributes> implements LikeAttributes, LikeCreationAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public userId!: Array<number>; // for nullable fields
   public postId!: number;
@@ -22,32 +22,39 @@ export class Likes extends Model<LikesAttributes, LikesCreationAttributes> imple
   public readonly updatedAt!: Date;
 
   public static async doLike(id: string, authInfo: any) {
-    const currentPost = await Likes.findOne({
+    const currentPost = await Post.findOne({
+      where: { id },
+    })
+
+    if (!currentPost)
+      throw PostErrors.NOT_FOUND;
+
+    const currentLike = await Like.findOne({
       where: { postId: id },
     })
 
-    if (!currentPost) {
-      const data = new Likes({ userId: [authInfo.userId], postId: JSON.parse(id) });
+    if (!currentLike) {
+      const data = new Like({ userId: [authInfo.userId], postId: JSON.parse(id) });
       console.log(data);
       const like = await data.save();
-      return { status: 200, message: 'Successfully', like: currentPost.userId };
+      return 'Liked successfully!'
     }
     else {
-      const likes = [...currentPost.userId];
+      const likes = [...currentLike.userId];
       if (likes.indexOf(authInfo.userId) !== -1) {
         likes.splice(likes.indexOf(authInfo.userId), 1);
       } else { likes.push(authInfo.userId); }
 
-      await currentPost.update({
+      await currentLike.update({
         userId: likes
       })
 
-      return { status: 200, message: 'Successfully', likes: currentPost.userId };
+      return 'Liked successfully!'
     }
   }
 }
 
-Likes.init({
+Like.init({
   // Model attributes are defined here
   id: {
     type: DataTypes.INTEGER,

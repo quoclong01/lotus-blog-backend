@@ -1,5 +1,5 @@
 import { Comment } from './../models/Comments';
-import { Likes } from './../models/Likes';
+import { Like } from './../models/Like';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
@@ -28,10 +28,10 @@ const postController = {
     return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Likes.doLike(req.params.id, req.user);
+    return Like.doLike(req.params.id, req.user);
   }),
   getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Likes.findOne({ attributes: ['userId'], where: { postId: req.params.id } });
+    return Like.findAll({ attributes: ['userId'], where: { postId: req.params.id } });
   }),
   getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Comment.findAll({ where: { postId: req.params.id } });
