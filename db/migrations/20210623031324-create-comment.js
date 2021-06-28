@@ -13,13 +13,21 @@ module.exports = {
       postId: {
         type: Sequelize.INTEGER,
       },
+      comment: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Posts');
+    await queryInterface.dropTable('Comments');
   }
 };
