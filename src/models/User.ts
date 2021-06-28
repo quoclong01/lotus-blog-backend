@@ -217,5 +217,3 @@ User.init({
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Users' // We need to choose the model name
 });
-
-User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });

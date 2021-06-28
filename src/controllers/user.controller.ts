@@ -1,7 +1,6 @@
 import { verifyToken, generateAccessToken } from './../lib/utils';
-import { Post } from './../models/Post';
+import { User, Post } from './../models';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/User';
 import { responseMiddleware } from '../lib/utils';
 
 const userController = {

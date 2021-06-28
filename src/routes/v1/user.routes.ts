@@ -232,12 +232,12 @@ router
    *
    * /users/{id}:
    *   put:
-    *     tags:
-    *       - User
+   *     tags:
+   *       - User
    *     produces:
    *       - application/json
    *     summary:
-  *       Update account's information
+   *       Update account's information
    *     parameters:
    *       - in: path
    *         name: id
@@ -317,11 +317,11 @@ router
   *       - User
   *     produces:
   *       - application/json
-   *     summary:
+  *     summary:
   *       Get list of posts with userId
   *     responses:
   *       200:
- *         content:
+  *         content:
   *           application/json:
   *             schema:
   *               type: object
