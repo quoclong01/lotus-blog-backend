@@ -6,7 +6,7 @@ import { User } from './User';
 interface FollowerAttributes {
   id: number;
   followerId: number;
-  followedId: number;
+  followingId: number;
 }
 
 interface FollowerCreationAttributes extends Optional<FollowerAttributes, 'id'> { }
@@ -14,29 +14,29 @@ interface FollowerCreationAttributes extends Optional<FollowerAttributes, 'id'> 
 export class Follower extends Model<FollowerAttributes, FollowerCreationAttributes> implements FollowerAttributes, FollowerCreationAttributes {
   public id!: number;
   public followerId!: number;
-  public followedId!: number;
+  public followingId!: number;
 
   // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
   public static async createFollower(data: any, authInfo: any) {
-    if (authInfo.userId === data.followedId) throw FollowerErrors.INTERACT_PERMISSION;
+    if (authInfo.userId === data.followingId) throw FollowerErrors.INTERACT_PERMISSION;
 
     const userTemp = await User.findOne({
-      where: { id: data.followedId }
+      where: { id: data.followingId }
     });
 
     if (!userTemp) throw FollowerErrors.NOT_FOUND;
 
     const followerTemp = await Follower.findOne({
-      where: { followerId: authInfo.userId, followedId: data.followedId }
+      where: { followerId: authInfo.userId, followingId: data.followingId }
     });
 
     if (followerTemp) throw FollowerErrors.ALREADY_FOLLOWER_EXISTED;
 
     const followerData = new Follower({
-      followedId: data.followedId,
+      followingId: data.followingId,
       followerId: authInfo.userId
     });
     await followerData.save();
@@ -44,10 +44,10 @@ export class Follower extends Model<FollowerAttributes, FollowerCreationAttribut
   }
 
   public static async deleteFollower(data: any, authInfo: any) {
-    if (authInfo.userId === data.followedId) throw FollowerErrors.INTERACT_PERMISSION;
+    if (authInfo.userId === data.followingId) throw FollowerErrors.INTERACT_PERMISSION;
 
     const followerTemp = await Follower.findOne({
-      where: { followerId: authInfo.userId, followedId: data.followedId }
+      where: { followerId: authInfo.userId, followingId: data.followingId }
     });
 
     if (!followerTemp) throw FollowerErrors.NOT_FOUND;
@@ -68,7 +68,7 @@ Follower.init({
     type: DataTypes.INTEGER,
     references: { model: 'Users', key: 'id' }
   },
-  followedId: {
+  followingId: {
     type: DataTypes.INTEGER,
     references: { model: 'Users', key: 'id' }
   },

@@ -1,4 +1,3 @@
-import { Post } from './../models/Post';
 import { Request, Response, NextFunction } from 'express';
 import { Follower } from '../models/Follower';
 import { responseMiddleware } from '../lib/utils';

@@ -64,6 +64,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
+      resetToken: '',
       userId: user.id
     };
     await Auth.create(auth);

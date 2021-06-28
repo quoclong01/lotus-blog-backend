@@ -12,7 +12,7 @@ Bookmark.belongsTo(Post, { targetKey: 'id', foreignKey: 'postId', as: 'post'});
 
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
 User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followerId', as: 'followings' });
-User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followedId', as: 'followers' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followingId', as: 'followers' });
 
 export {
   User,

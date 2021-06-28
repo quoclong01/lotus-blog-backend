@@ -76,6 +76,14 @@ export const generateAccessToken = async (auth: any) => {
   );
 }
 
+export const generateResetToken = async(userId: number) => {
+  return await jwt.sign(
+    { userId: userId },
+    'RANDOM_TOKEN_SECRET',
+    { algorithm: 'HS256', expiresIn: '1h' }
+  );
+}
+
 export const verifyToken = async (token: any) => {
   try {
     const userId = await jwt.verify(token, 'RANDOM_TOKEN_SECRET');

@@ -259,7 +259,7 @@ router
   *       Get list of posts with userId
   *     responses:
   *       200:
- *         content:
+  *         content:
   *           application/json:
   *             schema:
   *               type: object
@@ -286,7 +286,6 @@ router
   *                           example: public
   *                       
  */
-.get(userController.getPost)
 
 router
   .route('/:id/followers')
@@ -347,7 +346,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { users: { id: 3, email: quan.do@supremetech.vn, followers: [{ followedId: 2 }] } }
+   *               example: { users: { id: 3, email: quan.do@supremetech.vn, followers: [{ followingId: 2 }] } }
    */
 
 export default router;
