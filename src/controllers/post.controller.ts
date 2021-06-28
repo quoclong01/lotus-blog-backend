@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
 
-const defaultSize = 10;
-
 const postController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listPosts(req.query);

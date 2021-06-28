@@ -1,8 +1,7 @@
+import { verifyToken } from './../lib/utils';
+import { User, Post } from './../models';
 import { Request, Response, NextFunction } from 'express';
 import { responseMiddleware } from '../lib/utils';
-import { verifyToken } from './../lib/utils';
-import { Post } from './../models/Post';
-import { User } from '../models/User';
 
 const userController = {
   index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
