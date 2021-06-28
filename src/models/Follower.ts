@@ -9,7 +9,7 @@ interface FollowerAttributes {
   followedId: number;
 }
 
-interface FollowerCreationAttributes extends Optional<FollowerAttributes, 'id'> {}
+interface FollowerCreationAttributes extends Optional<FollowerAttributes, 'id'> { }
 
 export class Follower extends Model<FollowerAttributes, FollowerCreationAttributes> implements FollowerAttributes, FollowerCreationAttributes {
   public id!: number;

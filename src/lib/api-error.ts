@@ -47,7 +47,7 @@ export class UserErrors {
 }
 
 export class FollowerErrors {
-  static NOT_FOUND = new ApplicationError('40402', 'The requested follower was not found')
-  static INTERACT_PERMISSION = new ApplicationError('40302', 'You do not have permission to interact this user.')
-  static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40901', 'This follower have already exist.')
+  static NOT_FOUND = new ApplicationError('40403', 'The requested follower was not found')
+  static INTERACT_PERMISSION = new ApplicationError('40303', 'You do not have permission to interact this user.')
+  static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40902', 'This follower have already exist.')
 }
