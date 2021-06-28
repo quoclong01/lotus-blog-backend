@@ -1,5 +1,7 @@
 import express from 'express';
 import userRoutes from './user.routes';
+import bookmarkRoutes from './bookmark.routes';
+
 import postRoutes from './post.routes';
 import followerRoutes from './follower.routes';
 import swaggerUi from 'swagger-ui-express';
@@ -26,7 +28,7 @@ const options = {
     },
     servers: [
       {
-        url: "https://vast-lowlands-08945.herokuapp.com/api/v1",
+        url: process.env.API_URL,
       },
     ],
     components: {
@@ -58,6 +60,7 @@ router.get('/', (req, res) =>
 router.use('/posts', postRoutes);
 router.use('/users', userRoutes);
 router.use('/followers', followerRoutes);
+router.use('/bookmarks', bookmarkRoutes);
 
 
 export default router;
