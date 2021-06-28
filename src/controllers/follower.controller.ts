@@ -45,7 +45,7 @@ const followerController = {
 
     return { users: data };
   }),
-  toggleFolower: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  toggleFollower: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
     const { followingId } = req.body;
     if (authInfo.userId === followingId) throw FollowerErrors.INTERACT_PERMISSION;

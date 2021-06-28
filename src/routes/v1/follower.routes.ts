@@ -75,7 +75,7 @@ router
 router
   .route('/')
   .get(followerController.index)
-  .post(jwtCheck, validate(followerSchema.addFollower), followerController.toggleFolower)
+  .post(jwtCheck, validate(followerSchema.addFollower), followerController.toggleFollower)
   /**
    * @swagger
    *
