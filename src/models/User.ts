@@ -89,7 +89,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       if (isValidPassword) {
         const accessToken = await generateAccessToken(authTemp);
         await authTemp.update({ accessToken });
-        await userTemp.update({ verifyAt: true });
+        await userTemp.update({ verifyAt: Date.now() });
 
         return {
           accessToken,

@@ -67,7 +67,7 @@ router
    *               email: quan.do@supremetech.vn,
    *               password: abc@1234, firstName: do,
    *               lastName: quan, gender: male,
-   *               dob: 19/10/1995, phone: ''
+   *               dob: 19/10/1995, phone: '0909090900'
    *             }
    *     responses:
    *       200:
