@@ -1,5 +1,7 @@
 import express from 'express';
 import userRoutes from './user.routes';
+import bookmarkRoutes from './bookmark.routes';
+
 import postRoutes from './post.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -56,6 +58,7 @@ router.get('/', (req, res) =>
 
 router.use('/posts', postRoutes);
 router.use('/users', userRoutes);
+router.use('/bookmarks', bookmarkRoutes);
 
 
 export default router;
