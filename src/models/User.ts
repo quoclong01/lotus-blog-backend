@@ -104,17 +104,15 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 
   public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
-    if (id === 'me') {
-      const userTemp = await User.findByPk(authInfo.userId);
-      delete data.email;
-      const userBody = { ...data };
-      if (!userTemp) throw UserErrors.NOT_FOUND;
+    if (id !== 'me') throw UserErrors.INTERACT_PERMISSION;
 
-      await userTemp.update(userBody);
-      return userTemp;
-    } else {
-      throw UserErrors.INTERACT_PERMISSION;
-    }
+    const userTemp = await User.findByPk(authInfo.userId);
+    delete data.email;
+    const userBody = { ...data };
+    if (!userTemp) throw UserErrors.NOT_FOUND;
+
+    await userTemp.update(userBody);
+    return userTemp;
   }
 
   public static async updateUserPassword(authInfo: any, data: any ) {
