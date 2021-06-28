@@ -39,7 +39,7 @@ const userController = {
         include: [{
           model: Follower,
           as: 'followers',
-          attributes: ['followedId']
+          attributes: ['followerId']
         }]
       });
       if (data) return { users: data };
@@ -55,7 +55,7 @@ const userController = {
         include: [{
           model: Follower,
           as: 'followings',
-          attributes: ['followerId']
+          attributes: ['followedId']
         }]
       });
       if (data) return { users: data };

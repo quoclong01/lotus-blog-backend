@@ -409,7 +409,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { users: { id: 3, email: quan.do@supremetech.vn, followers: [{ userId: 2 }] } }
+   *               example: { users: { id: 3, email: quan.do@supremetech.vn, followers: [{ followedId: 2 }] } }
    */
 
 export default router;
