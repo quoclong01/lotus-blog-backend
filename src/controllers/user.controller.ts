@@ -39,12 +39,12 @@ const userController = {
         include: [{
           model: Follower,
           as: 'followers',
-          attributes: ['userId']
+          attributes: ['followedId']
         }]
       });
-      return { users: data };
+      if (data) return { users: data };
+      throw UserErrors.NOT_FOUND;
     }
-    
     throw UserErrors.INTERACT_PERMISSION;
   }),
   getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -58,9 +58,9 @@ const userController = {
           attributes: ['followerId']
         }]
       });
-      return { users: data };
+      if (data) return { users: data };
+      throw UserErrors.NOT_FOUND;
     }
-    
     throw UserErrors.INTERACT_PERMISSION;
   }),
   get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {

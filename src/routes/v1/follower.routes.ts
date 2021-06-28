@@ -23,14 +23,14 @@ router
    *       - Follower
    *     produces:
    *       - application/json
-   *     summary: Add following user
+   *     summary: Add following an user
    *     requestBody:
    *       required: true
    *       content:
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { followerId: 1 }
+   *             example: { followedId: 1 }
    *     responses:
    *       200:
    *         content:
@@ -52,14 +52,14 @@ router
    *       - Follower
    *     produces:
    *       - application/json
-   *     summary: Add following user
+   *     summary:  Unfollowing an user
    *     requestBody:
    *       required: true
    *       content:
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { followerId: 1 }
+   *             example: { followedId: 1 }
    *     responses:
    *       200:
    *         content:
