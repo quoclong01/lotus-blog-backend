@@ -33,35 +33,40 @@ const userController = {
   }),
   getFollowers: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
-    if (req.params.id === 'me') {
-      const data = await User.findOne({
-        where: { id: authInfo.userId },
-        include: [{
-          model: Follower,
-          as: 'followers',
-          attributes: ['followerId']
-        }]
-      });
-      if (data) return { users: data };
-      throw UserErrors.NOT_FOUND;
-    }
-    throw UserErrors.INTERACT_PERMISSION;
+
+    if (req.params.id !== 'me') throw UserErrors.INTERACT_PERMISSION;
+
+    const data = await User.findOne({
+      where: { id: authInfo.userId },
+      include: [{
+        model: Follower,
+        as: 'followers',
+        attributes: ['followerId']
+      }]
+    });
+
+    if (!data) throw UserErrors.NOT_FOUND;
+
+    return { users: data };
   }),
   getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
-    if (req.params.id === 'me') {
-      const data = await User.findOne({
-        where: { id: authInfo.userId },
-        include: [{
-          model: Follower,
-          as: 'followings',
-          attributes: ['followedId']
-        }]
-      });
-      if (data) return { users: data };
-      throw UserErrors.NOT_FOUND;
-    }
-    throw UserErrors.INTERACT_PERMISSION;
+
+    if (req.params.id !== 'me') throw UserErrors.INTERACT_PERMISSION;
+
+    const data = await User.findOne({
+      where: { id: authInfo.userId },
+      include: [{
+        model: Follower,
+        as: 'followings',
+        attributes: ['followedId']
+      }]
+    });
+
+    if (!data) throw UserErrors.NOT_FOUND;
+
+    return { users: data };
+    
   }),
   get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.findUser(req.params.id, req.user);

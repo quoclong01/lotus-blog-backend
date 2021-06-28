@@ -21,42 +21,39 @@ export class Follower extends Model<FollowerAttributes, FollowerCreationAttribut
   public readonly updatedAt!: Date;
 
   public static async createFollower(data: any, authInfo: any) {
-    if (authInfo.userId !== data.followedId) {
-      const userTemp = await User.findOne({
-        where: { id: data.followedId }
-      });
-      if (userTemp) {
-        const followerTemp = await Follower.findOne({
-          where: { followerId: authInfo.userId, followedId: data.followedId }
-        });
-        if (!followerTemp) {
-          const followerData = new Follower({
-            followedId: data.followedId,
-            followerId: authInfo.userId
-          });
-  
-          await followerData.save();
-          return 'Follow successfully.';
-        }
-        return FollowerErrors.ALREADY_FOLLOWER_EXISTED;
-      }
-      throw FollowerErrors.NOT_FOUND;
-    }
-    throw FollowerErrors.INTERACT_PERMISSION;
+    if (authInfo.userId === data.followedId) throw FollowerErrors.INTERACT_PERMISSION;
+
+    const userTemp = await User.findOne({
+      where: { id: data.followedId }
+    });
+
+    if (!userTemp) throw FollowerErrors.NOT_FOUND;
+
+    const followerTemp = await Follower.findOne({
+      where: { followerId: authInfo.userId, followedId: data.followedId }
+    });
+
+    if (followerTemp) throw FollowerErrors.ALREADY_FOLLOWER_EXISTED;
+
+    const followerData = new Follower({
+      followedId: data.followedId,
+      followerId: authInfo.userId
+    });
+    await followerData.save();
+    return 'Follow successfully.';
   }
 
   public static async deleteFollower(data: any, authInfo: any) {
-    if (authInfo.userId !== data.followedId) {
-      const followerTemp = await Follower.findOne({
-        where: { followerId: authInfo.userId, followedId: data.followedId }
-      });
-      if (followerTemp) {
-        await followerTemp.destroy();
-        return 'Unfolowing successfully.';
-      }
-      throw FollowerErrors.NOT_FOUND;
-    }
-    throw FollowerErrors.INTERACT_PERMISSION;
+    if (authInfo.userId === data.followedId) throw FollowerErrors.INTERACT_PERMISSION;
+
+    const followerTemp = await Follower.findOne({
+      where: { followerId: authInfo.userId, followedId: data.followedId }
+    });
+
+    if (!followerTemp) throw FollowerErrors.NOT_FOUND;
+
+    await followerTemp.destroy();
+    return 'Unfolowing successfully.';
   }
 }
 
