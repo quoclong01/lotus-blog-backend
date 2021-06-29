@@ -143,7 +143,7 @@ router
 router
   .route('/:id')
 
-  .get(jwtCheck, postController.show)
+  .get(postController.show)
   /**
    * @swagger
    *
