@@ -13,6 +13,9 @@ interface PostAttributes {
   status: string;
   tags: string[];
   userId: number;
+  likes: number;
+  comments: number;
+  cover: string;
 }
 
 class RequestPost {
@@ -67,6 +70,9 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public status!: string;
   public userId!: number;
   public tags!: string[];
+  public likes!: number;
+  public comments!: number;
+  public cover!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -167,7 +173,6 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 }
 
 Post.init({
-  // Model attributes are defined here
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -179,11 +184,9 @@ Post.init({
   },
   description: {
     type: DataTypes.STRING
-    // allowNull defaults to true
   },
   content: {
     type: DataTypes.TEXT
-    // allowNull defaults to true
   },
   status: {
     type: DataTypes.STRING,
@@ -196,6 +199,17 @@ Post.init({
   userId: {
     type: DataTypes.INTEGER,
     references: { model: 'Users', key: 'id' }
+  },
+  likes: {
+    type: DataTypes.NUMBER,
+    defaultValue: 0
+  },
+  comments: {
+    type: DataTypes.NUMBER,
+    defaultValue: 0
+  },
+  cover: {
+    type: DataTypes.STRING,
   },
 }, {
   // Other model options go here
