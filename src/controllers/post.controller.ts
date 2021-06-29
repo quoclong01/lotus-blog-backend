@@ -4,8 +4,11 @@ import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
 
 const postController = {
-  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  publicIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listPosts(req.query);
+  }),
+  authIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.listAuthPosts(req.query, req.user);
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
