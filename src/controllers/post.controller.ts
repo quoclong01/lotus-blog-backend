@@ -1,3 +1,4 @@
+import { PostErrors } from './../lib/api-error';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
@@ -14,7 +15,7 @@ const postController = {
       where: { id: req.params.id, status:'public' }
     });
 
-    if (!currentPost) return 'NOT FOUND';
+    if (!currentPost) throw PostErrors.NOT_FOUND; 
     return currentPost;
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
