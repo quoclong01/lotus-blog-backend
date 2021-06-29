@@ -245,12 +245,12 @@ router
   .delete(userController.delete)
 
 router
-  .route('/:id/post')
+  .route('/:id/posts')
   .get(jwtCheck, userController.getPosts)
 /**
   * @swagger
   *
-  * /users/:id/post:
+  * /users/:id/posts:
   *   get:
   *     tags:
   *       - User

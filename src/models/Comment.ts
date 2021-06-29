@@ -34,11 +34,12 @@ export class Comment extends Model<CommentAttributes, CommentCreationAttributes>
   }
 
   public static async doComment(id: any, authInfo: any, content: any) {
-    const currentPost = await Post.findAll({ where: { id: id } });
+    const currentPost = await Post.findOne({ where: { id: id } });
     if (!currentPost) throw PostErrors.NOT_FOUND;
 
     const commentTemp = new Comment({ userId: authInfo.userId, postId: id, comment: content.content });
-    const newComment = await commentTemp.save();
+    await commentTemp.save();
+    await currentPost.update({comments: ++currentPost.comments})
     return 'Commented successfully'
   }
   

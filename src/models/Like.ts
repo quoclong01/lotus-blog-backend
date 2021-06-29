@@ -37,21 +37,23 @@ export class Like extends Model<LikeAttributes, LikeCreationAttributes> implemen
 
     if (!checkPost) throw PostErrors.NOT_FOUND;
 
-    const currentBookmark = await Like.findOne({
+    const currentLike = await Like.findOne({
       where: {
         postId,
       }
     });
 
-    if (!currentBookmark) {
+    if (!currentLike) {
       const newBookmark = new Like({
         userId: currentUser,
         postId: postId
       });
       newBookmark.save();
+      await checkPost.update({likes: ++checkPost.likes})
       return { isAdded: true }
     } else {
-      currentBookmark.destroy();
+      currentLike.destroy();
+      await checkPost.update({likes: --checkPost.likes})
       return { isRemoved: true }
     }
   }
