@@ -127,6 +127,15 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     return currentPost;
   }
 
+  public static async getPost(id: string) {
+    const currentPost =  await Post.findOne({
+      where: { id: id, status:'public' }
+    });
+
+    if (!currentPost) throw PostErrors.NOT_FOUND; 
+    return currentPost;
+  }
+
   public static async removePost(id: string, authInfo: any) {
     // find and delete character
     const currentPost = await Post.findByPk(id);

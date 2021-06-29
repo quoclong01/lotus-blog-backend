@@ -24,6 +24,17 @@ router
  *       - application/json
  *     summary:
  *       Get all posts with status public
+ *     parameters:
+*        - name: size
+*          in: query
+*          description: total posts show in one page 
+*          required: false
+*          example: /posts/public?size=3
+*        - name: page
+*          in: query
+*          description: the number of current page
+*          required: false
+*          example: /posts/public?page=2&size=7
  *     responses:
  *       200:
  *         content:
@@ -67,6 +78,17 @@ router
    *       - application/json
    *     summary:
    *       Get all posts of following accounts
+  *     parameters:
+*        - name: size
+*          in: query
+*          description: total posts show in one page 
+*          required: false
+*          example: /posts/public?size=3
+*        - name: page
+*          in: query
+*          description: the number of current page
+*          required: false
+*          example: /posts/public?page=2&size=7
    *     responses:
    *       200:
    *         content:
@@ -143,7 +165,7 @@ router
 router
   .route('/:id')
 
-  .get(jwtCheck, postController.show)
+  .get(postController.show)
   /**
    * @swagger
    *
