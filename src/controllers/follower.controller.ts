@@ -9,16 +9,15 @@ const followerController = {
   }),
   getFollowers: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
-
-    if (req.params.id !== 'me') throw UserErrors.INTERACT_PERMISSION;
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
       attributes: ['followerId', 'followingId'],
-      where: { followingId: authInfo.userId },
+      where: { followingId: id },
       include: [{
         model: User,
         as: 'followingInfo',
-        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'displayName', 'picture']
+        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
       }]
     });
 
@@ -29,15 +28,15 @@ const followerController = {
   getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
 
-    if (req.params.id !== 'me') throw UserErrors.INTERACT_PERMISSION;
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
       attributes: ['followerId', 'followingId'],
-      where: { followerId: authInfo.userId },
+      where: { followerId: id },
       include: [{
         model: User,
         as: 'followerInfo',
-        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'displayName', 'picture']
+        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
       }]
     });
 
@@ -50,9 +49,7 @@ const followerController = {
     const { followingId } = req.body;
     if (authInfo.userId === followingId) throw FollowerErrors.INTERACT_PERMISSION;
 
-    const userTemp = await User.findOne({
-      where: { id: followingId }
-    });
+    const userTemp = await User.findByPk(followingId);
 
     if (!userTemp) throw FollowerErrors.NOT_FOUND;
 
@@ -62,7 +59,7 @@ const followerController = {
 
     if (followerTemp) {
       await followerTemp.destroy();
-      return 'Unfolowing successfully.';
+      return { unfollowed: true };
     }
 
     const followerData = new Follower({
@@ -70,7 +67,7 @@ const followerController = {
       followerId: authInfo.userId
     });
     await followerData.save();
-    return 'Follow successfully.';
+    return  { followed: true };
   })
 };
 
