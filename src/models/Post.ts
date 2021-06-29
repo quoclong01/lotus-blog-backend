@@ -43,7 +43,7 @@ class RequestPost {
 
 class PostQueryBuilder extends QueryBuilder {
   where: any = {};
-  constructor(baseQuery: any, tags: string[] = [], followerIds: number[] = []) {
+  constructor(baseQuery: any, tags: string[] = []) {
     super(baseQuery);
     const whereAnd: any = [
       { status: 'public' },
@@ -52,15 +52,6 @@ class PostQueryBuilder extends QueryBuilder {
       whereAnd.push(
         {
           [Op.or]: tags.map(x => where(literal(`'${x}'`), fn('ANY', col('tags')))),
-        }
-      );
-    }
-    if (followerIds.length > 0) {
-      whereAnd.push(
-        {
-          userId: {
-            [Op.in]: followerIds
-          } 
         }
       );
     }
