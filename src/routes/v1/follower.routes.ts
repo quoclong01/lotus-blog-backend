@@ -38,7 +38,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { users: [{ followedId: 3, followingId: 1, followingInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null } }] }
+   *               example: { users: [{ followedId: 3, followingId: 1, followingInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 04/01/1997 } }] }
   */
  
 router
@@ -69,7 +69,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { users: [{ followedId: 1, followingId: 3, followerInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null } }] }
+   *               example: { users: [{ followedId: 1, followingId: 3, followerInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 19/10/1995 } }] }
   */
 
 router
@@ -99,10 +99,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                  message:
-   *                    type: string
-   *                    example: Following successfully. | Unfollowing successfully.     
+   *               example: { followed: true|false }     
   */
 
 export default router;
