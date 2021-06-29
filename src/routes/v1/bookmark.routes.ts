@@ -80,10 +80,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                 isRemoved:
-   *                   type: boolean
-   *                   example: true
+   *               example: { isInBookmark: true|false }
    */
   .post(jwtCheck, validate(bookmarkSchema.addBookmark), bookmarkController.toggleBookmark)
 

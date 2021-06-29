@@ -183,13 +183,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     let data;
     if (paramId === 'me') {
       data = await User.findOne({
-        attributes: ['id'],
         where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
       });
     }
     else {
       data = await User.findOne({
-        attributes: ['id'],
         where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
       });
     }
