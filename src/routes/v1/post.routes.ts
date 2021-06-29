@@ -35,7 +35,7 @@ router
  *         description: the number of current page
  *         required: false
  *         example: /posts/public?page=2&size=7
- *    responses:
+ *     responses:
  *       200:
  *         content:
  *           application/json:
@@ -62,7 +62,7 @@ router
  *                      userId:
  *                         type: number
  *                         example: 1          
-*/
+ */
 
 router
   .route('/')
