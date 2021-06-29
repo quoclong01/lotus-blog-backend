@@ -10,9 +10,12 @@ const postController = {
     return await Post.createPost(req.body, req.user);
   }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.findOne({
+    const currentPost =  await Post.findOne({
       where: { id: req.params.id, status:'public' }
     });
+
+    if (!currentPost) return 'NOT FOUND';
+    return currentPost;
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.updateContent(req.params.id, req.body, req.user);
