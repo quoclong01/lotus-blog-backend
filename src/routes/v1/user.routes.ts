@@ -17,12 +17,12 @@ router
    *
    * /users/:
    *   get:
-  *     tags:
-  *       - User
+   *     tags:
+   *       - User
    *     produces:
    *       - application/json
    *     summary:
-  *       Get information of account
+   *       Get information of account
    *     responses:
    *       200:
    *         content:
@@ -34,37 +34,13 @@ router
    *                   type: array
    *                   items:
    *                     type: object
-   *                     properties:
-   *                      id:
-   *                        type: integer
-   *                        example: 1
-   *                      email:
-   *                        type: string
-   *                        example: quan.do@supremetech.vn
-   *                      firstName:
-   *                         type: string
-   *                         example: do
-   *                      lastName:
-   *                         type: string
-   *                         example: quan
-   *                      phone:
-   *                         type: string
-   *                         example: ''
-   *                      gender:
-   *                         type: string
-   *                         example: male
-   *                      dob:
-   *                         type: string
-   *                         example: 19/10/1995
-   *                      displayName:
-   *                         type: string
-   *                         example: quanDo
-   *                      picture:
-   *                         type: string
-   *                         example: ''
-   *                      isActive:
-   *                         type: boolean
-   *                         example: true
+   *                     example: {
+   *                       id: 1, email: quan.do@supremetech.vn,
+   *                       firstName: do, lastName: quan,
+   *                       gender: 'male|female|other',
+   *                       dob: 19/10/1995, phone: '',
+   *                       displayName: st-quando, picture: ''
+   *                     }
   */
   .get(userController.index)
 
@@ -75,123 +51,70 @@ router
    *
    * /users/register:
    *   post:
-  *     tags:
-  *       - Auth
+   *     tags:
+   *       - Auth
    *     produces:
    *       - application/json
    *     summary:
-  *       Register a new account
+   *       Register a new account
    *     requestBody:
    *       required: true
    *       content:
    *         application/json:
    *           schema:
    *             type: object
-   *             properties:
-   *               email:
-   *                 type: string
-   *                 example: quan.do@supremetech.vn
-   *               password:
-   *                 type: string
-   *                 example: abc@1234
-   *               firstName:
-   *                 type: string
-   *                 example: do
-   *               lastName:
-   *                 type: string
-   *                 example: quan
-   *               gender:
-   *                 type: string
-   *                 example: male
-   *               dob:
-   *                 type: string
-   *                 example: 19/10/1995
+   *             example: {
+   *               email: quan.do@supremetech.vn,
+   *               password: abc@1234, firstName: do,
+   *               lastName: quan, gender: male,
+   *               dob: 19/10/1995, phone: '0909090900'
+   *             }
    *     responses:
    *       200:
    *         content:
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                  status:
-   *                    type: integer
-   *                    example: 200
-   *                  message:
-   *                    type: string
-   *                    example: Create an account successfully.
+   *               example: { message: Create an account successfully. }
   */
   .post(validate(userSchema.addUser), userController.create)
 
 router
   .route('/login')
   /**
- * @swagger
- *
- * /users/login:
- *   post:
-  *     tags:
-  *       - Auth
- *     produces:
- *       - application/json
+   * @swagger
+   *
+   * /users/login:
+   *   post:
+   *     tags:
+   *       - Auth
+   *     produces:
+   *       - application/json
    *     summary:
-  *       Login with email and password
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 example: quan.do@supremetech.vn
- *               password:
- *                 type: string
- *                 example: abc@1234
- *     responses:
- *       200:
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                  accessToken:
- *                    type: string
- *                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDQzOTkwNiwiZXhwIjoxNjI0NTI2MzA2fQ.Mqz4M54mv3bA3RXdSnSgulJnVnCvFSCfUW00qz0yKiA
- *                  userInfo:
- *                    type: object
- *                    properties:
- *                      id:
- *                        type: integer
- *                        example: 1
- *                      email:
- *                        type: string
- *                        example: quan.do@supremetech.vn
- *                      firstName:
- *                         type: string
- *                         example: do
- *                      lastName:
- *                         type: string
- *                         example: quan
- *                      phone:
- *                         type: string
- *                         example: ''
- *                      gender:
- *                         type: string
- *                         example: male
- *                      dob:
- *                         type: string
- *                         example: 19/10/1995
- *                      displayName:
- *                         type: string
- *                         example: quanDo
- *                      picture:
- *                         type: string
- *                         example: ''
- *                      isActive:
- *                         type: boolean
- *                         example: true
-*/
+   *       Login with email and password
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: {
+   *               email: quan.do@supremetech.vn,
+   *               password: abc@1234
+   *             }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: { accessToken: '', userInfo: {
+   *                  email: quan.do@supremetech.vn,
+   *                  password: abc@1234, firstName: do,
+   *                  lastName: quan, gender: male,
+   *                  dob: 19/10/1995, phone: ''
+   *               } }
+  */
   .post(validate(userSchema.login), userController.login)
 
 router
@@ -201,12 +124,12 @@ router
    *
    * /users/logout:
    *   post:
-  *     tags:
-  *       - Auth
+   *     tags:
+   *       - Auth
    *     produces:
    *       - application/json
    *     summary:
-  *       Logout
+   *       Logout
    *     security:
    *       - jwt: []
    *     responses:
@@ -215,15 +138,69 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                  statusCode:
-   *                    type: integer
-   *                    example: 200
-   *                  message:
-   *                    type: string
-   *                    example: Logout successfully.
-   */
+   *               example: { message: Logout successfully. }
+  */
   .post(jwtCheck, userController.logout)
+
+router
+  .route('/reset-password')
+  /**
+   * @swagger
+   * 
+   * /users/reset-password:
+   *   post:
+   *     summary: Reset password of an user
+   *     tags:
+   *     - Auth
+   *     produces:
+   *       - application/json
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { email: quan.do@supremetech.vn }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: { resetToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNDUyNzA3OCwiZXhwIjoxNjI0NTMwNjc4fQ.SWkzEjPQ_9WFQchETQCQOUtLv_HyabblVDQHbwBEZHU }
+  */
+  .post(validate(userSchema.resetPassword), userController.resetPassword)
+
+router
+  .route('/change-password')
+  /**
+   * @swagger
+   * 
+   * /users/change-password:
+   *   put:
+   *     summary: Update password an user
+   *     tags:
+   *     - Auth
+   *     produces:
+   *       - application/json
+   *     security:
+   *       - jwt: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { oldPassword: abc@12345, newPassword: abc@123456 }
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: { message: Change password successfully. }
+  */
+  .put(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
 
 router
   .route('/:id')
@@ -232,12 +209,12 @@ router
    *
    * /users/{id}:
    *   put:
-    *     tags:
-    *       - User
+   *     tags:
+   *       - User
    *     produces:
    *       - application/json
    *     summary:
-  *       Update account's information
+   *       Update account's information
    *     parameters:
    *       - in: path
    *         name: id
@@ -254,54 +231,15 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             properties:
-   *               firstName:
-   *                 type: string
-   *                 example: do
-   *               lastName:
-   *                 type: string
-   *                 example: quan
-   *               phone:
-   *                 type: string
-   *                 example: '0909090909'
-   *               gender:
-   *                 type: string
-   *                 example: male
-   *               dob:
-   *                 type: string
-   *                 example: 19/10/1995
+   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995}
    *     responses:
    *       200:
    *         content:
    *           application/json:
    *             schema:
    *               type: object
-   *               properties:
-   *                  userInfo:
-   *                     type: object
-   *                     properties:
-   *                       id:
-   *                         type: integer
-   *                         example: 1
-   *                       email:
-   *                         type: string
-   *                         example: quan.do@supremetech.vn
-   *                       firstName:
-   *                          type: string
-   *                          example: do
-   *                       lastName:
-   *                          type: string
-   *                          example: quan
-   *                       displayName:
-   *                          type: string
-   *                          example: quanDo
-   *                       picture:
-   *                          type: string
-   *                          example: ''
-   *                       isActive:
-   *                          type: boolean
-   *                          example: true
-   */
+   *               example: { userInfo: { id: 1, email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: '' }}
+  */
   .get(jwtCheck, userController.get)
   .put(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
@@ -318,11 +256,11 @@ router
   *       - User
   *     produces:
   *       - application/json
-   *     summary:
+  *     summary:
   *       Get list of posts with userId
   *     responses:
   *       200:
- *         content:
+  *         content:
   *           application/json:
   *             schema:
   *               type: object

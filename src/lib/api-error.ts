@@ -34,14 +34,15 @@ class ApplicationError {
 }
 
 export class PostErrors {
-  static NOT_FOUND = new ApplicationError('40401', 'The requested post was not found')
+  static NOT_FOUND = new ApplicationError('40401', 'The requested post was not found.')
   static INTERACT_PERMISSION = new ApplicationError('40301', 'You do not have permission to interact this post.')
 }
 
 export class UserErrors {
-  static LOGIN_FAILED = new ApplicationError('40101', 'Invalid email or password')
-  static NOT_FOUND = new ApplicationError('40402', 'The requested user was not found')
+  static LOGIN_FAILED = new ApplicationError('40101', 'Invalid email or password.')
+  static LOGOUT_FAILED = new ApplicationError('40102', 'You can not logout with this account.')
+  static INVALID_PASSWORD = new ApplicationError('40103', 'Invalid password.')
   static INTERACT_PERMISSION = new ApplicationError('40302', 'You do not have permission to interact this user.')
+  static NOT_FOUND = new ApplicationError('40402', 'The requested user was not found.')
   static ALREADY_USER_EXISTED = new ApplicationError('40901', 'This email have already exist.')
-  
 }

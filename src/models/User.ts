@@ -2,7 +2,8 @@ import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
-import { hashPassword, comparePassword, generateAccessToken } from '../lib/utils';
+import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
+import { ProviderType } from '../lib/enum';
 import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
@@ -53,20 +54,18 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       where: { email: data.email }
     });
 
-    if (existUser) {
-      throw UserErrors.ALREADY_USER_EXISTED;
-    }
-    const userTemp = new User({
-      ...data,
-    });
+    if (existUser) throw UserErrors.ALREADY_USER_EXISTED;
+
+    const userTemp = new User({ ...data });
     const user = await userTemp.save();
     const passwordHash = await hashPassword(data.password);
     const auth = {
       // TODO handle dynamic providerType
-      providerType: 'email',
+      providerType: ProviderType.email,
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
+      resetToken: '',
       userId: user.id
     };
     await Auth.create(auth);
@@ -77,52 +76,75 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const userTemp = await User.findOne({
       where: { email: data.email }
     });
-    if (userTemp) {
-      const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: 'email' }
-      });
+    if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
-      const isValidPassword = await comparePassword(data.password, authTemp.password);
+    const authTemp = await Auth.findOne({
+      where: { userId: userTemp.id, providerType: ProviderType.email }
+    });
+    const isValidPassword = await comparePassword(data.password, authTemp.password);
 
-      if (isValidPassword) {
-        const accessToken = await generateAccessToken(authTemp);
-        authTemp.update({ accessToken });
-        userTemp.update({ verifyAt: true });
+    if (!isValidPassword) throw UserErrors.LOGIN_FAILED;
 
-        return {
-          accessToken,
-          userInfo: userTemp
-        };
-      }
-    }
-    throw UserErrors.LOGIN_FAILED;
+    const accessToken = await generateAccessToken(authTemp);
+    await authTemp.update({ accessToken });
+    await userTemp.update({ verifyAt: Date.now() });
+
+    return { accessToken, userInfo: userTemp };
   }
 
   public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: 'email' }
+      where: { userId: authInfo.userId, providerType: ProviderType.email }
     });
 
-    if (authTemp) {
-      authTemp.update({ accessToken: null });
-      return 'Logout successfully.';
-    }
-    return null;
+    if (!authTemp) throw UserErrors.LOGOUT_FAILED;
+
+    authTemp.update({ accessToken: null });
+    return 'Logout successfully.';
   }
 
   public static async updateUserInfo(id: number | string, authInfo: any, data: any) {
-    if (id === 'me') {
-      const userTemp = await User.findByPk(authInfo.userId);
-      delete data.email;
-      const userBody = { ...data };
-      if (userTemp) {
-        await userTemp.update(userBody);
-        return userTemp;
-      }
-      throw UserErrors.NOT_FOUND;
-    } else {
-      throw UserErrors.INTERACT_PERMISSION;
-    }
+    if (id !== 'me') throw UserErrors.INTERACT_PERMISSION;
+
+    const userTemp = await User.findByPk(authInfo.userId);
+    delete data.email;
+    const userBody = { ...data };
+    if (!userTemp) throw UserErrors.NOT_FOUND;
+
+    await userTemp.update(userBody);
+    return userTemp;
+  }
+
+  public static async updateUserPassword(authInfo: any, data: any ) {
+
+    const authTemp = await Auth.findOne({
+      where: { userId: authInfo.userId, providerType: ProviderType.email }
+    });
+    if (!authTemp) throw UserErrors.NOT_FOUND;
+
+    const isValidPassword = await comparePassword(data.oldPassword, authTemp.password);
+
+    if (!isValidPassword) throw UserErrors.INVALID_PASSWORD;
+
+    const password = await hashPassword(data.password);
+    await authTemp.update({ password });
+    return 'Change password successfully.';
+  }
+
+  public static async resetUserPassword(data: any) {
+    const userTemp = await User.findOne({
+      where: { email: data.email }
+    });
+
+    if (!userTemp) throw UserErrors.NOT_FOUND;
+
+    const authTemp = await Auth.findOne({
+      where: { userId: userTemp.id, providerType: ProviderType.email }
+    });
+    const resetToken = await generateResetToken(userTemp.id);
+
+    await authTemp.update({ resetToken });
+    return { resetToken };
   }
 
   /*
@@ -135,29 +157,26 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const userTemp = await User.findOne({
       where: { id }
     });
-    if (userTemp) {
-      const authTemp = await Auth.findOne({
-        where: { userId: userTemp.id, providerType: 'email' }
-      });
 
-      if (authTemp) {
-        authTemp.destroy();
-        userTemp.destroy();
-        return 'Delete the user successfully.';
-      }
-      return null;
-    }
-    return null;
+    if (!userTemp) throw UserErrors.NOT_FOUND;
+
+    const authTemp = await Auth.findOne({
+      where: { userId: userTemp.id, providerType: ProviderType.email }
+    });
+
+    if (!authTemp) throw UserErrors.NOT_FOUND;
+
+    await authTemp.destroy();
+    await userTemp.destroy();
+    return 'Delete the user successfully.';
   }
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
     const user = await User.findByPk(userId);
-    if (user) {
-      return this._showPublicInfo(user);
-    } else {
-      throw UserErrors.NOT_FOUND;
-    }
+    if (!user) throw UserErrors.NOT_FOUND;
+
+    return this._showPublicInfo(user);
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {
@@ -234,5 +253,3 @@ User.init({
   sequelize: db.sequelize, // We need to pass the connection instance
   tableName: 'Users' // We need to choose the model name
 });
-
-User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
