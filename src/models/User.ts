@@ -1,4 +1,3 @@
-import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
