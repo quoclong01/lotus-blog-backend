@@ -11,7 +11,7 @@ const postController = {
   }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.findOne({
-      where: { id: req.params.id }
+      where: { id: req.params.id, status:'public' }
     });
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
