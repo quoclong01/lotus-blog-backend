@@ -50,11 +50,11 @@ export class Like extends Model<LikeAttributes, LikeCreationAttributes> implemen
       });
       newBookmark.save();
       await checkPost.update({likes: ++checkPost.likes})
-      return { isAdded: true }
+      return 'Liked successfully'
     } else {
       currentLike.destroy();
       await checkPost.update({likes: --checkPost.likes})
-      return { isRemoved: true }
+      return 'Unliked successfully'
     }
   }
 }
