@@ -24,6 +24,17 @@ router
  *       - application/json
  *     summary:
  *       Get all posts with status public
+ *     parameters:
+ *       - name: size
+ *         in: query
+ *         description: total posts show in one page 
+ *         required: false
+ *         example: /posts/public?size=3
+ *       - name: page
+ *         in: query
+ *         description: the number of current page
+ *         required: false
+ *         example: /posts/public?page=2&size=7
  *     responses:
  *       200:
  *         content:
@@ -51,7 +62,7 @@ router
  *                      userId:
  *                         type: number
  *                         example: 1          
-*/
+ */
 
 router
   .route('/')
@@ -67,6 +78,17 @@ router
    *       - application/json
    *     summary:
    *       Get all posts of following accounts
+   *     parameters:
+   *       - name: size
+   *         in: query
+   *         description: total posts show in one page 
+   *         required: false
+   *         example: /posts/public?size=3
+   *       - name: page
+   *         in: query
+   *         description: the number of current page
+   *         required: false
+   *         example: /posts/public?page=2&size=7
    *     responses:
    *       200:
    *         content:
@@ -143,18 +165,18 @@ router
 router
   .route('/:id')
 
-  .get(jwtCheck, postController.show)
+  .get(postController.show)
   /**
    * @swagger
    *
    * /posts/:id:
    *   get:
-  *     tags:
-  *       - Post
+   *     tags:
+   *       - Post
    *     produces:
    *       - application/json
    *     summary:
-  *       Get post with id
+   *       Get post with id
    *     responses:
    *       200:
    *         content:
@@ -177,7 +199,7 @@ router
    *                      userId:
    *                         type: number
    *                         example: 1          
-  */
+   */
   .put(jwtCheck, postController.updateContent)
   /**
   * @swagger
@@ -188,8 +210,8 @@ router
   *       - Post
   *     produces:
   *       - application/json
-   *     summary:
-   *       Update post
+  *     summary:
+  *       Update post
   *     requestBody:
   *       required: true
   *       content:
@@ -322,12 +344,12 @@ router
  *
  * /posts/:id/likes:
  *   put:
-  *     tags:
-  *       - Post
+ *     tags:
+ *       - Post
  *     produces:
  *       - application/json
-*     summary:
-*       Like a post with id, this post will add userId to likes attr 
+ *     summary:
+ *       Like a post with id, this post will add userId to likes attr 
  *     responses:
  *       200:
  *         content:
@@ -345,10 +367,8 @@ router
  *                       properties:
  *                         userId:
  *                           type: integer
- *                           example: 1
- *                    
- *                
-*/
+ *                           example: 1                
+ */
 router
   .route('/:id/comments')
 
@@ -358,12 +378,12 @@ router
  *
  * /posts/:id/comments:
  *   get:
-  *     tags:
-  *       - Post
+ *     tags:
+ *       - Post
  *     produces:
  *       - application/json
-  *     summary:
-  *       Get list of users commented post with id 
+ *     summary:
+ *       Get list of users commented post with id 
  *     responses:
  *       200:
  *         content:

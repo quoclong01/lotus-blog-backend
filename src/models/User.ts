@@ -61,7 +61,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const passwordHash = await hashPassword(data.password);
     const auth = {
       // TODO handle dynamic providerType
-      providerType: ProviderType.email,
+      providerType: ProviderType.EMAIL,
       password: passwordHash,
       accessToken: '',
       refreshToken: '',
@@ -79,7 +79,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
     const authTemp = await Auth.findOne({
-      where: { userId: userTemp.id, providerType: ProviderType.email }
+      where: { userId: userTemp.id, providerType: ProviderType.EMAIL }
     });
     const isValidPassword = await comparePassword(data.password, authTemp.password);
 
@@ -94,7 +94,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async logoutUser(authInfo: any) {
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: ProviderType.email }
+      where: { userId: authInfo.userId, providerType: ProviderType.EMAIL }
     });
 
     if (!authTemp) throw UserErrors.LOGOUT_FAILED;
@@ -118,7 +118,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public static async updateUserPassword(authInfo: any, data: any ) {
 
     const authTemp = await Auth.findOne({
-      where: { userId: authInfo.userId, providerType: ProviderType.email }
+      where: { userId: authInfo.userId, providerType: ProviderType.EMAIL }
     });
     if (!authTemp) throw UserErrors.NOT_FOUND;
 
@@ -139,7 +139,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (!userTemp) throw UserErrors.NOT_FOUND;
 
     const authTemp = await Auth.findOne({
-      where: { userId: userTemp.id, providerType: ProviderType.email }
+      where: { userId: userTemp.id, providerType: ProviderType.EMAIL }
     });
     const resetToken = await generateResetToken(userTemp.id);
 
@@ -161,7 +161,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (!userTemp) throw UserErrors.NOT_FOUND;
 
     const authTemp = await Auth.findOne({
-      where: { userId: userTemp.id, providerType: ProviderType.email }
+      where: { userId: userTemp.id, providerType: ProviderType.EMAIL }
     });
 
     if (!authTemp) throw UserErrors.NOT_FOUND;
