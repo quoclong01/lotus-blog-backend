@@ -34,10 +34,10 @@ const bookmarkController = {
         postId: postId
       });
       newBookmark.save();
-      return { isAdded: true }
+      return { isInBookmark: true }
     } else {
       currentBookmark.destroy();
-      return { isRemoved: true }
+      return { isInBookmark: false }
     }
   }),
 }

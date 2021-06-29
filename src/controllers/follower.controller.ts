@@ -59,7 +59,7 @@ const followerController = {
 
     if (followerTemp) {
       await followerTemp.destroy();
-      return { unfollowed: true };
+      return { followed: false };
     }
 
     const followerData = new Follower({
