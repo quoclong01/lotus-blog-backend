@@ -204,6 +204,36 @@ router
 
 router
   .route('/:id')
+    /**
+   * @swagger
+   *
+   * /users/{id}:
+   *   get:
+   *     tags:
+   *       - User
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get user info by ID
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: Numeric ID of the user to retrieve.
+   *         schema:
+   *           type: string
+   *           example: me
+   *     security:
+   *       - jwt: []
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: { email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: null, dob: 19/10/1995, gender: male, followers: 0, followings: 1 }
+  */
+  .get(jwtCheck, userController.get)
   /**
    * @swagger
    *
@@ -240,7 +270,6 @@ router
    *               type: object
    *               example: { userInfo: { id: 1, email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: '' }}
   */
-  .get(jwtCheck, userController.get)
   .put(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 

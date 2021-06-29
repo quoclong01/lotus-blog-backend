@@ -17,6 +17,8 @@ interface UserAttributes {
   picture: string;
   isActive: boolean;
   isAdmin: boolean;
+  followers: number;
+  followings: number;
   verifyAt: boolean;
 }
 
@@ -34,6 +36,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public picture!: string;
   public isActive!: boolean;
   public isAdmin!: boolean;
+  public followers!: number;
+  public followings!: number;
   public verifyAt!: boolean;
 
 
@@ -73,7 +77,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async loginUser(data: any) {
     const userTemp = await User.findOne({
-      where: { email: data.email }
+      where: { email: data.email },
+      attributes: [
+        'email', 'firstName', 'lastName',
+        'gender', 'dob', 'phone',
+        'displayName', 'picture'
+      ]
     });
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
@@ -172,19 +181,16 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      attributes: [
+        'email', 'firstName', 'lastName',
+        'gender', 'dob', 'phone',
+        'displayName', 'picture', 'followers', 'followings'
+      ]
+    });
     if (!user) throw UserErrors.NOT_FOUND;
 
-    return this._showPublicInfo(user);
-  }
-
-  private static _showPublicInfo(user: any) {
-    const userTemp: any = {};
-    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
-    publicField.forEach((x: string) => {
-      userTemp[x] = user[x];
-    })
-    return userTemp;
+    return user;
   }
 }
 
@@ -226,6 +232,14 @@ User.init({
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  followers: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  followings: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   verifyAt: {
     type: DataTypes.DATE,
