@@ -12,13 +12,13 @@ module.exports = {
       queryInterface.addColumn('Posts',
         'likes',
         {
-          type: Sequelize.STRING
+          type: Sequelize.NUMBER
         }
       ),
       queryInterface.addColumn('Posts',
         'comments',
         {
-          type: Sequelize.STRING
+          type: Sequelize.NUMBER
         }
       )
     ])
@@ -35,13 +35,13 @@ module.exports = {
       queryInterface.removeColumn('Posts',
         'likes',
         {
-          type: Sequelize.STRING
+          type: Sequelize.NUMBER
         }
       ),
       queryInterface.removeColumn('Posts',
         'comments',
         {
-          type: Sequelize.STRING
+          type: Sequelize.NUMBER
         }
       )
     ])
