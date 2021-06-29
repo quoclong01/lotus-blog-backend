@@ -1,75 +1,77 @@
+import { PostErrors } from './../lib/api-error';
 import { Post } from './Post';
+import { User } from './User';
 import { DataTypes, Model, Optional } from 'sequelize';
-import { PostErrors } from '../lib/api-error';
 import db from '../config/database';
 
 interface LikeAttributes {
   id: number;
-  userId: Array<number>;
+  userId: number;
   postId: number;
 }
 
-// You can also set multiple attributes optional at once
 interface LikeCreationAttributes extends Optional<LikeAttributes, 'id'> { }
 
 export class Like extends Model<LikeAttributes, LikeCreationAttributes> implements LikeAttributes, LikeCreationAttributes {
-  public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public userId!: Array<number>; // for nullable fields
+  public id!: number;
+  public userId!: number;
   public postId!: number;
 
-  // timestamps!
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public static async doLike(id: string, authInfo: any) {
-    const currentPost = await Post.findOne({
-      where: { id },
-    })
+  public static async getLikes(id: string) {
+    const data = await Like.findAll({
+      where: {
+        postId: id
+      },
+      include: { model: User, as: 'user', required: false },
+      order: [['createdAt', 'DESC']]
+    });
+    return data;
+  }
+  public static async toggleLike(id: any, authInfo: any) {
+    const currentUser: any = authInfo.userId;
+    const postId = id;
+    const checkPost = await Post.findByPk(postId);
 
-    if (!currentPost)
-      throw PostErrors.NOT_FOUND;
+    if (!checkPost) throw PostErrors.NOT_FOUND;
 
-    const currentLike = await Like.findOne({
-      where: { postId: id },
-    })
+    const currentBookmark = await Like.findOne({
+      where: {
+        postId,
+      }
+    });
 
-    if (!currentLike) {
-      const data = new Like({ userId: [authInfo.userId], postId: JSON.parse(id) });
-      console.log(data);
-      const like = await data.save();
-      return 'Liked successfully!'
-    }
-    else {
-      const likes = [...currentLike.userId];
-      if (likes.indexOf(authInfo.userId) !== -1) {
-        likes.splice(likes.indexOf(authInfo.userId), 1);
-      } else { likes.push(authInfo.userId); }
-
-      await currentLike.update({
-        userId: likes
-      })
-
-      return 'Liked successfully!'
+    if (!currentBookmark) {
+      const newBookmark = new Like({
+        userId: currentUser,
+        postId: postId
+      });
+      newBookmark.save();
+      return { isAdded: true }
+    } else {
+      currentBookmark.destroy();
+      return { isRemoved: true }
     }
   }
 }
 
 Like.init({
-  // Model attributes are defined here
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
   userId: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: DataTypes.INTEGER,
+    references: { model: 'Users', key: 'id' }
   },
   postId: {
     type: DataTypes.INTEGER,
     references: { model: 'Posts', key: 'id' }
   },
 }, {
-  // Other model options go here
-  sequelize: db.sequelize, // We need to pass the connection instance
-  tableName: 'Likes' // We need to choose the model name
+  sequelize: db.sequelize,
+  tableName: 'Likes'
 });

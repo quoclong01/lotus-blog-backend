@@ -405,7 +405,7 @@ router
  *                    
  *                
 */
-  .post(jwtCheck, postController.comment)
+  .post(jwtCheck, validate(postchema.addComment), postController.comment)
 /**
 * @swagger
 *
