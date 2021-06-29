@@ -12,7 +12,7 @@ const jwtCheck = expressjwt({
 
 router
   .route('/public')
-  .get(postController.index)
+  .get(postController.publicIndex)
 /**
  * @swagger
  *
@@ -66,7 +66,7 @@ router
 
 router
   .route('/')
-  .get(jwtCheck, postController.index)
+  .get(jwtCheck, postController.authIndex)
   /**
    * @swagger
    *

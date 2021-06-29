@@ -4,6 +4,7 @@ import db from '../config/database';
 import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 
 interface PostAttributes {
   id: number;
@@ -42,7 +43,7 @@ class RequestPost {
 
 class PostQueryBuilder extends QueryBuilder {
   where: any = {};
-  constructor(baseQuery: any, tags: string[]) {
+  constructor(baseQuery: any, tags: string[] = [], followerIds: number[] = []) {
     super(baseQuery);
     const whereAnd: any = [
       { status: 'public' },
@@ -51,6 +52,15 @@ class PostQueryBuilder extends QueryBuilder {
       whereAnd.push(
         {
           [Op.or]: tags.map(x => where(literal(`'${x}'`), fn('ANY', col('tags')))),
+        }
+      );
+    }
+    if (followerIds.length > 0) {
+      whereAnd.push(
+        {
+          userId: {
+            [Op.in]: followerIds
+          } 
         }
       );
     }
@@ -96,9 +106,77 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       totalPage,
       totalItems: length,
       itemsPerPage: size,
-      currentPage: +query.page,
+      currentPage: +query.page || 1,
       loadMore: offset < totalPage - 1
     };
+  }
+
+  public static async listAuthPosts(query: any, authInfo: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+    const tags = query.tags ? query.tags.split(',') : [];
+    if (tags.length > 0) {
+      return this.listPosts(query);
+    } else {
+      const baseQuery = `WITH
+      followers_posts_in_week as (
+          select p.*, 
+          case when b."userId" is not null 
+              then TRUE 
+              else FALSE
+          end as "isInBookmark"
+          from
+              "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                      INNER JOIN "Followers" f on p."userId" = f."followerId"
+          WHERE p."updatedAt" >= current_date - interval '7 days' AND p."status" = 'public'
+          ORDER BY
+              p."updatedAt" desc
+      ), other_posts as (
+          (
+              select p.*, 
+              case when b."userId" is not null 
+                  then TRUE 
+                  else FALSE
+              end as "isInBookmark"
+              from
+                  "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                            LEFT JOIN "followers_posts_in_week" w on w.id = p.id
+              WHERE w.id is null AND p."status" = 'public'
+              ORDER BY
+                  p."updatedAt" desc
+          )
+      )`;
+      const data = await this.sequelize.query(`
+        ${baseQuery}
+        select * from ((SELECT * from followers_posts_in_week LIMIT 10)
+        union all
+        (SELECT * FROM other_posts)) as temp limit :limit offset :offset;`,
+      {
+        replacements: { userId: authInfo.userId, limit: size, offset },
+        type: QueryTypes.SELECT
+      });
+
+      const lengthRaw: any = await this.sequelize.query(`
+        ${baseQuery}
+        select COUNT(*) from ((SELECT * from followers_posts_in_week LIMIT 10)
+        union all
+        (SELECT * FROM other_posts)) as temp1`,
+      {
+        replacements: { userId: authInfo.userId },
+        type: QueryTypes.SELECT
+      });
+      const length = +lengthRaw[0].count;
+      const totalPage = Math.ceil(length / size);
+  
+      return {
+        data, 
+        totalPage,
+        totalItems: length,
+        itemsPerPage: size,
+        currentPage: +query.page || 1,
+        loadMore: offset < totalPage - 1
+      };
+    }
   }
 
   public static async createPost(data: any, authInfo: any) {
