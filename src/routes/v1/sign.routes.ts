@@ -6,7 +6,7 @@ const router = express.Router();
 const jwtCheck = expressjwt({
   secret: 'RANDOM_TOKEN_SECRET',
   algorithms: ['HS256']
-});
+}); 
 
 router
   .route('/')
@@ -22,7 +22,7 @@ router
    *       - in: path
    *         name: type_upload
    *         required: true
-   *         description: the type upload you want. if you want to upload avatar, this should be "avatar"
+   *         description: the type upload you want. if you want to upload avatar, this should be "avatar". Upload cover of posts is "cover-post", Upload images in content of posts is "content-post"
    *         schema:
    *           type: string
    *           example: avatar
