@@ -222,7 +222,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    let isAllowed = false;
+    let isFollowed = false;
     const user = await User.findByPk(userId, {
       attributes: [
         'email', 'firstName', 'lastName',
@@ -236,11 +236,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       const followerTemp = await Follower.findOne({
         where: { followerId: authInfo.userId, followingId: paramId }
       });
-      isAllowed = followerTemp ? true : false;
+      isFollowed = followerTemp ? true : false;
     }
 
     const userInfo = this._getPublicInfo(user);
-    return { ...userInfo, isAllowed};
+    return { ...userInfo, isFollowed};
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {
