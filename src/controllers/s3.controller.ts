@@ -19,7 +19,7 @@ const s3Controller = {
 
     if (!fileName || !fileType) throw S3Errors.MISSING_FIELD;
 
-    if (!['avatar', 'post'].includes(typeUpload)) throw S3Errors.UNSUPPORTED;
+    if (!['avatar', 'cover_post', 'content_post'].includes(typeUpload)) throw S3Errors.UNSUPPORTED;
 
     const path = `${typeUpload}/${fileName}`;
     const s3Params = {
