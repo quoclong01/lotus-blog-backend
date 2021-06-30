@@ -11,15 +11,23 @@ const jwtCheck = expressjwt({
 });
 
 router
-  .route('/followers')
+  .route('/:id/followers')
   .get(jwtCheck, followerController.getFollowers)
   /**
    * @swagger
-   * /friends/followers:
+   * /friends/{id}/followers:
    *   get:
-   *     summary: Get all followers by user
+   *     summary: Get all followers by user ID
    *     tags:
    *       - Follower
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: Numeric ID of the user to retrieve.
+   *         schema:
+   *           type: string
+   *           example: me
    *     produces:
    *       - application/json
    *     security:
@@ -34,15 +42,23 @@ router
   */
  
 router
-  .route('/followings')
+  .route('/:id/followings')
   .get(jwtCheck, followerController.getFollowings)
   /**
    * @swagger
-   * /friends/followings:
+   * /friends/{id}/followings:
    *   get:
-   *     summary: Get all followings by user
+   *     summary: Get all followings by user ID
    *     tags:
    *       - Follower
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: Numeric ID of the user to retrieve.
+   *         schema:
+   *           type: string
+   *           example: me
    *     produces:
    *       - application/json
    *     security:

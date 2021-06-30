@@ -9,7 +9,7 @@ const followerController = {
   }),
   getFollowers: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
-    const id = authInfo.userId;
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
       attributes: [],
@@ -26,7 +26,7 @@ const followerController = {
   getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
 
-    const id = authInfo.userId;
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
       attributes: [],
