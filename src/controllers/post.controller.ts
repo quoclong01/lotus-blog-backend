@@ -30,10 +30,10 @@ const postController = {
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Like.toggleLike(req.params.id, req.user);
   }),
-  getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  getLikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Like.getLikes(req.params.id);
   }),
-  getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  getComments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Comment.getComments(req.params.id);
   }),
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {

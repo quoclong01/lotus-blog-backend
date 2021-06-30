@@ -40,7 +40,7 @@ export class Comment extends Model<CommentAttributes, CommentCreationAttributes>
     const commentTemp = new Comment({ userId: authInfo.userId, postId: id, comment: content.content });
     await commentTemp.save();
     await currentPost.update({comments: ++currentPost.comments})
-    return 'Commented successfully'
+    return commentTemp;
   }
   
 }
