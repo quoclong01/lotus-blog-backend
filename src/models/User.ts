@@ -1,6 +1,6 @@
 import { Post } from './Post';
-import { Follower } from './Follower';
-import { DataTypes, Model, Optional, Op } from 'sequelize';
+import { Follower } from '../models';
+import { DataTypes, Model, Optional, Op, QueryTypes } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
@@ -222,25 +222,23 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    let isFollowed = false;
-    const user = await User.findByPk(userId, {
-      attributes: [
-        'email', 'firstName', 'lastName',
-        'gender', 'dob', 'phone',
-        'displayName', 'picture', 'followers', 'followings'
-      ]
-    });
-    if (!user) throw UserErrors.NOT_FOUND;
+    const baseQuery = `select u.*, 
+    case when f."id" is not null 
+        then TRUE 
+        else FALSE
+    end as "isFollowed"
+    from
+        "Users" u LEFT JOIN "Followers" f ON  u."id" = f."followingId" AND f."followerId" = :followerId
+    WHERE u."id" = :userId`;
 
-    if (paramId !== 'me') {
-      const followerTemp = await Follower.findOne({
-        where: { followerId: authInfo.userId, followingId: paramId }
-      });
-      isFollowed = !!followerTemp;
-    }
-
-    const userInfo = this._getPublicInfo(user);
-    return { ...userInfo, isFollowed};
+    const user = await this.sequelize.query(
+      baseQuery, {
+        replacements: { userId: authInfo.userId, followerId: userId },
+        type: QueryTypes.SELECT
+      }
+    )
+    if (user.length === 0) throw UserErrors.NOT_FOUND;
+    return user[0];
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {
