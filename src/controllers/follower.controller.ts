@@ -12,27 +12,8 @@ const followerController = {
     const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
-      attributes: ['followerId', 'followingId'],
+      attributes: [],
       where: { followingId: id },
-      include: [{
-        model: User,
-        as: 'followingInfo',
-        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
-      }]
-    });
-
-    if (data.length === 0) throw UserErrors.NOT_FOUND;
-
-    return { users: data };
-  }),
-  getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    const authInfo: any = req.user;
-
-    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
-
-    const data = await Follower.findAll({
-      attributes: ['followerId', 'followingId'],
-      where: { followerId: id },
       include: [{
         model: User,
         as: 'followerInfo',
@@ -40,9 +21,24 @@ const followerController = {
       }]
     });
 
-    if (data.length === 0) throw UserErrors.NOT_FOUND;
+    return data.map((x: any) => x.followerInfo);
+  }),
+  getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const authInfo: any = req.user;
 
-    return { users: data };
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
+
+    const data = await Follower.findAll({
+      attributes: [],
+      where: { followerId: id },
+      include: [{
+        model: User,
+        as: 'followingInfo',
+        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
+      }]
+    });
+
+    return data.map((x: any) => x.followingInfo);
   }),
   toggleFollower: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;

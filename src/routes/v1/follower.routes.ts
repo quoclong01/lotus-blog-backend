@@ -11,7 +11,7 @@ const jwtCheck = expressjwt({
 });
 
 router
-  .route('/:id/follower-list')
+  .route('/:id/followers')
   .get(jwtCheck, followerController.getFollowers)
   /**
    * @swagger
@@ -42,7 +42,7 @@ router
   */
  
 router
-  .route('/:id/following-list')
+  .route('/:id/followings')
   .get(jwtCheck, followerController.getFollowings)
   /**
    * @swagger
