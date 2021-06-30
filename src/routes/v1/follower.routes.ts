@@ -11,23 +11,15 @@ const jwtCheck = expressjwt({
 });
 
 router
-  .route('/:id/followers')
+  .route('/followers')
   .get(jwtCheck, followerController.getFollowers)
   /**
    * @swagger
-   * /followers/{id}/follower-list:
+   * /friends/followers:
    *   get:
-   *     summary: Get all followers by user ID
+   *     summary: Get all followers by user
    *     tags:
    *       - Follower
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: Numeric ID of the user to retrieve.
-   *         schema:
-   *           type: string
-   *           example: me
    *     produces:
    *       - application/json
    *     security:
@@ -37,28 +29,20 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { users: [{ followedId: 3, followingId: 1, followingInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 04/01/1997 } }] }
+   *               type: array
+   *               example: [{ id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 04/01/1997 }]
   */
  
 router
-  .route('/:id/followings')
+  .route('/followings')
   .get(jwtCheck, followerController.getFollowings)
   /**
    * @swagger
-   * /followers/{id}/following-list:
+   * /friends/followings:
    *   get:
-   *     summary: Get all followings by user ID
+   *     summary: Get all followings by user
    *     tags:
    *       - Follower
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: Numeric ID of the user to retrieve.
-   *         schema:
-   *           type: string
-   *           example: me
    *     produces:
    *       - application/json
    *     security:
@@ -68,8 +52,8 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { users: [{ followedId: 1, followingId: 3, followerInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 19/10/1995 } }] }
+   *               type: array
+   *               example: [{ id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 19/10/1995}]
   */
 
 router
@@ -79,7 +63,7 @@ router
   /**
    * @swagger
    *
-   * /followers:
+   * /friends:
    *   post:
    *     tags:
    *       - Follower
