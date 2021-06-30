@@ -10,23 +10,8 @@ const userController = {
     });
     return { users: data };
   }),
-  getPost: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.token;
-    const { userId } = await verifyToken(token);
-    let data;
-    if (JSON.stringify(userId) === req.params.id) {
-      data = await User.findOne({
-        attributes: ['id'],
-        where: { id: req.params.id }, include: { model: Post, as: 'Posts', required: false }
-      });
-    }
-    else {
-      data = await User.findOne({
-        attributes: ['id'],
-        where: { id: req.params.id }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
-      });
-    }
-    return { users: data };
+  getPosts: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.getPosts(req.params.id, req.user);
   }),
   get: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await User.findUser(req.params.id, req.user);

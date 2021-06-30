@@ -1,3 +1,5 @@
+import { Comment } from './../models/Comment';
+import { Like } from './../models/Like';
 import { PostErrors } from './../lib/api-error';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
@@ -26,16 +28,16 @@ const postController = {
     return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.likePost(req.params.id);
+    return Like.toggleLike(req.params.id, req.user);
   }),
   getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getLikes(req.params.id);
+    return Like.getLikes(req.params.id);
   }),
   getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getComments(req.params.id);
+    return Comment.getComments(req.params.id);
   }),
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.commentPost(req.params.id);
+    return Comment.doComment(req.params.id, req.user, req.body);
   }),
 
 };

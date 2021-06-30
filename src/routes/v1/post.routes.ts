@@ -308,11 +308,13 @@ router
   .get(postController.getlikes)
   /**
   * @swagger
+  /**
+  * @swagger
   *
   * /posts/:id/likes:
   *   get:
   *     tags:
-  *       - Post
+  *       - Reaction
   *     produces:
   *       - application/json
   *     summary:
@@ -324,28 +326,34 @@ router
   *             schema:
   *               type: object
   *               properties:
-  *                  status:
+  *                  id:
   *                    type: integer
-  *                    example: 200
-  *                  likes:
-  *                    type: array
-  *                    items:
-  *                       type: object
-  *                       properties:
-  *                         userId:
-  *                           type: integer
-  *                           example: 1
-  *                    
-  *                
+  *                    example: 1
+  *                  userId:
+  *                    type: integer
+  *                    example: 5
+  *                  postId:
+  *                    type: integer
+  *                    example: 11
+  *                  user:
+  *                    type: object
+  *                    properties:
+  *                       id:
+  *                         type: integer
+  *                         example: 111
+  *                       email:
+  *                         type: integer
+  *                         example: a@gmail.com
+  *                   
  */
-  .put(postController.like)
+  .put(jwtCheck, postController.like)
 /**
  * @swagger
  *
  * /posts/:id/likes:
  *   put:
  *     tags:
- *       - Post
+ *       - Reaction
  *     produces:
  *       - application/json
  *     summary:
@@ -358,65 +366,78 @@ router
  *               type: object
  *               properties:
  *                  status:
- *                    type: integer
- *                    example: 200
- *                  likes:
- *                    type: array
- *                    items:
- *                       type: object
- *                       properties:
- *                         userId:
- *                           type: integer
- *                           example: 1                
+ *                    type: string
+ *                    example: Liked successfully/UnLiked successfully          
  */
 router
   .route('/:id/comments')
 
   .get(postController.getcomments)
+ /**
+  * @swagger
   /**
- * @swagger
- *
- * /posts/:id/comments:
- *   get:
- *     tags:
- *       - Post
- *     produces:
- *       - application/json
- *     summary:
- *       Get list of users commented post with id 
- *     responses:
- *       200:
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                  status:
- *                    type: integer
- *                    example: 200
- *                  likes:
- *                    type: array
- *                    items:
- *                       type: object
- *                       properties:
- *                         userId:
- *                           type: integer
- *                           example: 1
- *                    
- *                
-*/
-  .put(postController.comment)
+  * @swagger
+  *
+  * /posts/:id/comments:
+  *   get:
+  *     tags:
+  *       - Reaction
+  *     produces:
+  *       - application/json
+  *     summary:
+  *       Get list of users commented post with id
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  id:
+  *                    type: integer
+  *                    example: 1
+  *                  userId:
+  *                    type: integer
+  *                    example: 5
+  *                  postId:
+  *                    type: integer
+  *                    example: 11
+  *                  comment:
+  *                    type: string
+  *                    example: This is new comment
+  *                  user:
+  *                    type: object
+  *                    properties:
+  *                       id:
+  *                         type: integer
+  *                         example: 111
+  *                       email:
+  *                         type: integer
+  *                         example: a@gmail.com
+  *                   
+ */
+  .post(jwtCheck, validate(postchema.addComment), postController.comment)
 /**
 * @swagger
 *
 * /posts/:id/comments:
-*   put:
+*   post:
 *     tags:
-*       - Post
+*       - Reaction
 *     produces:
 *       - application/json
 *     summary:
 *       Comment a post with id, this post will add userId to comments attr 
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               content:
+*                 type: string
+*                 example: This is comment
 *     responses:
 *       200:
 *         content:
@@ -427,14 +448,26 @@ router
 *                  status:
 *                    type: integer
 *                    example: 200
+*                  messages:
+*                    type: string
+*                    example: Successfully
 *                  likes:
 *                    type: array
 *                    items:
 *                       type: object
 *                       properties:
+*                         id:
+*                           type: integer
+*                           example: 1
 *                         userId:
 *                           type: integer
 *                           example: 1
+*                         postId:
+*                           type: integer
+*                           example: 1
+*                         comment:
+*                           type: string
+*                           example: This is comment
 *                    
 *                
 */

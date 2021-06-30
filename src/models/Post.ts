@@ -83,17 +83,17 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     const offset = (+query.page - 1) * size || 0;
     const tags = query.tags ? query.tags.split(',') : [];
     const queryStatement = new PostQueryBuilder({
-        limit: size,
-        offset,
-        order: [['createdAt', 'DESC']]
-      }, tags).getPlainObject();
+      limit: size,
+      offset,
+      order: [['createdAt', 'DESC']]
+    }, tags).getPlainObject();
 
     const data = await Post.findAll(queryStatement);
     const length = +await Post.count(queryStatement);
     const totalPage = Math.ceil(length / size);
 
-    return { 
-      data, 
+    return {
+      data,
       totalPage,
       totalItems: length,
       itemsPerPage: size,
@@ -183,7 +183,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public static async updateContent(id: string, data: any, authInfo: any) {
     const currentPost = await Post.findByPk(id);
 
-    if (!currentPost) 
+    if (!currentPost)
       throw PostErrors.NOT_FOUND;
     if (authInfo.userId !== currentPost.userId)
       throw PostErrors.INTERACT_PERMISSION;

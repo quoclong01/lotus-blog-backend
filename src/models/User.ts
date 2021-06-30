@@ -1,3 +1,4 @@
+import { Post } from './Post';
 import { DataTypes, Model, Optional } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
@@ -189,8 +190,31 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       ]
     });
     if (!user) throw UserErrors.NOT_FOUND;
-
     return user;
+  }
+
+  public static async getPosts(paramId: string | number, authInfo: any) {
+    let data;
+    if (paramId === 'me') {
+      data = await User.findOne({
+        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
+      });
+    }
+    else {
+      data = await User.findOne({
+        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
+      });
+    }
+    return data;
+  }
+
+  private static _showPublicInfo(user: any) {
+    const userTemp: any = {};
+    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
+    publicField.forEach((x: string) => {
+      userTemp[x] = user[x];
+    })
+    return userTemp;
   }
 }
 
