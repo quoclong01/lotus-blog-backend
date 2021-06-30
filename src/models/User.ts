@@ -283,7 +283,8 @@ User.init({
     type: DataTypes.STRING
   },
   displayName: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    unique: true
   },
   picture: {
     type: DataTypes.STRING
