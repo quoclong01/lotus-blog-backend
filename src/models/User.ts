@@ -33,13 +33,13 @@ class RequestUser {
   displayName?: string;
   phone?: string;
 
-  constructor(data: any) {
+  constructor(data: any, strict = false) {
     if (data.firstName) this.firstName = data.firstName.trim().replace(/\n+/g, ' ');
     if (data.lastName) this.lastName = data.lastName.trim().replace(/\n+/g, ' ');
     if (data.displayName) this.displayName = data.displayName.trim().replace(/\n+/g, ' ');
 
-    if (data.email) this.email = data.email;
-    if (data.password) this.password = data.password;
+    if (!strict && data.email) this.email = data.email;
+    if (!strict && data.password) this.password = data.password;
     if (data.gender) this.gender = data.gender;
     if (data.dob) this.dob = data.dob;
     if (data.phone) this.phone = data.phone;
@@ -77,13 +77,15 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @params data (Object)
   */
   public static async createUser(data: any) {
-    const existUser = await User.findAll({
-      where: {
-        [Op.or]: [{ email: data.email}, { displayName: data.displayName }]
-      }
+    const existUser = await User.findOne({
+      where: { email: data.email }
     });
+    if (existUser) throw UserErrors.ALREADY_USER_EXISTED;
 
-    if (existUser.length !== 0) throw UserErrors.ALREADY_USER_EXISTED;
+    const existDisplayName = await User.findOne({
+      where: { displayName: data.displayName }
+    });
+    if (existDisplayName) throw UserErrors.ALREADY_DISPLAYNAME_EXISTED;
 
     const dataTemp: any = new RequestUser(data);
     const userTemp = new User({ ...dataTemp });
@@ -142,7 +144,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (id !== 'me') throw UserErrors.INTERACT_PERMISSION;
 
     const userTemp = await User.findByPk(authInfo.userId);
-    const dataTemp: any = new RequestUser(data);
+    const dataTemp: any = new RequestUser(data, true);
 
     if (!userTemp) throw UserErrors.NOT_FOUND;
 
