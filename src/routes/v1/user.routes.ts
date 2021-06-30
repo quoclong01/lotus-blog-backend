@@ -67,15 +67,16 @@ router
    *               email: quan.do@supremetech.vn,
    *               password: abc@1234, firstName: do,
    *               lastName: quan, gender: male,
-   *               dob: 19/10/1995, phone: '0909090900'
+   *               dob: 19/10/1995, phone: '0909090900',
+   *               displayName: st-quando
    *             }
    *     responses:
    *       200:
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { message: Create an account successfully. }
+   *               type: string
+   *               example: Create an account successfully.
   */
   .post(validate(userSchema.addUser), userController.create)
 
@@ -261,7 +262,7 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995}
+   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995, displayName: st-quando}
    *     responses:
    *       200:
    *         content:
