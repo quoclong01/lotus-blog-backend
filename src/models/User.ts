@@ -1,6 +1,6 @@
 import { Post } from './Post';
 import { Follower } from '../models';
-import { DataTypes, Model, Optional, Op, QueryTypes } from 'sequelize';
+import { DataTypes, Model, Optional, Op, QueryTypes, literal } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
@@ -222,23 +222,26 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    const baseQuery = `select u.*, 
-    case when f."id" is not null 
-        then TRUE 
-        else FALSE
-    end as "isFollowed"
-    from
-        "Users" u LEFT JOIN "Followers" f ON  u."id" = f."followingId" AND f."followerId" = :followerId
-    WHERE u."id" = :userId`;
-
-    const user = await this.sequelize.query(
-      baseQuery, {
-        replacements: { userId: authInfo.userId, followerId: userId },
-        type: QueryTypes.SELECT
+    const user = await User.findByPk(userId, {
+      attributes: [
+        'email', 'firstName', 'lastName',
+        'gender', 'dob', 'phone',
+        'displayName', 'picture', 'followers', 'followings',
+        [literal('CASE WHEN "followingInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
+      ],
+      include: {
+        attributes: [],
+        model: Follower, 
+        as: 'followingInfo',
+        required: false,
+        where: {
+          followingId: userId,
+          followerId: authInfo.userId
+        }
       }
-    )
-    if (user.length === 0) throw UserErrors.NOT_FOUND;
-    return user[0];
+    });
+    if (!user) throw UserErrors.NOT_FOUND;
+    return user;
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {
@@ -256,9 +259,9 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return data;
   }
 
-  private static _getPublicInfo(user: any) {
+  private static _showPublicInfo(user: any) {
     const userTemp: any = {};
-    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture', 'followers', 'followings'];
+    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
     publicField.forEach((x: string) => {
       userTemp[x] = user[x];
     })
