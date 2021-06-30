@@ -8,6 +8,7 @@ export default {
     lastName: Joi.string().required(),
     gender: Joi.string().required(),
     dob: Joi.string().required(),
+    displayName: Joi.string(),
     phone: Joi.string()
   }).required(),
   login: Joi.object().keys({

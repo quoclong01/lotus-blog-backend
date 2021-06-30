@@ -78,12 +78,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async loginUser(data: any) {
     const userTemp = await User.findOne({
-      where: { email: data.email },
-      attributes: [
-        'email', 'firstName', 'lastName',
-        'gender', 'dob', 'phone',
-        'displayName', 'picture'
-      ]
+      where: { email: data.email }
     });
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
@@ -96,7 +91,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     const accessToken = await generateAccessToken(authTemp);
     await authTemp.update({ accessToken });
-    await userTemp.update({ verifyAt: Date.now() });
+    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: Date.now() });
 
     return { accessToken, userInfo: userTemp };
   }
