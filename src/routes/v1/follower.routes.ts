@@ -57,7 +57,7 @@ router
   */
 
 router
-  .route('/')
+  .route('/follow')
   .get(followerController.index)
   .post(jwtCheck, validate(followerSchema.addFollower), followerController.toggleFollower)
   /**
