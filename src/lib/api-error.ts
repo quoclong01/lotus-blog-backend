@@ -53,3 +53,10 @@ export class FollowerErrors {
   static INTERACT_PERMISSION = new ApplicationError('40303', 'You do not have permission to interact this user.')
   static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40903', 'This follower have already exist.')
 }
+
+export class S3Errors {
+  static UNEXPECTED_ERROR = new ApplicationError('50001', 'Got errors with upload server!')
+  static UNSUPPORTED = new ApplicationError('40001', 'API have not supported this type!')
+  static MISSING_FIELD = new ApplicationError('40002', 'Not enough data to sign!')
+}
+
