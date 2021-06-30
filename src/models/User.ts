@@ -1,5 +1,5 @@
 import { Post } from './Post';
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional, Op } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
@@ -21,6 +21,29 @@ interface UserAttributes {
   followers: number;
   followings: number;
   verifyAt: boolean;
+}
+
+class RequestUser {
+  email?: string; 
+  password?: string; 
+  firstName?: string; 
+  lastName?: string; 
+  gender?: string; 
+  dob?: string; 
+  displayName?: string;
+  phone?: string;
+
+  constructor(data: any) {
+    if (data.firstName) this.firstName = data.firstName.trim().replace(/\n+/g, ' ');
+    if (data.lastName) this.lastName = data.lastName.trim().replace(/\n+/g, ' ');
+    if (data.displayName) this.displayName = data.displayName.trim().replace(/\n+/g, ' ');
+
+    if (data.email) this.email = data.email;
+    if (data.password) this.password = data.password;
+    if (data.gender) this.gender = data.gender;
+    if (data.dob) this.dob = data.dob;
+    if (data.phone) this.phone = data.phone;
+  }
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -54,13 +77,16 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     * @params data (Object)
   */
   public static async createUser(data: any) {
-    const existUser = await User.findOne({
-      where: { email: data.email }
+    const existUser = await User.findAll({
+      where: {
+        [Op.or]: [{ email: data.email}, { displayName: data.displayName }]
+      }
     });
 
-    if (existUser) throw UserErrors.ALREADY_USER_EXISTED;
+    if (existUser.length !== 0) throw UserErrors.ALREADY_USER_EXISTED;
 
-    const userTemp = new User({ ...data });
+    const dataTemp: any = new RequestUser(data);
+    const userTemp = new User({ ...dataTemp });
     const user = await userTemp.save();
     const passwordHash = await hashPassword(data.password);
     const auth = {
@@ -78,7 +104,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async loginUser(data: any) {
     const userTemp = await User.findOne({
-      where: { email: data.email }
+      where: { email: data.email },
+      attributes: [
+        'id', 'email', 'firstName', 'lastName',
+        'gender', 'phone', 'dob', 'displayName', 'picture',
+        'verifyAt'
+      ]
     });
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
@@ -111,11 +142,22 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (id !== 'me') throw UserErrors.INTERACT_PERMISSION;
 
     const userTemp = await User.findByPk(authInfo.userId);
-    delete data.email;
-    const userBody = { ...data };
+    const dataTemp: any = new RequestUser(data);
+
     if (!userTemp) throw UserErrors.NOT_FOUND;
 
-    await userTemp.update(userBody);
+    const userDisplayNameTemp = await User.findOne({
+      where: {
+        displayName: dataTemp.displayName,
+        id: {
+          [Op.not]: authInfo.userId
+        }
+      }
+    });
+
+    if (userDisplayNameTemp) throw UserErrors.ALREADY_DISPLAYNAME_EXISTED;
+
+    await userTemp.update({...dataTemp});
     return userTemp;
   }
 

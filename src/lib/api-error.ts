@@ -44,11 +44,12 @@ export class UserErrors {
   static INVALID_PASSWORD = new ApplicationError('40103', 'Invalid password.')
   static INTERACT_PERMISSION = new ApplicationError('40302', 'You do not have permission to interact this user.')
   static NOT_FOUND = new ApplicationError('40402', 'The requested user was not found.')
-  static ALREADY_USER_EXISTED = new ApplicationError('40901', 'This email have already exist.')
+  static ALREADY_USER_EXISTED = new ApplicationError('40901', 'This email or diplayName have already exist.')
+  static ALREADY_DISPLAYNAME_EXISTED = new ApplicationError('40902', 'This diplayName have already exist.')
 }
 
 export class FollowerErrors {
   static NOT_FOUND = new ApplicationError('40403', 'The requested follower was not found')
   static INTERACT_PERMISSION = new ApplicationError('40303', 'You do not have permission to interact this user.')
-  static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40902', 'This follower have already exist.')
+  static ALREADY_FOLLOWER_EXISTED = new ApplicationError('40903', 'This follower have already exist.')
 }
