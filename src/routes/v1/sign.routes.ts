@@ -6,7 +6,7 @@ const router = express.Router();
 const jwtCheck = expressjwt({
   secret: 'RANDOM_TOKEN_SECRET',
   algorithms: ['HS256']
-});
+}); 
 
 router
   .route('/')
