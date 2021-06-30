@@ -1,12 +1,13 @@
 const path = require('path');
 
 let config = {};
-if (process.env.NODE_ENV === 'development') {
+
+if (process.env.NODE_ENV !== 'production') {
   require('dotenv-safe').config({
     allowEmptyValues: true,
     path: path.join(__dirname, '../.env')
   });
-  config = {
+  config = { 
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
@@ -16,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
     seederStorageTableName: 'Seeder',
     autoMigrateOldSchema: true,
   };
-} else if (process.env.NODE_ENV === 'production') {
+} else {
   config = {
     "use_env_variable": 'DATABASE_URL',
     dialect: 'postgres',
