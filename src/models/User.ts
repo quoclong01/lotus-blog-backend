@@ -1,4 +1,5 @@
 import { Post } from './Post';
+import { Follower } from './Follower';
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
@@ -20,7 +21,7 @@ interface UserAttributes {
   isAdmin: boolean;
   followers: number;
   followings: number;
-  verifyAt: boolean;
+  verifyAt: number;
 }
 
 class RequestUser {
@@ -62,7 +63,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public isAdmin!: boolean;
   public followers!: number;
   public followings!: number;
-  public verifyAt!: boolean;
+  public verifyAt!: number;
 
 
   // timestamps!
@@ -221,6 +222,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
+    let isAllowed = false;
     const user = await User.findByPk(userId, {
       attributes: [
         'email', 'firstName', 'lastName',
@@ -229,7 +231,16 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       ]
     });
     if (!user) throw UserErrors.NOT_FOUND;
-    return user;
+
+    if (paramId !== 'me') {
+      const followerTemp = await Follower.findOne({
+        where: { followerId: authInfo.userId, followingId: paramId }
+      });
+      isAllowed = followerTemp ? true : false;
+    }
+
+    const userInfo = this._getPublicInfo(user);
+    return { ...userInfo, isAllowed};
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {
@@ -247,9 +258,9 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return data;
   }
 
-  private static _showPublicInfo(user: any) {
+  private static _getPublicInfo(user: any) {
     const userTemp: any = {};
-    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture'];
+    const publicField = ['email', 'firstName', 'lastName', 'gender', 'dob', 'phone', 'displayName', 'picture', 'followers', 'followings'];
     publicField.forEach((x: string) => {
       userTemp[x] = user[x];
     })
