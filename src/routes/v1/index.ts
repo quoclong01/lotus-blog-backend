@@ -1,6 +1,7 @@
 import express from 'express';
 import userRoutes from './user.routes';
 import bookmarkRoutes from './bookmark.routes';
+import authRoutes from './auth.routes';
 
 import postRoutes from './post.routes';
 import followerRoutes from './follower.routes';
@@ -59,6 +60,7 @@ router.get('/', (req, res) =>
 
 router.use('/posts', postRoutes);
 router.use('/users', userRoutes);
+router.use('/auths', authRoutes);
 router.use('/followers', followerRoutes);
 router.use('/bookmarks', bookmarkRoutes);
 
