@@ -236,7 +236,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       const followerTemp = await Follower.findOne({
         where: { followerId: authInfo.userId, followingId: paramId }
       });
-      isFollowed = followerTemp ? true : false;
+      isFollowed = !!followerTemp;
     }
 
     const userInfo = this._getPublicInfo(user);
