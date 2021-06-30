@@ -1,12 +1,11 @@
 const path = require('path');
 
-require('dotenv-safe').config({
-  allowEmptyValues: true,
-  path: path.join(__dirname, '../.env')
-});
-
 let config = {};
 if (process.env.NODE_ENV === 'development') {
+  require('dotenv-safe').config({
+    allowEmptyValues: true,
+    path: path.join(__dirname, '../.env')
+  });
   config = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
