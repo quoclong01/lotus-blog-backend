@@ -30,6 +30,7 @@ export class Like extends Model<LikeAttributes, LikeCreationAttributes> implemen
     });
     return data;
   }
+
   public static async toggleLike(id: any, authInfo: any) {
     const currentUser: any = authInfo.userId;
     const postId = id;
@@ -50,11 +51,11 @@ export class Like extends Model<LikeAttributes, LikeCreationAttributes> implemen
       });
       newBookmark.save();
       await checkPost.update({likes: ++checkPost.likes})
-      return 'Liked successfully'
+      return { liked: true }
     } else {
       currentLike.destroy();
       await checkPost.update({likes: --checkPost.likes})
-      return 'Unliked successfully'
+      return { liked: false }
     }
   }
 }

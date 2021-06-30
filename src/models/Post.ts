@@ -232,22 +232,6 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     currentPost.restore();
     return 'Restore post successfully';
   }
-
-  public static async likePost(id: string) {
-    return { status: 200, message: 'Comming soon' }
-  }
-
-  public static async commentPost(id: string) {
-    return { status: 200, message: 'Comming soon' };
-  }
-
-  public static async getLikes(id: string) {
-    return { status: 200, message: 'Comming soon' };
-  }
-
-  public static async getComments(id: string) {
-    return { status: 200, message: 'Comming soon' };
-  }
 }
 
 Post.init({

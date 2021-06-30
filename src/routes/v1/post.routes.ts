@@ -305,7 +305,7 @@ router
 router
   .route('/:id/likes')
 
-  .get(postController.getlikes)
+  .get(postController.getLikes)
   /**
   * @swagger
   /**
@@ -372,7 +372,7 @@ router
 router
   .route('/:id/comments')
 
-  .get(postController.getcomments)
+  .get(postController.getComments)
  /**
   * @swagger
   /**
