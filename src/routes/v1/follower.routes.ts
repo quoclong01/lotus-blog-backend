@@ -63,7 +63,7 @@ router
   /**
    * @swagger
    *
-   * /friends:
+   * /friends/follow:
    *   post:
    *     tags:
    *       - Follower
