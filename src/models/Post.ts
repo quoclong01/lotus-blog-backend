@@ -5,6 +5,7 @@ import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
+import { User } from './User'
 
 interface PostAttributes {
   id: number;
@@ -87,8 +88,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       offset,
       order: [['createdAt', 'DESC']]
     }, tags).getPlainObject();
-
-    const data = await Post.findAll(queryStatement);
+    const data = await Post.findAll({ ...queryStatement, include: { model: User, as: 'user', required: false } });
     const length = +await Post.count(queryStatement);
     const totalPage = Math.ceil(length / size);
 
@@ -196,8 +196,9 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   }
 
   public static async getPost(id: string) {
-    const currentPost =  await Post.findOne({
-      where: { id: id, status:'public' }
+    const currentPost = await Post.findOne({
+      where: { id: id, status: 'public' },
+      include: { model: User, as: 'user', required: false }
     });
 
     if (!currentPost) throw PostErrors.NOT_FOUND; 
