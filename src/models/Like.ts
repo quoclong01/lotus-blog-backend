@@ -40,6 +40,7 @@ export class Like extends Model<LikeAttributes, LikeCreationAttributes> implemen
 
     const currentLike = await Like.findOne({
       where: {
+        userId: currentUser,
         postId,
       }
     });
