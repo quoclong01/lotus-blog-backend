@@ -180,6 +180,35 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     return post;
   }
 
+  public static async getlistDrafts(authInfo: any) {
+
+    const dataPost = await Post.findAll({
+      where: {
+        userId: authInfo.userId,
+        status: 'Draft'
+      }
+    })
+
+    return dataPost
+  }
+
+  public static async createDraft(data: any, authInfo: any) {
+    const tempData = {
+      title: '',
+      description: '',
+      content: '',
+      userId: authInfo.userId
+    }
+
+    const dataPost = new Post({
+      ...tempData,
+      ...data,
+      status: 'Draft',
+    });
+    const post = await dataPost.save();
+    return post;
+  }
+
   public static async updateContent(id: string, data: any, authInfo: any) {
     const currentPost = await Post.findByPk(id);
 
