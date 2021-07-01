@@ -190,7 +190,6 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 
     const dataTemp: any = new RequestPost(data);
     await currentPost.update({
-      ...currentPost,
       ...dataTemp
     });
     return currentPost;
