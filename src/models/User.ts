@@ -21,7 +21,7 @@ interface UserAttributes {
   isAdmin: boolean;
   followers: number;
   followings: number;
-  verifyAt: number;
+  verifyAt: string;
 }
 
 class RequestUser {
@@ -63,7 +63,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public isAdmin!: boolean;
   public followers!: number;
   public followings!: number;
-  public verifyAt!: number;
+  public verifyAt!: string;
 
 
   // timestamps!
@@ -125,7 +125,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     const accessToken = await generateAccessToken(authTemp);
     await authTemp.update({ accessToken });
-    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: Date.now() });
+    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: new Date().toISOString()});
 
     return { accessToken, userInfo: userTemp };
   }
