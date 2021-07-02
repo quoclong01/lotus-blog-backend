@@ -198,8 +198,8 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { message: Change password successfully. }
+   *               type: string
+   *               example: Change password successfully.
   */
   .put(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
 

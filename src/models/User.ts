@@ -174,7 +174,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (!isValidPassword) throw UserErrors.INVALID_PASSWORD;
 
-    const password = await hashPassword(data.password);
+    const password = await hashPassword(data.newPassword);
     await authTemp.update({ password });
     return 'Change password successfully.';
   }
