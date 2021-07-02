@@ -7,7 +7,6 @@ module.exports = {
         'status',
         {
           type: Sequelize.ENUM('private', 'public', 'draft'),
-          unique: true
         }
       ),
     ])
@@ -19,7 +18,6 @@ module.exports = {
         'status',
         {
           type: Sequelize.ENUM('private', 'public'),
-          unique: false
         }
       ),
     ])
