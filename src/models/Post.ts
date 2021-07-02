@@ -18,6 +18,7 @@ interface PostAttributes {
   likes: number;
   comments: number;
   cover: string;
+  recommend: boolean;
 }
 
 class RequestPost {
@@ -75,6 +76,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public likes!: number;
   public comments!: number;
   public cover!: string;
+  public recommend!: boolean;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -168,6 +170,24 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
         loadMore: offset < totalPage - 1
       };
     }
+  }
+  public static async listRecommmedPosts(query: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+    const data = await Post.findAll({
+      where: { recommend: true },
+      order: [['createdAt', 'DESC']]
+    })
+    const length = +await Post.count({where: {recommend: true}});
+    const totalPage = Math.ceil(length / size);
+    return {
+      data,
+      totalPage,
+      totalItems: length,
+      itemsPerPage: size,
+      currentPage: +query.page || 1,
+      loadMore: offset < totalPage - 1
+    };
   }
 
   public static async createPost(data: any, authInfo: any) {
@@ -263,16 +283,20 @@ Post.init({
     references: { model: 'Users', key: 'id' }
   },
   likes: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     defaultValue: 0
   },
   comments: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     defaultValue: 0
   },
   cover: {
     type: DataTypes.STRING,
   },
+  recommend: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
 }, {
   // Other model options go here
   paranoid: true,

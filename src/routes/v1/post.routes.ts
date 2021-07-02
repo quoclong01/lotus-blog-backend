@@ -65,6 +65,30 @@ router
  */
 
 router
+  .route('/recommend')
+  .get(postController.recommendIndex);
+  /**
+   * @swagger
+   *
+   * /posts/recommend:
+   *   get:
+   *     tags:
+   *       - Post
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all posts with recommend   
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: Change password successfully.  
+  */
+
+
+router
   .route('/')
   .get(jwtCheck, postController.authIndex)
   /**
