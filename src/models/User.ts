@@ -248,7 +248,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     let data;
     if (paramId === 'me') {
       data = await User.findOne({
-        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', paranoid: false, required: false }
+        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
       });
     }
     else {
