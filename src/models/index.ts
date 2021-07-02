@@ -19,6 +19,8 @@ Follower.belongsTo(User, { targetKey: 'id', foreignKey: 'followerId', as: 'follo
 Follower.belongsTo(User, { targetKey: 'id', foreignKey: 'followingId', as: 'followingInfo' });
 
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followerId', as: 'followerInfo' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followingId', as: 'followingInfo' });
 
 export {
   User,

@@ -58,7 +58,7 @@ const followerController = {
     });
 
     if (followerTemp) {
-      await userFollowingsTemp.update({follwers: followersCount - 1});
+      await userFollowingsTemp.update({followers: followersCount - 1});
       await userFollowersTemp.update({followings: followingsCount - 1});
       await followerTemp.destroy();
 
