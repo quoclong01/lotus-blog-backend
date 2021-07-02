@@ -5,6 +5,7 @@ import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
+import { PostStatus } from '../lib/enum';
 
 interface PostAttributes {
   id: number;
@@ -46,7 +47,7 @@ class PostQueryBuilder extends QueryBuilder {
   constructor(baseQuery: any, tags: string[] = []) {
     super(baseQuery);
     const whereAnd: any = [
-      { status: 'public' },
+      { status: PostStatus.PUBLIC },
     ]
     if (tags.length > 0) {
       whereAnd.push(
@@ -185,26 +186,29 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     const dataPost = await Post.findAll({
       where: {
         userId: authInfo.userId,
-        status: 'Draft'
+        status: PostStatus.DRAFT
       }
     })
 
-    return dataPost
+    return dataPost;
   }
 
   public static async createDraft(data: any, authInfo: any) {
-    const tempData = {
+    const defaultValue = {
       title: '',
       description: '',
       content: '',
-      userId: authInfo.userId
     }
-
-    const dataPost = new Post({
-      ...tempData,
+    const postData: any = new RequestPost({
       ...data,
-      status: 'Draft',
+      status: PostStatus.DRAFT
     });
+    const dataPost = new Post({
+      ...defaultValue,
+      ...postData,
+      userId: authInfo.userId
+    });
+
     const post = await dataPost.save();
     return post;
   }
@@ -226,7 +230,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 
   public static async getPost(id: string) {
     const currentPost =  await Post.findOne({
-      where: { id: id, status:'public' }
+      where: { id: id, status: PostStatus.PUBLIC }
     });
 
     if (!currentPost) throw PostErrors.NOT_FOUND; 
@@ -279,7 +283,7 @@ Post.init({
     type: DataTypes.TEXT
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('private', 'public', 'draft'),
     allowNull: false
   },
   tags: {

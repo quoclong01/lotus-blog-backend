@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional, Op } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
-import { ProviderType } from '../lib/enum';
+import { PostStatus, ProviderType } from '../lib/enum';
 import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
@@ -241,7 +241,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
     else {
       data = await User.findOne({
-        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
+        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: PostStatus.PUBLIC }, required: false }
       });
     }
     return data;
