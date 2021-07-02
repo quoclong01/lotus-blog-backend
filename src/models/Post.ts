@@ -21,6 +21,7 @@ interface PostAttributes {
   comments: number;
   cover: string;
   recommend: boolean;
+  deletedAt: Date;
 }
 
 class RequestPost {
@@ -79,6 +80,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public comments!: number;
   public cover!: string;
   public recommend!: boolean;
+  public deletedAt!: Date;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -181,6 +183,31 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       order: [['createdAt', 'DESC']]
     })
     const length = +await Post.count({where: {recommend: true}});
+    const totalPage = Math.ceil(length / size);
+    return {
+      data,
+      totalPage,
+      totalItems: length,
+      itemsPerPage: size,
+      currentPage: +query.page || 1,
+      loadMore: offset < totalPage - 1
+    };
+  }
+  public static async listDeletedPosts(query:any, authInfo: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+
+    const data = await Post.findAll({
+      where: { userId: authInfo.userId, deletedAt: { [Op.ne]: null } },
+      paranoid:false,
+      order: [['createdAt', 'DESC']]
+    })
+
+    const length = +await Post.count({
+      where: { userId: authInfo.userId, deletedAt: { [Op.ne]: null } },
+      paranoid:false,
+    });
+
     const totalPage = Math.ceil(length / size);
     return {
       data,
@@ -330,6 +357,10 @@ Post.init({
   recommend: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  deletedAt: {
+    type: DataTypes.DATE,
+    defaultValue: null
   }
 }, {
   // Other model options go here

@@ -87,6 +87,49 @@ router
    *               example: Change password successfully.  
   */
 
+router
+  .route('/recyclebin')
+  .get(jwtCheck,postController.getSoftDeleted);
+  /**
+   * @swagger
+   *
+   * /posts/recyclebin:
+   *   get:
+   *     tags:
+   *       - Post
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all soft-deleted Posts 
+   *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+ */
+
 
 router
   .route('/')
