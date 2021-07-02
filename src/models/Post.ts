@@ -6,6 +6,8 @@ import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
 import { PostStatus } from '../lib/enum';
+import { User } from './User'
+
 
 interface PostAttributes {
   id: number;
@@ -18,6 +20,7 @@ interface PostAttributes {
   likes: number;
   comments: number;
   cover: string;
+  recommend: boolean;
 }
 
 class RequestPost {
@@ -75,6 +78,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public likes!: number;
   public comments!: number;
   public cover!: string;
+  public recommend!: boolean;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -88,8 +92,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       offset,
       order: [['createdAt', 'DESC']]
     }, tags).getPlainObject();
-
-    const data = await Post.findAll(queryStatement);
+    const data = await Post.findAll({ ...queryStatement, include: { model: User, as: 'user', required: false } });
     const length = +await Post.count(queryStatement);
     const totalPage = Math.ceil(length / size);
 
@@ -170,6 +173,24 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       };
     }
   }
+  public static async listRecommmedPosts(query: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+    const data = await Post.findAll({
+      where: { recommend: true },
+      order: [['createdAt', 'DESC']]
+    })
+    const length = +await Post.count({where: {recommend: true}});
+    const totalPage = Math.ceil(length / size);
+    return {
+      data,
+      totalPage,
+      totalItems: length,
+      itemsPerPage: size,
+      currentPage: +query.page || 1,
+      loadMore: offset < totalPage - 1
+    };
+  }
 
   public static async createPost(data: any, authInfo: any) {
     const dataTemp: any = new RequestPost(data);
@@ -229,8 +250,9 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   }
 
   public static async getPost(id: string) {
-    const currentPost =  await Post.findOne({
-      where: { id: id, status: PostStatus.PUBLIC }
+    const currentPost = await Post.findOne({
+      where: { id: id, status: PostStatus.PUBLIC },
+      include: { model: User, as: 'user', required: false }
     });
 
     if (!currentPost) throw PostErrors.NOT_FOUND; 
@@ -295,16 +317,20 @@ Post.init({
     references: { model: 'Users', key: 'id' }
   },
   likes: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     defaultValue: 0
   },
   comments: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     defaultValue: 0
   },
   cover: {
     type: DataTypes.STRING,
   },
+  recommend: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
 }, {
   // Other model options go here
   paranoid: true,
