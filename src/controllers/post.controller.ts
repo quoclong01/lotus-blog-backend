@@ -18,6 +18,12 @@ const postController = {
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
   }),
+  newDraft: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.createDraft(req.body, req.user);
+  }),
+  getDrafts: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.getlistDrafts(req.user);
+  }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.getPost(req.params.id);
   }),

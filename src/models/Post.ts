@@ -5,7 +5,9 @@ import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
+import { PostStatus } from '../lib/enum';
 import { User } from './User'
+
 
 interface PostAttributes {
   id: number;
@@ -48,7 +50,7 @@ class PostQueryBuilder extends QueryBuilder {
   constructor(baseQuery: any, tags: string[] = []) {
     super(baseQuery);
     const whereAnd: any = [
-      { status: 'public' },
+      { status: PostStatus.PUBLIC },
     ]
     if (tags.length > 0) {
       whereAnd.push(
@@ -200,6 +202,38 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     return post;
   }
 
+  public static async getlistDrafts(authInfo: any) {
+
+    const dataPost = await Post.findAll({
+      where: {
+        userId: authInfo.userId,
+        status: PostStatus.DRAFT
+      }
+    })
+
+    return dataPost;
+  }
+
+  public static async createDraft(data: any, authInfo: any) {
+    const defaultValue = {
+      title: '',
+      description: '',
+      content: '',
+    }
+    const postData: any = new RequestPost({
+      ...data,
+      status: PostStatus.DRAFT
+    });
+    const dataPost = new Post({
+      ...defaultValue,
+      ...postData,
+      userId: authInfo.userId
+    });
+
+    const post = await dataPost.save();
+    return post;
+  }
+
   public static async updateContent(id: string, data: any, authInfo: any) {
     const currentPost = await Post.findByPk(id);
 
@@ -217,7 +251,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 
   public static async getPost(id: string) {
     const currentPost = await Post.findOne({
-      where: { id: id, status: 'public' },
+      where: { id: id, status: PostStatus.PUBLIC },
       include: { model: User, as: 'user', required: false }
     });
 
@@ -271,7 +305,7 @@ Post.init({
     type: DataTypes.TEXT
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('private', 'public', 'draft'),
     allowNull: false
   },
   tags: {

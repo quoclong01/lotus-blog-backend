@@ -187,6 +187,90 @@ router
   *                     example: {id: 1, title: title of post, content: content of post, status: public}
  */
 router
+  .route('/draft')
+  .get(jwtCheck, postController.getDrafts)
+  /**
+   * @swagger
+   *
+   * /posts/draft:
+   *   get:
+   *     tags:
+   *       - Draft
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all drafts
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 posts:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                      id:
+   *                        type: integer
+   *                        example: 1
+   *                      title:
+   *                        type: string
+   *                        example: title of post
+   *                      content:
+   *                         type: string
+   *                         example: this is content of post
+   *                      status:
+   *                         type: string
+   *                         example: Draft
+   *                      userId:
+   *                         type: number
+   *                         example: 1          
+  */
+  .post(jwtCheck, postController.newDraft);
+/**
+  * @swagger
+  *
+  * /posts/draft:
+  *   post:
+  *     tags:
+  *       - Draft
+  *     produces:
+  *       - application/json
+  *     summary:
+  *       Create a draft
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               title:
+  *                 type: string
+  *                 example: title of post
+  *               content:
+  *                 type: string
+  *                 example: content of post            
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  status:
+  *                    type: integer
+  *                    example: 200
+  *                  message:
+  *                    type: string
+  *                    example: Create a draft successfully.
+  *                  post: 
+  *                     type: object
+  *                     example: {id: 1, title: title of post, content: content of post, status: Draft}
+ */
+router
   .route('/:id')
 
   .get(postController.show)
