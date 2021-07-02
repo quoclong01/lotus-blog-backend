@@ -4,6 +4,7 @@ import bookmarkRoutes from './bookmark.routes';
 import authRoutes from './auth.routes';
 
 import postRoutes from './post.routes';
+import signRoutes from './sign.routes';
 import followerRoutes from './follower.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -60,9 +61,9 @@ router.get('/', (req, res) =>
 
 router.use('/posts', postRoutes);
 router.use('/users', userRoutes);
-router.use('/auths', authRoutes);
-router.use('/followers', followerRoutes);
+router.use('/friends', followerRoutes);
 router.use('/bookmarks', bookmarkRoutes);
-
+router.use('/signatures', signRoutes);
+router.use('/auths', authRoutes);
 
 export default router;

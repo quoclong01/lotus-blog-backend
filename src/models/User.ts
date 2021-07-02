@@ -1,4 +1,5 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { Post } from './Post';
+import { DataTypes, Model, Optional, Op } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
@@ -17,7 +18,32 @@ interface UserAttributes {
   picture: string;
   isActive: boolean;
   isAdmin: boolean;
+  followers: number;
+  followings: number;
   verifyAt: boolean;
+}
+
+class RequestUser {
+  email?: string; 
+  password?: string; 
+  firstName?: string; 
+  lastName?: string; 
+  gender?: string; 
+  dob?: string; 
+  displayName?: string;
+  phone?: string;
+
+  constructor(data: any, strict = false) {
+    if (data.firstName) this.firstName = data.firstName.trim().replace(/\n+/g, ' ');
+    if (data.lastName) this.lastName = data.lastName.trim().replace(/\n+/g, ' ');
+    if (data.displayName) this.displayName = data.displayName.trim().replace(/\n+/g, ' ');
+
+    if (!strict && data.email) this.email = data.email;
+    if (!strict && data.password) this.password = data.password;
+    if (data.gender) this.gender = data.gender;
+    if (data.dob) this.dob = data.dob;
+    if (data.phone) this.phone = data.phone;
+  }
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
@@ -34,6 +60,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public picture!: string;
   public isActive!: boolean;
   public isAdmin!: boolean;
+  public followers!: number;
+  public followings!: number;
   public verifyAt!: boolean;
 
 
@@ -52,10 +80,15 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const existUser = await User.findOne({
       where: { email: data.email }
     });
-
     if (existUser) throw UserErrors.ALREADY_USER_EXISTED;
 
-    const userTemp = new User({ ...data });
+    const existDisplayName = await User.findOne({
+      where: { displayName: data.displayName }
+    });
+    if (existDisplayName) throw UserErrors.ALREADY_DISPLAYNAME_EXISTED;
+
+    const dataTemp: any = new RequestUser(data);
+    const userTemp = new User({ ...dataTemp });
     const user = await userTemp.save();
     const passwordHash = await hashPassword(data.password);
     const auth = {
@@ -73,7 +106,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async loginUser(data: any) {
     const userTemp = await User.findOne({
-      where: { email: data.email }
+      where: { email: data.email },
+      attributes: [
+        'id', 'email', 'firstName', 'lastName',
+        'gender', 'phone', 'dob', 'displayName', 'picture',
+        'verifyAt'
+      ]
     });
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
 
@@ -86,7 +124,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     const accessToken = await generateAccessToken(authTemp);
     await authTemp.update({ accessToken });
-    await userTemp.update({ verifyAt: Date.now() });
+    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: Date.now() });
 
     return { accessToken, userInfo: userTemp };
   }
@@ -106,11 +144,22 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     if (id !== 'me') throw UserErrors.INTERACT_PERMISSION;
 
     const userTemp = await User.findByPk(authInfo.userId);
-    delete data.email;
-    const userBody = { ...data };
+    const dataTemp: any = new RequestUser(data, true);
+
     if (!userTemp) throw UserErrors.NOT_FOUND;
 
-    await userTemp.update(userBody);
+    const userDisplayNameTemp = await User.findOne({
+      where: {
+        displayName: dataTemp.displayName,
+        id: {
+          [Op.not]: authInfo.userId
+        }
+      }
+    });
+
+    if (userDisplayNameTemp) throw UserErrors.ALREADY_DISPLAYNAME_EXISTED;
+
+    await userTemp.update({...dataTemp});
     return userTemp;
   }
 
@@ -172,10 +221,30 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   public static async findUser(paramId: string | number, authInfo: any) {
     const userId = paramId === 'me' ? authInfo.userId : paramId;
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(userId, {
+      attributes: [
+        'email', 'firstName', 'lastName',
+        'gender', 'dob', 'phone',
+        'displayName', 'picture', 'followers', 'followings'
+      ]
+    });
     if (!user) throw UserErrors.NOT_FOUND;
+    return user;
+  }
 
-    return this._showPublicInfo(user);
+  public static async getPosts(paramId: string | number, authInfo: any) {
+    let data;
+    if (paramId === 'me') {
+      data = await User.findOne({
+        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
+      });
+    }
+    else {
+      data = await User.findOne({
+        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
+      });
+    }
+    return data;
   }
 
   private static _showPublicInfo(user: any) {
@@ -214,7 +283,8 @@ User.init({
     type: DataTypes.STRING
   },
   displayName: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    unique: true
   },
   picture: {
     type: DataTypes.STRING
@@ -226,6 +296,14 @@ User.init({
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  followers: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  followings: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   verifyAt: {
     type: DataTypes.DATE,

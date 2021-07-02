@@ -1,11 +1,16 @@
+import { Comment } from './../models/Comment';
+import { Like } from './../models/Like';
 import { PostErrors } from './../lib/api-error';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
 
 const postController = {
-  index: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  publicIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listPosts(req.query);
+  }),
+  authIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.listAuthPosts(req.query, req.user);
   }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
@@ -23,16 +28,16 @@ const postController = {
     return Post.restorePost(req.params.id, req.user);
   }),
   like: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.likePost(req.params.id);
+    return Like.toggleLike(req.params.id, req.user);
   }),
-  getlikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getLikes(req.params.id);
+  getLikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Like.getLikes(req.params.id);
   }),
-  getcomments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.getComments(req.params.id);
+  getComments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Comment.getComments(req.params.id);
   }),
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.commentPost(req.params.id);
+    return Comment.doComment(req.params.id, req.user, req.body);
   }),
 
 };

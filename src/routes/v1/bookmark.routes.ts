@@ -65,6 +65,13 @@ router
    *       - application/json
    *     summary:
    *       Toggle post in my bookmark.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             example: { postId: 1 }
    *     responses:
    *       200:
    *         content:

@@ -67,15 +67,16 @@ router
    *               email: quan.do@supremetech.vn,
    *               password: abc@1234, firstName: do,
    *               lastName: quan, gender: male,
-   *               dob: 19/10/1995, phone: '0909090900'
+   *               dob: 19/10/1995, phone: '0909090900',
+   *               displayName: st-quando
    *             }
    *     responses:
    *       200:
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { message: Create an account successfully. }
+   *               type: string
+   *               example: Create an account successfully.
   */
   .post(validate(userSchema.addUser), userController.create)
 
@@ -204,6 +205,36 @@ router
 
 router
   .route('/:id')
+    /**
+   * @swagger
+   *
+   * /users/{id}:
+   *   get:
+   *     tags:
+   *       - User
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get user info by ID
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: Numeric ID of the user to retrieve.
+   *         schema:
+   *           type: string
+   *           example: me
+   *     security:
+   *       - jwt: []
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: { email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: null, dob: 19/10/1995, gender: male, followers: 0, followings: 1 }
+  */
+  .get(jwtCheck, userController.get)
   /**
    * @swagger
    *
@@ -231,7 +262,7 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995}
+   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995, displayName: st-quando}
    *     responses:
    *       200:
    *         content:
@@ -240,16 +271,16 @@ router
    *               type: object
    *               example: { userInfo: { id: 1, email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: '' }}
   */
-  .get(jwtCheck, userController.get)
   .put(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
 
 router
-  .route('/:id/post')
+  .route('/:id/posts')
+  .get(jwtCheck, userController.getPosts)
 /**
   * @swagger
   *
-  * /users/:id/post:
+  * /users/:id/posts:
   *   get:
   *     tags:
   *       - User

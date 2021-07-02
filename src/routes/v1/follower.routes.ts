@@ -11,11 +11,11 @@ const jwtCheck = expressjwt({
 });
 
 router
-  .route('/:id/follower-list')
+  .route('/:id/followers')
   .get(jwtCheck, followerController.getFollowers)
   /**
    * @swagger
-   * /followers/{id}/follower-list:
+   * /friends/{id}/followers:
    *   get:
    *     summary: Get all followers by user ID
    *     tags:
@@ -37,16 +37,16 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { users: [{ followedId: 3, followingId: 1, followingInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 04/01/1997 } }] }
+   *               type: array
+   *               example: [{ id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 04/01/1997 }]
   */
  
 router
-  .route('/:id/following-list')
+  .route('/:id/followings')
   .get(jwtCheck, followerController.getFollowings)
   /**
    * @swagger
-   * /followers/{id}/following-list:
+   * /friends/{id}/followings:
    *   get:
    *     summary: Get all followings by user ID
    *     tags:
@@ -68,18 +68,18 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { users: [{ followedId: 1, followingId: 3, followerInfo: { id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 19/10/1995 } }] }
+   *               type: array
+   *               example: [{ id: 3, email: nhi.nguyen@supremetech.vn, firstName: nhi, lastName: nguyen, phone: '', gender: male, displayName: null, picture: null, dob: 19/10/1995}]
   */
 
 router
-  .route('/')
+  .route('/follow')
   .get(followerController.index)
   .post(jwtCheck, validate(followerSchema.addFollower), followerController.toggleFollower)
   /**
    * @swagger
    *
-   * /followers:
+   * /friends/follow:
    *   post:
    *     tags:
    *       - Follower

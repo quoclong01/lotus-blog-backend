@@ -4,6 +4,7 @@ import db from '../config/database';
 import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 
 interface PostAttributes {
   id: number;
@@ -42,7 +43,7 @@ class RequestPost {
 
 class PostQueryBuilder extends QueryBuilder {
   where: any = {};
-  constructor(baseQuery: any, tags: string[]) {
+  constructor(baseQuery: any, tags: string[] = []) {
     super(baseQuery);
     const whereAnd: any = [
       { status: 'public' },
@@ -82,23 +83,91 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     const offset = (+query.page - 1) * size || 0;
     const tags = query.tags ? query.tags.split(',') : [];
     const queryStatement = new PostQueryBuilder({
-        limit: size,
-        offset,
-        order: [['createdAt', 'DESC']]
-      }, tags).getPlainObject();
+      limit: size,
+      offset,
+      order: [['createdAt', 'DESC']]
+    }, tags).getPlainObject();
 
     const data = await Post.findAll(queryStatement);
     const length = +await Post.count(queryStatement);
     const totalPage = Math.ceil(length / size);
 
-    return { 
-      data, 
+    return {
+      data,
       totalPage,
       totalItems: length,
       itemsPerPage: size,
-      currentPage: +query.page,
+      currentPage: +query.page || 1,
       loadMore: offset < totalPage - 1
     };
+  }
+
+  public static async listAuthPosts(query: any, authInfo: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const offset = (+query.page - 1) * size || 0;
+    const tags = query.tags ? query.tags.split(',') : [];
+    if (tags.length > 0) {
+      return this.listPosts(query);
+    } else {
+      const baseQuery = `WITH
+      followers_posts_in_week as (
+          select p.*, 
+          case when b."userId" is not null 
+              then TRUE 
+              else FALSE
+          end as "isInBookmark"
+          from
+              "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                      INNER JOIN "Followers" f on p."userId" = f."followerId"
+          WHERE p."updatedAt" >= current_date - interval '7 days' AND p."status" = 'public'
+          ORDER BY
+              p."updatedAt" desc
+      ), other_posts as (
+          (
+              select p.*, 
+              case when b."userId" is not null 
+                  then TRUE 
+                  else FALSE
+              end as "isInBookmark"
+              from
+                  "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                            LEFT JOIN "followers_posts_in_week" w on w.id = p.id
+              WHERE w.id is null AND p."status" = 'public'
+              ORDER BY
+                  p."updatedAt" desc
+          )
+      )`;
+      const data = await this.sequelize.query(`
+        ${baseQuery}
+        select * from ((SELECT * from followers_posts_in_week LIMIT 10)
+        union all
+        (SELECT * FROM other_posts)) as temp limit :limit offset :offset;`,
+      {
+        replacements: { userId: authInfo.userId, limit: size, offset },
+        type: QueryTypes.SELECT
+      });
+
+      const lengthRaw: any = await this.sequelize.query(`
+        ${baseQuery}
+        select COUNT(*) from ((SELECT * from followers_posts_in_week LIMIT 10)
+        union all
+        (SELECT * FROM other_posts)) as temp1`,
+      {
+        replacements: { userId: authInfo.userId },
+        type: QueryTypes.SELECT
+      });
+      const length = +lengthRaw[0].count;
+      const totalPage = Math.ceil(length / size);
+  
+      return {
+        data, 
+        totalPage,
+        totalItems: length,
+        itemsPerPage: size,
+        currentPage: +query.page || 1,
+        loadMore: offset < totalPage - 1
+      };
+    }
   }
 
   public static async createPost(data: any, authInfo: any) {
@@ -114,15 +183,14 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public static async updateContent(id: string, data: any, authInfo: any) {
     const currentPost = await Post.findByPk(id);
 
-    if (!currentPost) 
+    if (!currentPost)
       throw PostErrors.NOT_FOUND;
     if (authInfo.userId !== currentPost.userId)
       throw PostErrors.INTERACT_PERMISSION;
 
     const dataTemp: any = new RequestPost(data);
     await currentPost.update({
-      ...currentPost,
-      dataTemp
+      ...dataTemp
     });
     return currentPost;
   }
@@ -162,22 +230,6 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
 
     currentPost.restore();
     return 'Restore post successfully';
-  }
-
-  public static async likePost(id: string) {
-    return { status: 200, message: 'Comming soon' }
-  }
-
-  public static async commentPost(id: string) {
-    return { status: 200, message: 'Comming soon' };
-  }
-
-  public static async getLikes(id: string) {
-    return { status: 200, message: 'Comming soon' };
-  }
-
-  public static async getComments(id: string) {
-    return { status: 200, message: 'Comming soon' };
   }
 }
 

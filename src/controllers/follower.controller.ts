@@ -12,27 +12,8 @@ const followerController = {
     const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
 
     const data = await Follower.findAll({
-      attributes: ['followerId', 'followingId'],
+      attributes: [],
       where: { followingId: id },
-      include: [{
-        model: User,
-        as: 'followingInfo',
-        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
-      }]
-    });
-
-    if (!data) throw UserErrors.NOT_FOUND;
-
-    return { users: data };
-  }),
-  getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    const authInfo: any = req.user;
-
-    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
-
-    const data = await Follower.findAll({
-      attributes: ['followerId', 'followingId'],
-      where: { followerId: id },
       include: [{
         model: User,
         as: 'followerInfo',
@@ -40,25 +21,47 @@ const followerController = {
       }]
     });
 
-    if (!data) throw UserErrors.NOT_FOUND;
+    return data.map((x: any) => x.followerInfo);
+  }),
+  getFollowings: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const authInfo: any = req.user;
 
-    return { users: data };
+    const id = req.params.id === 'me' ?  authInfo.userId : req.params.id;
+
+    const data = await Follower.findAll({
+      attributes: [],
+      where: { followerId: id },
+      include: [{
+        model: User,
+        as: 'followingInfo',
+        attributes: ['id', 'email', 'firstName', 'lastName', 'phone', 'gender', 'dob', 'displayName', 'picture']
+      }]
+    });
+
+    return data.map((x: any) => x.followingInfo);
   }),
   toggleFollower: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const authInfo: any = req.user;
     const { followingId } = req.body;
     if (authInfo.userId === followingId) throw FollowerErrors.INTERACT_PERMISSION;
 
-    const userTemp = await User.findByPk(followingId);
+    const userFollowingsTemp = await User.findByPk(followingId);
+    const userFollowersTemp = await User.findByPk(authInfo.userId);
 
-    if (!userTemp) throw FollowerErrors.NOT_FOUND;
 
+    if (!userFollowingsTemp || !userFollowersTemp) throw FollowerErrors.NOT_FOUND;
+
+    const followersCount = userFollowingsTemp.followings;
+    const followingsCount = userFollowersTemp.followers;
     const followerTemp = await Follower.findOne({
       where: { followerId: authInfo.userId, followingId }
     });
 
     if (followerTemp) {
+      await userFollowingsTemp.update({follwers: followersCount - 1});
+      await userFollowersTemp.update({followings: followingsCount - 1});
       await followerTemp.destroy();
+
       return { followed: false };
     }
 
@@ -66,7 +69,10 @@ const followerController = {
       followingId,
       followerId: authInfo.userId
     });
+    await userFollowingsTemp.update({followers: followersCount + 1});
+    await userFollowersTemp.update({followings: followingsCount + 1});
     await followerData.save();
+
     return  { followed: true };
   })
 };
