@@ -51,7 +51,9 @@ class RequestPost {
 
 class PostQueryBuilder extends QueryBuilder {
   where: any = {};
-  constructor(baseQuery: any, tags: string[] = []) {
+  include = { model: User, as: 'user', required: false };
+
+  constructor(baseQuery: any, tags: string[] = [], recommend: any = null) {
     super(baseQuery);
     const whereAnd: any = [
       { status: PostStatus.PUBLIC },
@@ -60,6 +62,13 @@ class PostQueryBuilder extends QueryBuilder {
       whereAnd.push(
         {
           [Op.or]: tags.map(x => where(literal(`'${x}'`), fn('ANY', col('tags')))),
+        }
+      );
+    }
+    if (recommend) {
+      whereAnd.push(
+        {
+          recommend: recommend
         }
       );
     }
@@ -96,7 +105,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       offset,
       order: [['createdAt', 'DESC']]
     }, tags).getPlainObject();
-    const data = await Post.findAll({ ...queryStatement, include: { model: User, as: 'user', required: false } });
+    const data = await Post.findAll({ ...queryStatement });
     const length = +await Post.count(queryStatement);
     const totalPage = Math.ceil(length / size);
 
@@ -177,14 +186,17 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       };
     }
   }
-  public static async listRecommmedPosts(query: any) {
+  public static async listRecommendPosts(query: any) {
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
-    const data = await Post.findAll({
-      where: { recommend: true },
+    const queryStatement = new PostQueryBuilder({
+      limit: size,
+      offset,
       order: [['createdAt', 'DESC']]
-    })
-    const length = +await Post.count({where: {recommend: true}});
+    }, [], true).getPlainObject();
+    const data = await Post.findAll({ ...queryStatement });
+    
+    const length = +await Post.count({ ...queryStatement });
     const totalPage = Math.ceil(length / size);
     return {
       data,
