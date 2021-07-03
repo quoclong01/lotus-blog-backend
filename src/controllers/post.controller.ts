@@ -15,6 +15,9 @@ const postController = {
   recommendIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listRecommendPosts(req.query);
   }),
+  getSoftDeleted: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.listDeletedPosts(req.query, req.user);
+  }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
   }),
