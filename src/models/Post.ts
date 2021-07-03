@@ -28,6 +28,7 @@ class RequestPost {
   description?: string;
   content?: string;
   status?: string;
+  tags?: string[];
 
   constructor(data: any) {
     if (data.title) {
@@ -41,6 +42,9 @@ class RequestPost {
     }
     if (data.status) {
       this.status = data.status;
+    }
+    if (data.tags) {
+      this.tags = data.tags;
     }
   }
 }
