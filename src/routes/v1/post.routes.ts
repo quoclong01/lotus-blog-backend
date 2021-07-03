@@ -89,7 +89,7 @@ router
 
 router
   .route('/recyclebin')
-  .get(jwtCheck,postController.getSoftDeleted);
+  .get(jwtCheck, postController.getDeletedPosts);
   /**
    * @swagger
    *

@@ -54,7 +54,7 @@ class PostQueryBuilder extends QueryBuilder {
   where: any = {};
   include = { model: User, as: 'user', required: false };
 
-  constructor(baseQuery: any, tags: string[] = [], recommend: any = null) {
+  constructor(baseQuery: any, tags: string[] = [], additionParams: any = {}) {
     super(baseQuery);
     const whereAnd: any = [
       { status: PostStatus.PUBLIC },
@@ -66,12 +66,8 @@ class PostQueryBuilder extends QueryBuilder {
         }
       );
     }
-    if (recommend) {
-      whereAnd.push(
-        {
-          recommend: recommend
-        }
-      );
+    if (Object.keys(additionParams).length > 0) {
+      whereAnd.push(additionParams);
     }
     this.where = {
       [Op.and]: whereAnd
@@ -195,7 +191,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       limit: size,
       offset,
       order: [['createdAt', 'DESC']]
-    }, [], true).getPlainObject();
+    }, [], { recommend: true }).getPlainObject();
     const data = await Post.findAll({ ...queryStatement });
     
     const length = +await Post.count({ ...queryStatement });
@@ -212,16 +208,23 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
   public static async listDeletedPosts(query:any, authInfo: any) {
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
+    const queryStatement = new PostQueryBuilder({
+      limit: size,
+      offset,
+      order: [['createdAt', 'DESC']]
+    }, [], {
+      userId: authInfo.userId, 
+      deletedAt: { [Op.ne]: null }
+    }).getPlainObject();
 
     const data = await Post.findAll({
-      where: { userId: authInfo.userId, deletedAt: { [Op.ne]: null } },
-      paranoid:false,
-      order: [['createdAt', 'DESC']]
+      ...queryStatement,
+      paranoid: false,
     })
 
     const length = +await Post.count({
-      where: { userId: authInfo.userId, deletedAt: { [Op.ne]: null } },
-      paranoid:false,
+      ...queryStatement,
+      paranoid: false,
     });
 
     const totalPage = Math.ceil(length / size);
