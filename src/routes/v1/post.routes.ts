@@ -333,7 +333,7 @@ router
    *     produces:
    *       - application/json
    *     summary:
-   *       Get post with id
+   *       Get post with id. Users only can see the public post detail and all their posts detail (except deleted posts). Notice: if you are a guest (not login), please not set Authorization in request header.
    *     responses:
    *       200:
    *         content:
