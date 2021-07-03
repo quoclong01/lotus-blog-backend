@@ -28,7 +28,7 @@ const postController = {
     return await Post.getlistDrafts(req.user);
   }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.getPost(req.params.id);
+    return await Post.getPost(req.params.id, req.user);
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.updateContent(req.params.id, req.body, req.user);

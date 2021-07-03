@@ -6,7 +6,7 @@ import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
 import { PostStatus } from '../lib/enum';
-import { User } from './User'
+import { User, Like, Bookmark } from '../models';
 
 
 interface PostAttributes {
@@ -130,11 +130,16 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
           case when b."userId" is not null 
               then TRUE 
               else FALSE
-          end as "isInBookmark"
+          end as "isInBookmark",
+          case when l."userId" is not null 
+              then TRUE 
+              else FALSE
+          end as "isLiked"
           from
               "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                      LEFT JOIN "Likes" l ON  l."userId" = :userId AND l."postId" = p.id
                       INNER JOIN "Followers" f on p."userId" = f."followerId"
-          WHERE p."updatedAt" >= current_date - interval '7 days' AND p."status" = 'public'
+          WHERE p."updatedAt" >= current_date - interval '7 days' AND p."status" = 'public' AND p."userId" <> :userId
           ORDER BY
               p."updatedAt" desc
       ), other_posts as (
@@ -143,11 +148,16 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
               case when b."userId" is not null 
                   then TRUE 
                   else FALSE
-              end as "isInBookmark"
+              end as "isInBookmark",
+              case when l."userId" is not null 
+                  then TRUE 
+                  else FALSE
+              end as "isLiked"
               from
                   "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
+                            LEFT JOIN "Likes" l ON  l."userId" = :userId AND l."postId" = p.id
                             LEFT JOIN "followers_posts_in_week" w on w.id = p.id
-              WHERE w.id is null AND p."status" = 'public'
+              WHERE w.id is null AND p."status" = 'public' AND p."userId" <> :userId
               ORDER BY
                   p."updatedAt" desc
           )
@@ -295,13 +305,51 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     return currentPost;
   }
 
-  public static async getPost(id: string) {
-    const currentPost = await Post.findOne({
-      where: { id: id, status: PostStatus.PUBLIC },
-      include: { model: User, as: 'user', required: false }
-    });
+  public static async getPost(id: string, authInfo: any) {
+    let currentPost;
+    if (!authInfo) {
+      currentPost = await Post.findOne({
+        where: { id: id, status: PostStatus.PUBLIC },
+        include: { model: User, as: 'user', required: false }
+      });
+    } else {
+      const result = await Post.findByPk(id, {
+        attributes: {
+          include: [
+            [literal('CASE WHEN "likeInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isLiked'],
+            [literal('CASE WHEN "bookmarks"."id" is not null THEN TRUE ELSE FALSE END'), 'isInBookmark']
+          ]
+        },
+        include: [
+          { model: User, as: 'user', required: false },
+          {
+            model: Like, 
+            attributes: [],
+            as: 'likeInfo',
+            required: false,
+            where: {
+              userId: authInfo.userId,
+              postId: id
+            }
+          },
+          {
+            model: Bookmark, 
+            attributes: [],
+            as: 'bookmarks',
+            required: false,
+            where: {
+              userId: authInfo.userId,
+              postId: id
+            }
+          }
+        ]
+      });
+      if (result.status === PostStatus.PUBLIC || result.userId === authInfo.userId) {
+        currentPost = result;
+      }
+    }
 
-    if (!currentPost) throw PostErrors.NOT_FOUND; 
+    if (!currentPost) throw PostErrors.NOT_FOUND;
     return currentPost;
   }
 

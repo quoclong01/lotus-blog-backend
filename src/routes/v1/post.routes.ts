@@ -10,6 +10,12 @@ const jwtCheck = expressjwt({
   algorithms: ['HS256']
 });
 
+const jwtCheckNoRequired = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256'],
+  credentialsRequired: false
+});
+
 router
   .route('/public')
   .get(postController.publicIndex)
@@ -316,7 +322,7 @@ router
 router
   .route('/:id')
 
-  .get(postController.show)
+  .get(jwtCheckNoRequired, postController.show)
   /**
    * @swagger
    *
