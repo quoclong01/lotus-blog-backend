@@ -3,17 +3,22 @@ import passport from 'passport';
 
 const router = express.Router();
 
-router.get('/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+router.get('/google', (req, res, next) => {
+  const { redirectTo } = req.query;
+  const state = redirectTo ? redirectTo.toString() : undefined;
+
+  const authenticator = passport.authenticate('google', { scope: ['email', 'profile'], state });
+  authenticator(req, res, next);
+})
 
 router.get('/google/callback', passport.authenticate('google',
-  { successRedirect: '/success', failureRedirect: '/failure' }
-));
-
-router.get('/success', (req, res, next) => {
-  res.send('OK');
+  { failureRedirect: '/failure' }
+), (req, res, next) => {
+  const redirectTo = req.query['state'];
+  if (typeof redirectTo === 'string') {
+    return res.redirect(redirectTo)
+  }
+  res.redirect('/')
 });
-router.get('/failure', (req, res, next) => {
-  res.send('failure');
-})
 
 export default router;
