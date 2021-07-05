@@ -126,7 +126,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
     } else {
       const baseQuery = `WITH
       followers_posts_in_week as (
-          select p.*, 
+          select p.*,
           case when b."userId" is not null 
               then TRUE 
               else FALSE
@@ -144,7 +144,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
               p."updatedAt" desc
       ), other_posts as (
           (
-              select p.*, 
+              select p.*,
               case when b."userId" is not null 
                   then TRUE 
                   else FALSE
@@ -164,12 +164,21 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       )`;
       const data = await this.sequelize.query(`
         ${baseQuery}
-        select * from ((SELECT * from followers_posts_in_week LIMIT 10)
+        select temp.*, 
+          u.id as "user.id", 
+          u."email" as "user.email", 
+          u."firstName" as "user.firstName", 
+          u."lastName" as "user.lastName",
+          u."displayName" as "user.displayName",
+          u."gender" as "user.gender",
+          u."picture" as "user.picture"
+        from ((SELECT * from followers_posts_in_week LIMIT 10)
         union all
-        (SELECT * FROM other_posts)) as temp limit :limit offset :offset;`,
+        (SELECT * FROM other_posts)) as temp LEFT JOIN "Users" u ON temp."userId" = u.id limit :limit offset :offset;`,
       {
         replacements: { userId: authInfo.userId, limit: size, offset },
-        type: QueryTypes.SELECT
+        type: QueryTypes.SELECT,
+        nest: true,
       });
 
       const lengthRaw: any = await this.sequelize.query(`
