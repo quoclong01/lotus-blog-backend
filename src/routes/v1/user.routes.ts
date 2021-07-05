@@ -45,7 +45,8 @@ router
    *                       firstName: do, lastName: quan,
    *                       gender: 'male|female|other',
    *                       dob: 19/10/1995, phone: '',
-   *                       displayName: st-quando, picture: ''
+   *                       displayName: st-quando, picture: '',
+   *                       followers: 0, followings: 0, 
    *                     }
   */
   .get(userController.index)
@@ -119,7 +120,8 @@ router
    *                  email: quan.do@supremetech.vn,
    *                  password: abc@1234, firstName: do,
    *                  lastName: quan, gender: male,
-   *                  dob: 19/10/1995, phone: ''
+   *                  dob: 19/10/1995, phone: '', displayName: st-quando,
+   *                  picture: null
    *               } }
   */
   .post(validate(userSchema.login), userController.login)
@@ -144,8 +146,8 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { message: Logout successfully. }
+   *               type: string
+   *               example: Logout successfully.
   */
   .post(jwtCheck, userController.logout)
 
@@ -268,14 +270,21 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995, displayName: st-quando}
+   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995, displayName: quanDo}
    *     responses:
    *       200:
    *         content:
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { userInfo: { id: 1, email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: '' }}
+   *               example: {
+   *                 userInfo: {
+   *                 id: 1, email: quan.do@supremetech.vn,
+   *                 firstName: do, lastName: quan,
+   *                 phone: 0909090900, gender: male, dob: 19/10/1995,
+   *                 displayName: quanDo, picture: '',
+   *                 followers: 0, followings: 0
+   *               }}
   */
   .put(jwtCheck, validate(userSchema.updatePersonalInfo), userController.update)
   .delete(userController.delete)
@@ -283,45 +292,47 @@ router
 router
   .route('/:id/posts')
   .get(jwtCheck, userController.getPosts)
-/**
-  * @swagger
-  *
-  * /users/:id/posts:
-  *   get:
-  *     tags:
-  *       - User
-  *     produces:
-  *       - application/json
-  *     summary:
-  *       Get list of posts with userId
-  *     responses:
-  *       200:
-  *         content:
-  *           application/json:
-  *             schema:
-  *               type: object
-  *               properties:
-  *                  id:
-  *                    type: integer
-  *                    example: 1
-  *                  posts:
-  *                    type: array
-  *                    items:
-  *                       type: object
-  *                       properties:
-  *                         id:
-  *                           type: integer
-  *                           example: 1
-  *                         title:
-  *                           type: string
-  *                           example: title of post
-  *                         content:
-  *                           type: string
-  *                           example: content of post
-  *                         status:
-  *                           type: string
-  *                           example: public
-  *                       
- */
+  /**
+   * @swagger
+   *
+   * /users/{id}/posts:
+   *   get:
+   *     tags:
+   *       - User
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get list of posts with userId
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         description: Numeric ID of the user to retrieve.
+   *         schema:
+   *           type: string
+   *           example: me
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               example: {
+   *                 id: 1, email: quan.do@supremetech.vn, firstName: quan, lastName: do,
+   *                 displayName: st-quando, gender: male, dob: 19/10/1995,
+   *                 Posts: [{
+   *                   id: 10,
+   *                   title: title of post 10,
+   *                   description: description post 10,
+   *                   content: content of post 10,
+   *                   status: public,
+   *                   tags: [],
+   *                   userId: 1,
+   *                   likes: 0,
+   *                   comments: 0,
+   *                   cover: null,
+   *                 }]
+   *               }
+  */
 
 export default router;
