@@ -1,8 +1,6 @@
 import vars from './config/vars';
 import app from './config/express';
 import db  from './config/database';
-import passport from './auth/auth';
-import session from 'express-session';
 
 const {port, env} = vars;
 
@@ -16,9 +14,6 @@ const start = async () => {
     console.error('Unable to connect to SQL database:', e);
   }
   await db.sequelize.sync();
-  app.use(session({ secret: 'cats' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
   app.listen(port);
 
   // listen to requests
