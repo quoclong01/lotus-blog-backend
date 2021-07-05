@@ -22,6 +22,7 @@ Follower.belongsTo(User, { targetKey: 'id', foreignKey: 'followingId', as: 'foll
 
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
 User.hasMany(Like, { sourceKey: 'id', foreignKey: 'userId' });
+User.hasMany(Auth, { sourceKey: 'id', foreignKey: 'userId' });
 User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followerId', as: 'followerInfo' });
 User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followingId', as: 'followingInfo' });
 

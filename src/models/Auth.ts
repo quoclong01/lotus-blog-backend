@@ -61,8 +61,7 @@ Auth.init({
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
   accessToken: {
     type: DataTypes.STRING

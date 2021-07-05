@@ -24,7 +24,7 @@ interface UserAttributes {
   verifyAt: Date;
 }
 
-class RequestUser {
+export class RequestUser {
   email?: string; 
   password?: string; 
   firstName?: string; 
