@@ -9,6 +9,8 @@ import { Follower } from './Follower';
 
 Auth.belongsTo(User, { targetKey: 'id', foreignKey: 'userId', as: 'user'});
 Post.belongsTo(User, { targetKey: 'id', foreignKey: 'userId', as: 'user'});
+Post.hasMany(Like, { sourceKey: 'id', foreignKey: 'postId', as: 'likeInfo' });
+Post.hasMany(Bookmark, { sourceKey: 'id', foreignKey: 'postId', as: 'bookmarks' })
 Bookmark.belongsTo(User, { targetKey: 'id', foreignKey: 'userId', as: 'user'});
 Bookmark.belongsTo(Post, { targetKey: 'id', foreignKey: 'postId', as: 'post'});
 Like.belongsTo(User, { targetKey: 'id', foreignKey: 'userId', as: 'user'});
@@ -19,6 +21,9 @@ Follower.belongsTo(User, { targetKey: 'id', foreignKey: 'followerId', as: 'follo
 Follower.belongsTo(User, { targetKey: 'id', foreignKey: 'followingId', as: 'followingInfo' });
 
 User.hasMany(Post, { sourceKey: 'id', foreignKey: 'userId' });
+User.hasMany(Like, { sourceKey: 'id', foreignKey: 'userId' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followerId', as: 'followerInfo' });
+User.hasMany(Follower, { sourceKey: 'id', foreignKey: 'followingId', as: 'followingInfo' });
 
 export {
   User,

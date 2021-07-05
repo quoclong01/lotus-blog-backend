@@ -10,6 +10,12 @@ const jwtCheck = expressjwt({
   algorithms: ['HS256']
 });
 
+const jwtCheckNoRequired = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256'],
+  credentialsRequired: false
+});
+
 router
   .route('/public')
   .get(postController.publicIndex)
@@ -63,6 +69,73 @@ router
  *                         type: number
  *                         example: 1          
  */
+
+router
+  .route('/recommend')
+  .get(postController.recommendIndex);
+  /**
+   * @swagger
+   *
+   * /posts/recommend:
+   *   get:
+   *     tags:
+   *       - Post
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all posts with recommend   
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: Change password successfully.  
+  */
+
+router
+  .route('/recyclebin')
+  .get(jwtCheck, postController.getDeletedPosts);
+  /**
+   * @swagger
+   *
+   * /posts/recyclebin:
+   *   get:
+   *     tags:
+   *       - Post
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all soft-deleted Posts 
+   *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+ */
+
 
 router
   .route('/')
@@ -163,9 +236,93 @@ router
   *                     example: {id: 1, title: title of post, content: content of post, status: public}
  */
 router
+  .route('/draft')
+  .get(jwtCheck, postController.getDrafts)
+  /**
+   * @swagger
+   *
+   * /posts/draft:
+   *   get:
+   *     tags:
+   *       - Draft
+   *     produces:
+   *       - application/json
+   *     summary:
+   *       Get all drafts
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 posts:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                      id:
+   *                        type: integer
+   *                        example: 1
+   *                      title:
+   *                        type: string
+   *                        example: title of post
+   *                      content:
+   *                         type: string
+   *                         example: this is content of post
+   *                      status:
+   *                         type: string
+   *                         example: Draft
+   *                      userId:
+   *                         type: number
+   *                         example: 1          
+  */
+  .post(jwtCheck, postController.newDraft);
+/**
+  * @swagger
+  *
+  * /posts/draft:
+  *   post:
+  *     tags:
+  *       - Draft
+  *     produces:
+  *       - application/json
+  *     summary:
+  *       Create a draft
+  *     requestBody:
+  *       required: true
+  *       content:
+  *         application/json:
+  *           schema:
+  *             type: object
+  *             properties:
+  *               title:
+  *                 type: string
+  *                 example: title of post
+  *               content:
+  *                 type: string
+  *                 example: content of post            
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  status:
+  *                    type: integer
+  *                    example: 200
+  *                  message:
+  *                    type: string
+  *                    example: Create a draft successfully.
+  *                  post: 
+  *                     type: object
+  *                     example: {id: 1, title: title of post, content: content of post, status: Draft}
+ */
+router
   .route('/:id')
 
-  .get(postController.show)
+  .get(jwtCheckNoRequired, postController.show)
   /**
    * @swagger
    *
@@ -177,6 +334,8 @@ router
    *       - application/json
    *     summary:
    *       Get post with id
+   *     description:
+   *       "Users only can see the public post detail and all their posts detail (except deleted posts). Notice: if you are a guest (not login), please not set Authorization in request header"
    *     responses:
    *       200:
    *         content:

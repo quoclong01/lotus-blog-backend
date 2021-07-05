@@ -1,9 +1,10 @@
 import { Post } from './Post';
-import { DataTypes, Model, Optional, Op } from 'sequelize';
+import { Follower } from '../models';
+import { DataTypes, Model, Optional, Op, QueryTypes, literal } from 'sequelize';
 import db from '../config/database';
 import { Auth } from '../models/Auth';
 import { hashPassword, comparePassword, generateAccessToken, generateResetToken } from '../lib/utils';
-import { ProviderType } from '../lib/enum';
+import { PostStatus, ProviderType } from '../lib/enum';
 import { UserErrors } from '../lib/api-error';
 
 interface UserAttributes {
@@ -20,7 +21,7 @@ interface UserAttributes {
   isAdmin: boolean;
   followers: number;
   followings: number;
-  verifyAt: boolean;
+  verifyAt: Date;
 }
 
 class RequestUser {
@@ -62,7 +63,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public isAdmin!: boolean;
   public followers!: number;
   public followings!: number;
-  public verifyAt!: boolean;
+  public verifyAt!: Date;
 
 
   // timestamps!
@@ -124,7 +125,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     const accessToken = await generateAccessToken(authTemp);
     await authTemp.update({ accessToken });
-    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: Date.now() });
+    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: new Date()});
 
     return { accessToken, userInfo: userTemp };
   }
@@ -174,7 +175,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (!isValidPassword) throw UserErrors.INVALID_PASSWORD;
 
-    const password = await hashPassword(data.password);
+    const password = await hashPassword(data.newPassword);
     await authTemp.update({ password });
     return 'Change password successfully.';
   }
@@ -225,8 +226,19 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       attributes: [
         'email', 'firstName', 'lastName',
         'gender', 'dob', 'phone',
-        'displayName', 'picture', 'followers', 'followings'
-      ]
+        'displayName', 'picture', 'followers', 'followings',
+        [literal('CASE WHEN "followingInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
+      ],
+      include: {
+        attributes: [],
+        model: Follower, 
+        as: 'followingInfo',
+        required: false,
+        where: {
+          followingId: userId,
+          followerId: authInfo.userId
+        }
+      }
     });
     if (!user) throw UserErrors.NOT_FOUND;
     return user;
@@ -241,7 +253,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
     else {
       data = await User.findOne({
-        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: 'public' }, required: false }
+        where: { id: paramId }, include: { model: Post, as: 'Posts', where: { status: PostStatus.PUBLIC }, required: false }
       });
     }
     return data;

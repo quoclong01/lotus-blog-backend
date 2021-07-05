@@ -13,7 +13,7 @@ export const validate = (schema: any, property: string = 'body') => {
     } else {
       const { details } = error;
       const errors = details.map((i: any) => i.message);
-      res.json(
+      res.status(422).json(
         new APIError(
           HttpStatus['422_NAME'],
           422,

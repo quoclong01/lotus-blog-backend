@@ -12,11 +12,23 @@ const postController = {
   authIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listAuthPosts(req.query, req.user);
   }),
+  recommendIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.listRecommendPosts(req.query);
+  }),
+  getDeletedPosts: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.listDeletedPosts(req.query, req.user);
+  }),
   new: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.createPost(req.body, req.user);
   }),
+  newDraft: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.createDraft(req.body, req.user);
+  }),
+  getDrafts: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.getlistDrafts(req.user);
+  }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.getPost(req.params.id);
+    return await Post.getPost(req.params.id, req.user);
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.updateContent(req.params.id, req.body, req.user);

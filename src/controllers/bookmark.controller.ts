@@ -1,4 +1,4 @@
-import { Bookmark, Post } from './../models';
+import { Bookmark, Post, User } from './../models';
 import { Request, Response, NextFunction } from 'express';
 import { responseMiddleware } from '../lib/utils';
 import { PostErrors } from '../lib/api-error';
@@ -10,7 +10,16 @@ const bookmarkController = {
       where: {
         userId: currentUser.userId
       },
-      include: { model: Post, as: 'post', required: false },
+      include: { 
+        model: Post, 
+        as: 'post', 
+        required: false,
+        include: [{
+          model: User, 
+          as: 'user', 
+          required: false,
+        }],
+      },
       order: [['createdAt', 'DESC']]
     });
     return data;

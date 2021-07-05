@@ -3,3 +3,9 @@ export enum ProviderType {
   GOOGLE = 'google',
   FACEBOOK = 'facebook'
 }
+
+export enum PostStatus {
+  PRIVATE = 'private',
+  PUBLIC = 'public',
+  DRAFT = 'draft'
+}

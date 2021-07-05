@@ -198,8 +198,8 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
-   *               example: { message: Change password successfully. }
+   *               type: string
+   *               example: Change password successfully.
   */
   .put(jwtCheck, validate(userSchema.changePassword), userController.changePassword)
 
@@ -232,7 +232,7 @@ router
    *           application/json:
    *             schema:
    *               type: object
-   *               example: { email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: null, dob: 19/10/1995, gender: male, followers: 0, followings: 1 }
+   *               example: { email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: null, dob: 19/10/1995, gender: male, followers: 0, followings: 1, isFollowed: true | false }
   */
   .get(jwtCheck, userController.get)
   /**
