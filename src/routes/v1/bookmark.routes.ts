@@ -44,12 +44,56 @@ router
    *                  post:
    *                     type: object
    *                     properties:
-   *                       id:
-   *                         type: integer
-   *                         example: 1
-   *                       title:
-   *                         type: string
-   *                         example: title example
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      tags:
+ *                         type: array
+ *                         items:
+ *                          type: string
+ *                          example: React
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+ *                      likes:
+ *                         type: number
+ *                         example: 1          
+ *                      comments:
+ *                         type: number
+ *                         example: 1          
+ *                      cover:
+ *                         type: number
+ *                         example: 1          
+ *                      recommend:
+ *                         type: boolean
+ *                         example: true          
+ *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999  
    *                  
    */
   .get(jwtCheck, bookmarkController.listMyBookmark)
