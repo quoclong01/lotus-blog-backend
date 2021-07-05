@@ -600,6 +600,42 @@ router
    *                      userId:
    *                         type: number
    *                         example: 1          
+   *                      likes:
+   *                         type: number
+   *                         example: 1          
+   *                      comments:
+   *                         type: number
+   *                         example: 1          
+   *                      cover:
+   *                         type: string
+   *                         example:           
+   *                      recommend:
+   *                         type: boolean
+   *                         example: false        
+   *                      isLiked:
+   *                         type: boolean
+   *                         example: false        
+   *                      isInBookmark:
+   *                         type: boolean
+   *                         example: false
+   *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999          
    */
   .put(jwtCheck, postController.updateContent)
   /**
@@ -636,16 +672,40 @@ router
   *             schema:
   *               type: object
   *               properties:
-  *                  status:
-  *                    type: integer
-  *                    example: 200
-  *                  message:
-  *                    type: string
-  *                    example: Update successfully.
-  *                  post: 
-  *                     type: object
-  *                     example: {id: 1, title: update title, content: update content, status: update status}
+ *                   tags:
+ *                      type: array
+ *                      items:
+ *                       type: string
+ *                       example: 
+ *                   likes:
+ *                      type: integer
+ *                      example: 0
+ *                   comments:
+ *                      type: integer
+ *                      example: 0
+ *                   recommend:
+ *                      type: boolean
+ *                      example: false
+ *                   id:
+ *                      type: integer
+ *                      example: 100
+ *                   title:
+ *                      type: string
+ *                      example: title
+ *                   description:
+ *                      type: string
+ *                      example: description
+ *                   content:
+ *                      type: string
+ *                      example: content
+ *                   status:
+ *                      type: string
+ *                      example: private
+ *                   userId:
+ *                      type: integer
+ *                      example: 111
  */
+
   .delete(jwtCheck, postController.delete);
 /**
   * @swagger
