@@ -30,6 +30,7 @@ class RequestPost {
   content?: string;
   status?: string;
   tags?: string[];
+  cover?: string;
 
   constructor(data: any) {
     if (data.title) {
@@ -46,6 +47,9 @@ class RequestPost {
     }
     if (data.tags) {
       this.tags = data.tags;
+    }
+    if (data.cover) {
+      this.cover = data.cover;
     }
   }
 }

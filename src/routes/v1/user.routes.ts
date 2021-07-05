@@ -10,6 +10,12 @@ const jwtCheck = expressjwt({
   algorithms: ['HS256']
 });
 
+const jwtCheckNoRequired = expressjwt({
+  secret: 'RANDOM_TOKEN_SECRET',
+  algorithms: ['HS256'],
+  credentialsRequired: false
+});
+
 router
   .route('/')
   /**
@@ -234,7 +240,7 @@ router
    *               type: object
    *               example: { email: quan.do@supremetech.vn, firstName: do, lastName: quan, displayName: quanDo, picture: null, dob: 19/10/1995, gender: male, followers: 0, followings: 1, isFollowed: true | false }
   */
-  .get(jwtCheck, userController.get)
+  .get(jwtCheckNoRequired, userController.get)
   /**
    * @swagger
    *

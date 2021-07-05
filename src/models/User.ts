@@ -221,25 +221,37 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 
   public static async findUser(paramId: string | number, authInfo: any) {
-    const userId = paramId === 'me' ? authInfo.userId : paramId;
-    const user = await User.findByPk(userId, {
-      attributes: [
-        'email', 'firstName', 'lastName',
-        'gender', 'dob', 'phone',
-        'displayName', 'picture', 'followers', 'followings',
-        [literal('CASE WHEN "followingInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
-      ],
-      include: {
-        attributes: [],
-        model: Follower, 
-        as: 'followingInfo',
-        required: false,
-        where: {
-          followingId: userId,
-          followerId: authInfo.userId
+    let user;
+    if (authInfo) {
+      const userId = paramId === 'me' ? authInfo.userId : paramId;
+      user = await User.findByPk(userId, {
+        attributes: [
+          'email', 'firstName', 'lastName',
+          'gender', 'dob', 'phone',
+          'displayName', 'picture', 'followers', 'followings',
+          [literal('CASE WHEN "followingInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
+        ],
+        include: {
+          attributes: [],
+          model: Follower, 
+          as: 'followingInfo',
+          required: false,
+          where: {
+            followingId: userId,
+            followerId: authInfo.userId
+          }
         }
-      }
-    });
+      });
+    } else {
+      if (paramId === 'me') throw UserErrors.NOT_FOUND;
+      user = await User.findByPk(paramId, {
+        attributes: [
+          'email', 'firstName', 'lastName',
+          'gender', 'dob', 'phone',
+          'displayName', 'picture', 'followers', 'followings'
+        ]
+      });
+    }
     if (!user) throw UserErrors.NOT_FOUND;
     return user;
   }
