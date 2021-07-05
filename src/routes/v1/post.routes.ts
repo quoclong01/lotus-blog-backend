@@ -48,7 +48,7 @@ router
  *             schema:
  *               type: object
  *               properties:
- *                 posts:
+ *                 data:
  *                   type: array
  *                   items:
  *                     type: object
@@ -62,59 +62,97 @@ router
  *                      content:
  *                         type: string
  *                         example: this is content of post
+ *                      tags:
+ *                         type: array
+ *                         items:
+ *                          type: string
+ *                          example: React
  *                      status:
  *                         type: string
  *                         example: public
  *                      userId:
  *                         type: number
  *                         example: 1          
+ *                      likes:
+ *                         type: number
+ *                         example: 1          
+ *                      comments:
+ *                         type: number
+ *                         example: 1          
+ *                      cover:
+ *                         type: number
+ *                         example: 1          
+ *                      recommend:
+ *                         type: boolean
+ *                         example: true          
+ *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999  
+ *                 totalPage:
+ *                   type: integer
+ *                   example: 12
+ *                 totalItems:
+ *                   type: integer
+ *                   example: 112
+ *                 itemsPerPage:
+ *                   type: integer
+ *                   example: 12
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 loadMore:
+ *                   type: boolean
+ *                   example: true
  */
 
 router
   .route('/recommend')
   .get(postController.recommendIndex);
-  /**
-   * @swagger
-   *
-   * /posts/recommend:
-   *   get:
-   *     tags:
-   *       - Post
-   *     produces:
-   *       - application/json
-   *     summary:
-   *       Get all posts with recommend   
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: string
-   *               example: Change password successfully.  
-  */
-
-router
-  .route('/recyclebin')
-  .get(jwtCheck, postController.getDeletedPosts);
-  /**
-   * @swagger
-   *
-   * /posts/recyclebin:
-   *   get:
-   *     tags:
-   *       - Post
-   *     produces:
-   *       - application/json
-   *     summary:
-   *       Get all soft-deleted Posts 
-   *     responses:
+/**
+ * @swagger
+ *
+ * /posts/recommend:
+ *   get:
+ *     tags:
+ *       - Post
+ *     produces:
+ *       - application/json
+ *     summary:
+ *       Get all posts with recommend
+ *     parameters:
+ *       - name: size
+ *         in: query
+ *         description: total posts show in one page 
+ *         required: false
+ *         example: /posts/public?size=3
+ *       - name: page
+ *         in: query
+ *         description: the number of current page
+ *         required: false
+ *         example: /posts/public?page=2&size=7
+ *     responses:
  *       200:
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 posts:
+ *                 data:
  *                   type: array
  *                   items:
  *                     type: object
@@ -128,68 +166,249 @@ router
  *                      content:
  *                         type: string
  *                         example: this is content of post
+ *                      tags:
+ *                         type: array
+ *                         items:
+ *                          type: string
+ *                          example: React
  *                      status:
  *                         type: string
  *                         example: public
  *                      userId:
  *                         type: number
  *                         example: 1          
+ *                      likes:
+ *                         type: number
+ *                         example: 1          
+ *                      comments:
+ *                         type: number
+ *                         example: 1          
+ *                      cover:
+ *                         type: number
+ *                         example: 1          
+ *                      recommend:
+ *                         type: boolean
+ *                         example: true          
+ *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999  
+ *                 totalPage:
+ *                   type: integer
+ *                   example: 12
+ *                 totalItems:
+ *                   type: integer
+ *                   example: 112
+ *                 itemsPerPage:
+ *                   type: integer
+ *                   example: 12
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 loadMore:
+ *                   type: boolean
+ *                   example: true
  */
 
+router
+  .route('/recyclebin')
+  .get(jwtCheck, postController.getDeletedPosts);
+/**
+ * @swagger
+ *
+ * /posts/recyclebin:
+ *   get:
+ *     tags:
+ *       - Post
+ *     produces:
+ *       - application/json
+ *     summary:
+ *       Get all soft-deleted Posts
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      tags:
+ *                         type: array
+ *                         items:
+ *                          type: string
+ *                          example: React
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+ *                      likes:
+ *                         type: number
+ *                         example: 1          
+ *                      comments:
+ *                         type: number
+ *                         example: 1          
+ *                      cover:
+ *                         type: number
+ *                         example: 1          
+ *                      recommend:
+ *                         type: boolean
+ *                         example: true          
+ *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999  
+ *                 totalPage:
+ *                   type: integer
+ *                   example: 12
+ *                 totalItems:
+ *                   type: integer
+ *                   example: 112
+ *                 itemsPerPage:
+ *                   type: integer
+ *                   example: 12
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 loadMore:
+ *                   type: boolean
+ *                   example: true
+ */
 
 router
   .route('/')
   .get(jwtCheck, postController.authIndex)
   /**
-   * @swagger
-   *
-   * /posts:
-   *   get:
-   *     tags:
-   *       - Post
-   *     produces:
-   *       - application/json
-   *     summary:
-   *       Get all posts of following accounts
-   *     parameters:
-   *       - name: size
-   *         in: query
-   *         description: total posts show in one page 
-   *         required: false
-   *         example: /posts/public?size=3
-   *       - name: page
-   *         in: query
-   *         description: the number of current page
-   *         required: false
-   *         example: /posts/public?page=2&size=7
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 posts:
-   *                   type: array
-   *                   items:
-   *                     type: object
-   *                     properties:
-   *                      id:
-   *                        type: integer
-   *                        example: 1
-   *                      title:
-   *                        type: string
-   *                        example: title of post
-   *                      content:
-   *                         type: string
-   *                         example: this is content of post
-   *                      status:
-   *                         type: string
-   *                         example: public
-   *                      userId:
-   *                         type: number
-   *                         example: 1          
-  */
+ * @swagger
+ *
+ * /posts:
+ *   get:
+ *     tags:
+ *       - Post
+ *     produces:
+ *       - application/json
+ *     summary:
+ *       Get all posts of following accounts
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                      id:
+ *                        type: integer
+ *                        example: 1
+ *                      title:
+ *                        type: string
+ *                        example: title of post
+ *                      content:
+ *                         type: string
+ *                         example: this is content of post
+ *                      tags:
+ *                         type: array
+ *                         items:
+ *                          type: string
+ *                          example: React
+ *                      status:
+ *                         type: string
+ *                         example: public
+ *                      userId:
+ *                         type: number
+ *                         example: 1          
+ *                      likes:
+ *                         type: number
+ *                         example: 1          
+ *                      comments:
+ *                         type: number
+ *                         example: 1          
+ *                      cover:
+ *                         type: number
+ *                         example: 1          
+ *                      recommend:
+ *                         type: boolean
+ *                         example: true          
+ *                      user:
+ *                         type: object
+ *                         properties:
+ *                          id:
+ *                            type: number
+ *                            example: 55    
+ *                          email:
+ *                            type: string
+ *                            example: test@gmail.com    
+ *                          firstName:
+ *                            type: string
+ *                            example: test    
+ *                          lastName:
+ *                            type: string
+ *                            example: test    
+ *                          phone:
+ *                            type: string
+ *                            example: 099999999  
+ *                 totalPage:
+ *                   type: integer
+ *                   example: 12
+ *                 totalItems:
+ *                   type: integer
+ *                   example: 112
+ *                 itemsPerPage:
+ *                   type: integer
+ *                   example: 12
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 loadMore:
+ *                   type: boolean
+ *                   example: true
+ */
   .post(jwtCheck, validate(postchema.addPost), postController.new);
 /**
   * @swagger
@@ -225,15 +444,38 @@ router
   *             schema:
   *               type: object
   *               properties:
-  *                  status:
-  *                    type: integer
-  *                    example: 200
-  *                  message:
-  *                    type: string
-  *                    example: Create a post successfully.
-  *                  post: 
-  *                     type: object
-  *                     example: {id: 1, title: title of post, content: content of post, status: public}
+ *                   tags:
+ *                      type: array
+ *                      items:
+ *                       type: string
+ *                       example: 
+ *                   likes:
+ *                      type: integer
+ *                      example: 0
+ *                   comments:
+ *                      type: integer
+ *                      example: 0
+ *                   recommend:
+ *                      type: boolean
+ *                      example: false
+ *                   id:
+ *                      type: integer
+ *                      example: 100
+ *                   title:
+ *                      type: string
+ *                      example: title
+ *                   description:
+ *                      type: string
+ *                      example: description
+ *                   content:
+ *                      type: string
+ *                      example: content
+ *                   status:
+ *                      type: string
+ *                      example: private
+ *                   userId:
+ *                      type: integer
+ *                      example: 111
  */
 router
   .route('/draft')
