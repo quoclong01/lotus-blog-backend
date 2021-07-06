@@ -16,10 +16,10 @@ router.get('/google', (req, res, next) => {
 router.get('/google/callback', passport.authenticate('google',
   { failureRedirect: '/failure' }
 ), (req, res, next) => {
-  const { accessToken, isNewUser, providerType, userInfo }: any = req.user;
+  const { accessToken, isNewUser, providerType }: any = req.user;
   const redirect_to = req.query['state'];
   if (typeof redirect_to === 'string') {
-    return res.redirect(`${redirect_to}?accessToken=${accessToken}&userInfo=${JSON.stringify(userInfo)}&isNewUser=${isNewUser}&providerType=${providerType}`)
+    return res.redirect(`${redirect_to}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`)
   }
   res.redirect('/')
 });
@@ -37,10 +37,10 @@ router.get('/github', (req, res, next) => {
 router.get('/github/callback', passport.authenticate('github',
   { failureRedirect: '/failure' }
 ), (req, res, next) => {
-  const { accessToken, isNewUser, providerType, userInfo }: any = req.user;
+  const { accessToken, isNewUser, providerType }: any = req.user;
   const redirect_to = req.query['state'];
   if (typeof redirect_to === 'string') {
-    return res.redirect(`${redirect_to}?accessToken=${accessToken}&userInfo=${JSON.stringify(userInfo)}&isNewUser=${isNewUser}&providerType=${providerType}`)
+    return res.redirect(`${redirect_to}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`)
   }
   res.redirect('/')
 });

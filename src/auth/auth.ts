@@ -39,19 +39,6 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     });
     await authTemp.save();
     return done(null, {
-      userInfo: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        gender: user.gender,
-        dob: user.dob,
-        displayName: user.displayName,
-        picture: user.picture,
-        followers: user.followers,
-        followings: user.followings
-      },
       accessToken: newAccessToken,
       providerType: ProviderType.GOOGLE,
       isNewUser: true
@@ -77,19 +64,6 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     await user.update({ verifyAt: new Date() });
   }
   return done(null, {
-    userInfo: {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      gender: user.gender,
-      dob: user.dob,
-      displayName: user.displayName,
-      picture: user.picture,
-      followers: user.followers,
-      followings: user.followings
-    },
     accessToken: newAccessToken,
     providerType: ProviderType.GOOGLE,
     isNewUser: false
@@ -125,19 +99,6 @@ async (accessToken:string, refreshToken:string, profile:any, done:any) => {
     });
     await authTemp.save();
     return done(null, {
-      userInfo: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        gender: user.gender,
-        dob: user.dob,
-        displayName: user.displayName,
-        picture: user.picture,
-        followers: user.followers,
-        followings: user.followings
-      },
       accessToken: newAccessToken,
       providerType: ProviderType.GITHUB,
       isNewUser: true
@@ -163,19 +124,6 @@ async (accessToken:string, refreshToken:string, profile:any, done:any) => {
     await user.update({ verifyAt: new Date() });
   }
   return done(null, {
-    userInfo: {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      gender: user.gender,
-      dob: user.dob,
-      displayName: user.displayName,
-      picture: user.picture,
-      followers: user.followers,
-      followings: user.followings
-    },
     accessToken: newAccessToken,
     providerType: ProviderType.GITHUB,
     isNewUser: false
