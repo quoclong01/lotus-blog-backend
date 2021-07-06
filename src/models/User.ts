@@ -33,6 +33,7 @@ class RequestUser {
   dob?: string; 
   displayName?: string;
   phone?: string;
+  picture?: string;
 
   constructor(data: any, strict = false) {
     if (data.firstName) this.firstName = data.firstName.trim().replace(/\n+/g, ' ');
@@ -44,6 +45,7 @@ class RequestUser {
     if (data.gender) this.gender = data.gender;
     if (data.dob) this.dob = data.dob;
     if (data.phone) this.phone = data.phone;
+    if (data.picture) this.picture = data.picture;
   }
 }
 
