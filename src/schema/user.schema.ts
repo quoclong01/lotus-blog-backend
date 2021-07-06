@@ -9,7 +9,8 @@ export default {
     gender: Joi.string().required(),
     dob: Joi.string().required(),
     displayName: Joi.string().required(),
-    phone: Joi.string()
+    phone: Joi.string(),
+    picture: Joi.string()
   }).required(),
   login: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -25,7 +26,8 @@ export default {
     phone: Joi.string().required(),
     gender: Joi.string().required(),
     dob: Joi.string().required(),
-    displayName: Joi.string().required()
+    displayName: Joi.string().required(),
+    picture: Joi.string()
   }),
   resetPassword: Joi.object().keys({
     email: Joi.string().email().required()
