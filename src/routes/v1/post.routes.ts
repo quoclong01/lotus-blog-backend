@@ -446,7 +446,7 @@ router
   *               tags:
   *                 type: array
   *                 items:
-  *                   type: object
+  *                   type: string
   *                   example: React
   * 
   *     responses:
