@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy} from 'passport-google-oauth2';
 import { User, Auth } from '../models';
+import { RequestUser } from '../models/User';
 import { ProviderType } from '../lib/enum';
 
 passport.use(new GoogleStrategy({
@@ -16,21 +17,14 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     });
 
     if (!user) {
-      const userTemp = new User({
+      const dataTemp: any = new RequestUser({
         email: profile.email,
         firstName: profile.family_name,
         lastName: profile.given_name,
         displayName: profile.displayName,
-        picture: profile.picture,
-        isAdmin: false,
-        isActive: true,
-        followers: null,
-        followings: null,
-        phone: null,
-        gender: null,
-        dob: null,
-        verifyAt: new Date()
-      });
+        picture: profile.picture
+      })
+      const userTemp = new User({ ...dataTemp });
       const user = await userTemp.save();
       const authTemp = new Auth({
         accessToken,
@@ -50,6 +44,7 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
 
     const authTemp = await Auth.findOne({ where: { userId: user.id, providerType: ProviderType.GOOGLE } });
     await authTemp.update({ accessToken, refreshToken });
+    await user.update({ verifyAt: new Date() })
     return done(null, {
       accessToken,
       providerType: ProviderType.GOOGLE,
