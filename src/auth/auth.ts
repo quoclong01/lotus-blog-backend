@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { User, Auth } from '../models';
 import { RequestUser } from '../models/User';
 import { ProviderType } from '../lib/enum';
@@ -78,6 +79,25 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     picture: profile.picture
   };
   handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.GOOGLE, done);
+}));
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_CLIENT_ID,
+  clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+  callbackURL: `${process.env.API_URL}/auth/facebook/callback`,
+  passReqToCallback: true
+},
+async (request:any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+  const email = profile.emails && profile.emails.length > 0 && profile.emails[0].value || undefined;
+  const picture = profile.photos && profile.photos.length > 0 && profile.photos[0].value || undefined;
+  console.log('profile', profile);
+  const profileTemp = {
+    email,
+    firstName: profile.name.familyName,
+    lastName: profile.name.givenName,
+    picture
+  };
+  handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.FACEBOOK, done);
 }));
 
 passport.use(new GitHubStrategy({
