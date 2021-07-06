@@ -64,6 +64,6 @@ router.use('/users', userRoutes);
 router.use('/friends', followerRoutes);
 router.use('/bookmarks', bookmarkRoutes);
 router.use('/signatures', signRoutes);
-router.use('/auths', authRoutes);
+router.use('/auth', authRoutes);
 
 export default router;

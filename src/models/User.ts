@@ -94,13 +94,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     const userTemp = new User({ ...dataTemp });
     const user = await userTemp.save();
     const passwordHash = await hashPassword(data.password);
-    const auth = {
+    const auth: any = {
       // TODO handle dynamic providerType
       providerType: ProviderType.EMAIL,
       password: passwordHash,
-      accessToken: '',
-      refreshToken: '',
-      resetToken: '',
       userId: user.id
     };
     await Auth.create(auth);
@@ -125,7 +122,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (!isValidPassword) throw UserErrors.LOGIN_FAILED;
 
-    const accessToken = await generateAccessToken(authTemp);
+    const accessToken = await generateAccessToken(authTemp.userId);
     await authTemp.update({ accessToken });
     if (!userTemp.verifyAt) await userTemp.update({ verifyAt: new Date()});
 

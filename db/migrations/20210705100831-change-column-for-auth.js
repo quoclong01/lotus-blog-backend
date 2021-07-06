@@ -10,6 +10,12 @@ module.exports = {
           allowNull: true
         }
       ),
+      queryInterface.addColumn('Auth',
+        'idToken',
+        {
+          type: Sequelize.STRING
+        }
+      ),
     ])
   },
 
@@ -20,6 +26,12 @@ module.exports = {
         {
           type: Sequelize.STRING,
           allowNull: false
+        }
+      ),
+      queryInterface.removeColumn('Auth',
+        'idToken',
+        {
+          type: Sequelize.STRING
         }
       ),
     ])
