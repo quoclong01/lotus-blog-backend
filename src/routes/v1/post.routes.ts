@@ -431,12 +431,24 @@ router
   *               title:
   *                 type: string
   *                 example: title of post
+  *               cover:
+  *                 type: string
+  *                 example: cover
   *               content:
   *                 type: string
   *                 example: content of post
   *               status:
   *                 type: string
   *                 example: public/private
+  *               description:
+  *                 type: string
+  *                 example: description of post
+  *               tags:
+  *                 type: array
+  *                 items:
+  *                   type: object
+  *                   example: React
+  * 
   *     responses:
   *       200:
   *         content:
