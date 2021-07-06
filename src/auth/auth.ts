@@ -6,13 +6,7 @@ import { RequestUser } from '../models/User';
 import { ProviderType } from '../lib/enum';
 import { generateAccessToken } from '../lib/utils';
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${process.env.API_URL}/auth/google/callback`,
-  passReqToCallback: true
-},
-async (request:any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+export const handleUrlCallback = async (accessToken: string, refreshToken: string, profile: any, providerType: string, done: any) => {
   let newAccessToken;
   const user = await User.findOne({
     where: { email: profile.email }
@@ -21,17 +15,17 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
   if (!user) {
     const dataTemp: any = new RequestUser({
       email: profile.email,
-      firstName: profile.family_name,
-      lastName: profile.given_name,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
       picture: profile.picture
-    })
+    });
     const user = await User.create(dataTemp);
     newAccessToken = await generateAccessToken(user.id);
 
     const authTemp = new Auth({
       accessToken: newAccessToken,
       refreshToken,
-      providerType: ProviderType.GOOGLE,
+      providerType,
       password: null,
       resetToken: null,
       idToken: accessToken,
@@ -40,19 +34,19 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     await authTemp.save();
     return done(null, {
       accessToken: newAccessToken,
-      providerType: ProviderType.GOOGLE,
+      providerType,
       isNewUser: true
     });
   }
 
   newAccessToken = await generateAccessToken(user.id);
   const authTemp = await Auth.findOne({
-    where: { userId: user.id, providerType: ProviderType.GOOGLE }
+    where: { userId: user.id, providerType }
   });
     
   if (!authTemp) {
     const auth: any = {
-      providerType: ProviderType.GOOGLE,
+      providerType,
       accessToken: newAccessToken,
       refreshToken,
       idToken: accessToken,
@@ -65,9 +59,25 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
   }
   return done(null, {
     accessToken: newAccessToken,
-    providerType: ProviderType.GOOGLE,
+    providerType,
     isNewUser: false
   });
+}
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: `${process.env.API_URL}/auth/google/callback`,
+  passReqToCallback: true
+},
+async (request:any, accessToken: string, refreshToken: string, profile: any, done: any) => {
+  const profileTemp = {
+    email: profile.email,
+    firstName: profile.family_name,
+    lastName: profile.given_name,
+    picture: profile.picture
+  };
+  handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.GOOGLE, done);
 }));
 
 passport.use(new GitHubStrategy({
@@ -77,57 +87,13 @@ passport.use(new GitHubStrategy({
   scope: ['user:email']
 },
 async (accessToken:string, refreshToken:string, profile:any, done:any) => {
-  let newAccessToken;
   const email = profile.emails.length > 0 && profile.emails[0].value || undefined;
   const picture = profile.photos.length > 0 && profile.photos[0].value || undefined;
-  const user = await User.findOne({
-    where: { email }
-  });
-  if (!user) {
-    const dataTemp: any = new RequestUser({ email, picture });
-    const user = await User.create(dataTemp);
-    newAccessToken = await generateAccessToken(user.id);
-
-    const authTemp = new Auth({
-      accessToken: newAccessToken,
-      refreshToken,
-      providerType: ProviderType.GITHUB,
-      password: null,
-      resetToken: null,
-      idToken: accessToken,
-      userId: user.id
-    });
-    await authTemp.save();
-    return done(null, {
-      accessToken: newAccessToken,
-      providerType: ProviderType.GITHUB,
-      isNewUser: true
-    });
-  }
-
-  newAccessToken = await generateAccessToken(user.id);
-  const authTemp = await Auth.findOne({
-    where: { userId: user.id, providerType: ProviderType.GITHUB }
-  });
-
-  if (!authTemp) {
-    const auth: any = {
-      providerType: ProviderType.GITHUB,
-      accessToken: newAccessToken,
-      refreshToken,
-      idToken: accessToken,
-      userId: user.id
-    };
-    await Auth.create(auth);
-    await user.update({ verifyAt: new Date() });
-  } else {
-    await authTemp.update({ accessToken: newAccessToken, refreshToken, idToken: accessToken });
-  }
-  return done(null, {
-    accessToken: newAccessToken,
-    providerType: ProviderType.GITHUB,
-    isNewUser: false
-  });
+  const profileTemp = {
+    email,
+    picture
+  };
+  handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.GITHUB, done);
 }));
 
 passport.serializeUser((user, done) => {
