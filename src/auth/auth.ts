@@ -59,9 +59,9 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
       userId: user.id
     };
     await Auth.create(auth);
+    await user.update({ verifyAt: new Date() });
   } else {
     await authTemp.update({ accessToken: newAccessToken, refreshToken, idToken: accessToken });
-    await user.update({ verifyAt: new Date() });
   }
   return done(null, {
     accessToken: newAccessToken,
@@ -119,9 +119,9 @@ async (accessToken:string, refreshToken:string, profile:any, done:any) => {
       userId: user.id
     };
     await Auth.create(auth);
+    await user.update({ verifyAt: new Date() });
   } else {
     await authTemp.update({ accessToken: newAccessToken, refreshToken, idToken: accessToken });
-    await user.update({ verifyAt: new Date() });
   }
   return done(null, {
     accessToken: newAccessToken,
