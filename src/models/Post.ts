@@ -161,7 +161,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
                   "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
                             LEFT JOIN "Likes" l ON  l."userId" = :userId AND l."postId" = p.id
                             LEFT JOIN "followers_posts_in_week" w on w.id = p.id
-              WHERE w.id is null AND p."status" = 'public' AND p."userId" <> :userId
+              WHERE w.id is null AND p."status" = 'public' AND p."userId" <> :userId AND p."deletedAt" is null
               ORDER BY
                   p."updatedAt" desc
           )
