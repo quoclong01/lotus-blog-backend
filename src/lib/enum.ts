@@ -1,7 +1,8 @@
 export enum ProviderType {
   EMAIL = 'email',
   GOOGLE = 'google',
-  FACEBOOK = 'facebook'
+  FACEBOOK = 'facebook',
+  GITHUB = 'github'
 }
 
 export enum PostStatus {

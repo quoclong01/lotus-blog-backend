@@ -1,7 +1,6 @@
 import vars from './config/vars';
 import app from './config/express';
 import db  from './config/database';
-// import logger from './config/logger';
 
 const {port, env} = vars;
 

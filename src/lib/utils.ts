@@ -68,9 +68,9 @@ export const comparePassword = async (passwordBody: string, password: string) =>
   return await bcrypt.compare(passwordBody, password);
 }
 
-export const generateAccessToken = async (auth: any) => {
+export const generateAccessToken = async (id: number) => {
   return await jwt.sign(
-    { userId: auth.userId },
+    { userId: id },
     'RANDOM_TOKEN_SECRET',
     { algorithm: 'HS256', expiresIn: '24h' }
   );

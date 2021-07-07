@@ -3,6 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import routes from '../routes/v1';
+import passport from '../auth/auth';
+import session from 'express-session';
 
 /*
 * Express instance
@@ -25,6 +27,10 @@ app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
+app.use(session({ secret: 'cats' }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // mount api v1 routes
 app.use('/api/v1', routes);

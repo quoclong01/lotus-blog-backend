@@ -9,6 +9,7 @@ interface AuthAttributes {
   accessToken: string;
   refreshToken: string;
   resetToken: string;
+  idToken: string;
 }
 
 interface AuthCreationAttributes extends Optional<AuthAttributes, 'id'> {}
@@ -21,6 +22,7 @@ export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implemen
   public accessToken!: string;
   public refreshToken!: string;
   public resetToken!: string;
+  public idToken!: string;
 
   // timestamps!
   public readonly createdAt!: Date;
@@ -61,8 +63,7 @@ Auth.init({
     allowNull: false
   },
   password: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   },
   accessToken: {
     type: DataTypes.STRING
@@ -71,6 +72,9 @@ Auth.init({
     type: DataTypes.STRING
   },
   resetToken: {
+    type: DataTypes.STRING
+  },
+  idToken: {
     type: DataTypes.STRING
   },
   userId: {

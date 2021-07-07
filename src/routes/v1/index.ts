@@ -1,6 +1,7 @@
 import express from 'express';
 import userRoutes from './user.routes';
 import bookmarkRoutes from './bookmark.routes';
+import authRoutes from './auth.routes';
 
 import postRoutes from './post.routes';
 import signRoutes from './sign.routes';
@@ -63,6 +64,6 @@ router.use('/users', userRoutes);
 router.use('/friends', followerRoutes);
 router.use('/bookmarks', bookmarkRoutes);
 router.use('/signatures', signRoutes);
-
+router.use('/auth', authRoutes);
 
 export default router;
