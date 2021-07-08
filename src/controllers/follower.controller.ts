@@ -51,15 +51,13 @@ const followerController = {
 
     if (!userFollowingsTemp || !userFollowersTemp) throw FollowerErrors.NOT_FOUND;
 
-    const followersCount = userFollowingsTemp.followings;
-    const followingsCount = userFollowersTemp.followers;
     const followerTemp = await Follower.findOne({
       where: { followerId: authInfo.userId, followingId }
     });
 
     if (followerTemp) {
-      await userFollowingsTemp.update({followers: followersCount - 1});
-      await userFollowersTemp.update({followings: followingsCount - 1});
+      await userFollowingsTemp.update({followers: --userFollowingsTemp.followers});
+      await userFollowersTemp.update({followings: --userFollowersTemp.followings});
       await followerTemp.destroy();
 
       return { followed: false };
@@ -69,8 +67,8 @@ const followerController = {
       followingId,
       followerId: authInfo.userId
     });
-    await userFollowingsTemp.update({followers: followersCount + 1});
-    await userFollowersTemp.update({followings: followingsCount + 1});
+    await userFollowingsTemp.update({followers: ++userFollowingsTemp.followers});
+    await userFollowersTemp.update({followings: ++userFollowersTemp.followings});
     await followerData.save();
 
     return  { followed: true };
