@@ -60,9 +60,9 @@ class PostQueryBuilder extends QueryBuilder {
 
   constructor(baseQuery: any, tags: string[] = [], additionParams: any = {}, isPublic: boolean = true) {
     super(baseQuery);
-    const whereAnd: any = [
-      isPublic && { status: PostStatus.PUBLIC },
-    ]
+    const whereAnd: any = isPublic ? [
+      { status: PostStatus.PUBLIC },
+    ] : [];
     if (tags.length > 0) {
       whereAnd.push(
         {
