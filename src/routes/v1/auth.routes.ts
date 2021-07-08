@@ -16,7 +16,7 @@ router
    *     summary:
    *       Sign in with google account
    *     description:
-   *       This api will access Google OAuth then open Google Login diaglo
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
@@ -66,7 +66,7 @@ router
    *     summary:
    *       Sign in with facebook account
    *     description:
-   *       This api will access Facebook OAuth then open Facebook Login diaglo
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
@@ -116,7 +116,7 @@ router
    *     summary:
    *       Sign in with github account
    *     description:
-   *       This api will access GitHub OAuth then open GitHub Login diaglo
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
