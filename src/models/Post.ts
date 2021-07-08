@@ -58,10 +58,10 @@ class PostQueryBuilder extends QueryBuilder {
   where: any = {};
   include = { model: User, as: 'user', required: false };
 
-  constructor(baseQuery: any, tags: string[] = [], additionParams: any = {}) {
+  constructor(baseQuery: any, tags: string[] = [], additionParams: any = {}, isPublic: boolean = true) {
     super(baseQuery);
     const whereAnd: any = [
-      { status: PostStatus.PUBLIC },
+      isPublic && { status: PostStatus.PUBLIC },
     ]
     if (tags.length > 0) {
       whereAnd.push(
@@ -236,9 +236,9 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       offset,
       order: [['createdAt', 'DESC']]
     }, [], {
-      userId: authInfo.userId, 
+      userId: authInfo.userId,
       deletedAt: { [Op.ne]: null }
-    }).getPlainObject();
+    }, false).getPlainObject();
 
     const data = await Post.findAll({
       ...queryStatement,
