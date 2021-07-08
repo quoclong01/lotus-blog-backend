@@ -16,7 +16,7 @@ router
    *     summary:
    *       Sign in with google account
    *     description:
-   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_to params is correct. After sso authenticated, you will go back with that redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
@@ -66,7 +66,7 @@ router
    *     summary:
    *       Sign in with facebook account
    *     description:
-   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_to params is correct. After sso authenticated, you will go back with that redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
@@ -116,7 +116,7 @@ router
    *     summary:
    *       Sign in with github account
    *     description:
-   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_uri params is correct. After sso authenticated, you will go back with redirect link.
+   *       Let use this endpoint with HttpRequest, that means you open this link with browser, make sure your redirect_to params is correct. After sso authenticated, you will go back with that redirect link.
    *     parameters:
    *       - name: redirect_to
    *         in: query
