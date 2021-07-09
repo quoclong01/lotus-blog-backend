@@ -70,13 +70,42 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {
-   *               email: quan.do@supremetech.vn,
-   *               password: abc@1234, firstName: do,
-   *               lastName: quan, gender: male,
-   *               dob: 19/10/1995, phone: '0909090900',
-   *               displayName: st-quando
-   *             }
+   *             required:
+   *               - email
+   *               - password
+   *               - firstName
+   *               - lastName
+   *               - gender
+   *               - dob
+   *               - displayName
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 example: quan.do@supremetech.vn
+   *               password:
+   *                 type: string
+   *                 example: abc@1234
+   *               firstName:
+   *                 type: string
+   *                 example: do
+   *               lastName:
+   *                 type: string
+   *                 example: quan
+   *               gender:
+   *                 type: string
+   *                 example: male
+   *               dob:
+   *                 type: string
+   *                 example: 19/10/1995
+   *               phone:
+   *                 type: string
+   *                 example: '0909090900'
+   *               displayName:
+   *                 type: string
+   *                 example: st-quando
+   *               picture:
+   *                 type: string
+   *                 example: ''
    *     responses:
    *       200:
    *         content:
@@ -106,10 +135,16 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {
-   *               email: quan.do@supremetech.vn,
-   *               password: abc@1234
-   *             }
+   *             required:
+   *               - email
+   *               - password
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 example: quan.do@supremetech.vn
+   *               password:
+   *                 type: string
+   *                 example: abc@1234
    *     responses:
    *       200:
    *         content:
@@ -169,7 +204,12 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { email: quan.do@supremetech.vn }
+   *             required:
+   *               - email
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 example: quan.do@supremetech.vn
    *     responses:
    *       200:
    *         content:
@@ -200,7 +240,16 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { oldPassword: abc@12345, newPassword: abc@123456 }
+   *             required:
+   *               - oldPassword
+   *               - newPassword
+   *             properties:
+   *               oldPassword:
+   *                 type: string
+   *                 example: abc@1234
+   *               newPassword:
+   *                 type: string
+   *                 example: abc@12345
    *     responses:
    *       200:
    *         content:
@@ -270,7 +319,34 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: {firstName: do, lastName: quan, phone: '0909090900', gender: male, dob: 19/10/1995, displayName: quanDo}
+   *             required:
+   *               - firstName
+   *               - lastName
+   *               - gender
+   *               - dob
+   *               - displayName
+   *             properties:
+   *               firstName:
+   *                 type: string
+   *                 example: do
+   *               lastName:
+   *                 type: string
+   *                 example: quan
+   *               gender:
+   *                 type: string
+   *                 example: male
+   *               dob:
+   *                 type: string
+   *                 example: 19/10/1995
+   *               displayName:
+   *                 type: string
+   *                 example: st-quando
+   *               phone:
+   *                 type: string
+   *                 example: '0909090900'
+   *               picture:
+   *                 type: string
+   *                 example: ''
    *     responses:
    *       200:
    *         content:
