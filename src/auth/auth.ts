@@ -98,6 +98,7 @@ async (request:any, accessToken: string, refreshToken: string, profile: any, don
     lastName: profile.name.givenName,
     picture
   };
+  if (!email) return done(null, { error: "This account doesn't have email." });
   handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.FACEBOOK, done);
 }));
 

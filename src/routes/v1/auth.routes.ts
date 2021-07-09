@@ -95,10 +95,13 @@ router
   .get('/facebook/callback', passport.authenticate('facebook',
     { failureRedirect: '/failure' }
   ), (req, res, next) => {
-    const { accessToken, isNewUser, providerType }: any = req.user;
+    const { accessToken, isNewUser, providerType, error }: any = req.user;
     const redirect_to = req.query['state'];
     if (typeof redirect_to === 'string') {
-      return res.redirect(`${redirect_to}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`)
+      const redirectLink = error
+            ? `${redirect_to}?error=${error}`
+            : `${redirect_to}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`
+      return res.redirect(redirectLink);
     }
     res.redirect('/')
   });
