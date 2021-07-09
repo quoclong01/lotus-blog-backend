@@ -23,7 +23,7 @@ export default {
   updatePersonalInfo: Joi.object().keys({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    phone: Joi.string().required(),
+    phone: Joi.string(),
     gender: Joi.string().required(),
     dob: Joi.string().required(),
     displayName: Joi.string().required(),

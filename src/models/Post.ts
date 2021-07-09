@@ -142,7 +142,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
           from
               "Posts" p LEFT JOIN "Bookmarks" b ON  b."userId" = :userId AND b."postId" = p.id
                       LEFT JOIN "Likes" l ON  l."userId" = :userId AND l."postId" = p.id
-                      INNER JOIN "Followers" f on p."userId" = f."followerId"
+                      INNER JOIN "Followers" f on p."userId" = f."followerId" AND f."followingId" = :userId
           WHERE p."updatedAt" >= current_date - interval '7 days' AND p."status" = 'public' AND p."userId" <> :userId AND p."deletedAt" is null
           ORDER BY
               p."updatedAt" desc
@@ -176,7 +176,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
           u."displayName" as "user.displayName",
           u."gender" as "user.gender",
           u."picture" as "user.picture"
-        from ((SELECT * from followers_posts_in_week LIMIT 10)
+        from ((SELECT * from followers_posts_in_week)
         union all
         (SELECT * FROM other_posts)) as temp LEFT JOIN "Users" u ON temp."userId" = u.id limit :limit offset :offset;`,
       {
