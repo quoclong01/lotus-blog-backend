@@ -562,6 +562,15 @@ router
   *               content:
   *                 type: string
   *                 example: content of post            
+  *               description:
+  *                 type: string
+  *                 example: description of post            
+  *               status:
+  *                 type: string
+  *                 example: status of post            
+  *               cover:
+  *                 type: string
+  *                 example: cover of post            
   *     responses:
   *       200:
   *         content:
@@ -938,6 +947,8 @@ router
 *         application/json:
 *           schema:
 *             type: object
+*             required:
+*               - content
 *             properties:
 *               content:
 *                 type: string

@@ -92,7 +92,12 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { followingId: 1 }
+   *             required:
+   *              - followingId
+   *             properties:
+   *              followingId:
+   *                type: number
+   *                example: 1
    *     responses:
    *       200:
    *         content:

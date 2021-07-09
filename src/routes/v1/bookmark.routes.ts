@@ -115,7 +115,12 @@ router
    *         application/json:
    *           schema:
    *             type: object
-   *             example: { postId: 1 }
+   *             required:
+   *              - postId
+   *             properties:
+   *              postId:
+   *                type: number
+   *                example: 1
    *     responses:
    *       200:
    *         content:
