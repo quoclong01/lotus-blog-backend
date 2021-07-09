@@ -85,7 +85,8 @@ passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
   callbackURL: `${process.env.API_URL}/auth/facebook/callback`,
-  passReqToCallback: true
+  passReqToCallback: true,
+  profileFields: ['id', 'emails', 'name']
 },
 async (request:any, accessToken: string, refreshToken: string, profile: any, done: any) => {
   const email = profile.emails && profile.emails.length > 0 && profile.emails[0].value || undefined;
