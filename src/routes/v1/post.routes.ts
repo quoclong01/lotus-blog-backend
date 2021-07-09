@@ -427,6 +427,12 @@ router
   *         application/json:
   *           schema:
   *             type: object
+  *             required:
+  *               - title
+  *               - cover
+  *               - content
+  *               - status
+  *               - description
   *             properties:
   *               title:
   *                 type: string
