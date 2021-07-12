@@ -25,12 +25,12 @@ interface UserAttributes {
 }
 
 export class RequestUser {
-  email?: string; 
-  password?: string; 
-  firstName?: string; 
-  lastName?: string; 
-  gender?: string; 
-  dob?: string; 
+  email?: string;
+  password?: string;
+  firstName?: string;
+  lastName?: string;
+  gender?: string;
+  dob?: string;
   displayName?: string;
   phone?: string;
   picture?: string;
@@ -124,7 +124,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     const accessToken = await generateAccessToken(authTemp.userId);
     await authTemp.update({ accessToken });
-    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: new Date()});
+    if (!userTemp.verifyAt) await userTemp.update({ verifyAt: new Date() });
 
     return { accessToken, userInfo: userTemp };
   }
@@ -159,11 +159,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
     if (userDisplayNameTemp) throw UserErrors.ALREADY_DISPLAYNAME_EXISTED;
 
-    await userTemp.update({...dataTemp});
+    await userTemp.update({ ...dataTemp });
     return userTemp;
   }
 
-  public static async updateUserPassword(authInfo: any, data: any ) {
+  public static async updateUserPassword(authInfo: any, data: any) {
 
     const authTemp = await Auth.findOne({
       where: { userId: authInfo.userId, providerType: ProviderType.EMAIL }
@@ -232,7 +232,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         ],
         include: {
           attributes: [],
-          model: Follower, 
+          model: Follower,
           as: 'followingInfo',
           required: false,
           where: {
@@ -259,7 +259,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     let data;
     if (paramId === 'me') {
       data = await User.findOne({
-        where: { id: authInfo.userId }, include: { model: Post, as: 'Posts', required: false }
+        where: { id: authInfo.userId }, include: { model: Post, where: { status: PostStatus.PUBLIC || PostStatus.PRIVATE }, as: 'Posts', required: false }
       });
     }
     else {
