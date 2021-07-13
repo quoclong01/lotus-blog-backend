@@ -259,7 +259,17 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     let data;
     if (paramId === 'me') {
       data = await User.findOne({
-        where: { id: authInfo.userId }, include: { model: Post, where: { status: PostStatus.PUBLIC || PostStatus.PRIVATE }, as: 'Posts', required: false }
+        where: { id: authInfo.userId }, 
+        include: { 
+          model: Post, 
+          where: {
+            [Op.or]: [
+              { status: PostStatus.PUBLIC },
+              { status: PostStatus.PRIVATE }
+            ]
+          },
+          as: 'Posts', 
+          required: false }
       });
     }
     else {
