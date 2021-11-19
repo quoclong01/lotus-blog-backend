@@ -436,19 +436,19 @@ router
   *             properties:
   *               title:
   *                 type: string
-  *                 example: title of post. Validate: min 10 characters
+  *                 example: title of post. Validate: min 20 characters
   *               cover:
   *                 type: string
   *                 example: cover
   *               content:
   *                 type: string
-  *                 example: content of post. Validate: min 20 characters
+  *                 example: content of post. Validate: min 100 characters
   *               status:
   *                 type: string
   *                 example: public/private
   *               description:
   *                 type: string
-  *                 example: description of post. Validate: min 10 characters
+  *                 example: description of post. Validate: min 50 characters
   *               tags:
   *                 type: array
   *                 items:
