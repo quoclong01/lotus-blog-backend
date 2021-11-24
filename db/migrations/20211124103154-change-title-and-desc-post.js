@@ -3,13 +3,13 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.changeColumn('Post',
+      queryInterface.changeColumn('Posts',
         'description',
         {
           type: Sequelize.TEXT,
         }
       ),
-      queryInterface.changeColumn('Post',
+      queryInterface.changeColumn('Posts',
         'title',
         {
           type: Sequelize.TEXT,
@@ -20,13 +20,13 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.changeColumn('Post',
+      queryInterface.changeColumn('Posts',
         'description',
         {
           type: Sequelize.STRING,
         }
       ),
-      queryInterface.changeColumn('Post',
+      queryInterface.changeColumn('Posts',
         'title',
         {
           type: Sequelize.STRING,
