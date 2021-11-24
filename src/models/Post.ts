@@ -117,7 +117,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       totalItems: length,
       itemsPerPage: size,
       currentPage: +query.page || 1,
-      loadMore: offset < totalPage - 1
+      loadMore: offset < length
     };
   }
 
@@ -203,7 +203,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
         totalItems: length,
         itemsPerPage: size,
         currentPage: +query.page || 1,
-        loadMore: offset < totalPage - 1
+        loadMore: offset < length
       };
     }
   }
@@ -225,7 +225,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       totalItems: length,
       itemsPerPage: size,
       currentPage: +query.page || 1,
-      loadMore: offset < totalPage - 1
+      loadMore: offset < length
     };
   }
   public static async listDeletedPosts(query:any, authInfo: any) {
@@ -257,7 +257,7 @@ export class Post extends Model<PostAttributes, PostCreationAttributes> implemen
       totalItems: length,
       itemsPerPage: size,
       currentPage: +query.page || 1,
-      loadMore: offset < totalPage - 1
+      loadMore: offset < length
     };
   }
 
