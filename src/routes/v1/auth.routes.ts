@@ -31,7 +31,7 @@ router
    *               type: string
    *               example: http://localhost:9999/api/v1?accessToken=test&isNewUser=true&providerType=google
   */
-  .get('/google', (req, res, next) => {
+  .get('/google', passport.authenticate("google", { scope: ["profile", 'email'] }) , (req, res, next) => {
     const { redirect_to } = req.query;
 
     if (!redirect_to) return res.send({mesage: 'Please provider callback URL.'});
@@ -46,11 +46,8 @@ router
     { failureRedirect: '/failure' }
   ), (req, res, next) => {
     const { accessToken, isNewUser, providerType }: any = req.user;
-    const redirect_to = req.query['state'];
-    if (typeof redirect_to === 'string') {
-      return res.redirect(`${redirect_to}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`)
-    }
-    res.redirect('/')
+
+    return res.redirect(`${process.env.APP_URL}?accessToken=${accessToken}&isNewUser=${isNewUser}&providerType=${providerType}`)
   });
 
 router
@@ -81,8 +78,9 @@ router
    *               type: string
    *               example: http://localhost:9999/api/v1?accessToken=test&isNewUser=true&providerType=google
   */
-  .get('/facebook', (req, res, next) => {
+  .get('/facebook', passport.authenticate("facebook", { scope: ["profile"] }), (req, res, next) => {
     const { redirect_to } = req.query;
+    console.log(redirect_to);
 
     if (!redirect_to) return res.send({mesage: 'Please provider callback URL.'});
 
@@ -93,7 +91,7 @@ router
 
 router
   .get('/facebook/callback', passport.authenticate('facebook',
-    { failureRedirect: '/failure' }
+    { failureRedirect: '/failure' } 
   ), (req, res, next) => {
     const { accessToken, isNewUser, providerType, error }: any = req.user;
     const redirect_to = req.query['state'];

@@ -228,7 +228,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
           'email', 'firstName', 'lastName',
           'gender', 'dob', 'phone',
           'displayName', 'picture', 'followers', 'followings',
-          [literal('CASE WHEN "followingInfo"."id" is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
+          [literal('CASE WHEN followingInfo.id is not null THEN TRUE ELSE FALSE END'), 'isFollowed']
         ],
         include: {
           attributes: [],

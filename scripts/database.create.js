@@ -1,18 +1,20 @@
-const { Pool, Client } = require('pg');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 // pools will use environment variables
 // for connection information
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: 'postgres',
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+const config = {
+  user: process.env.MYSQL_USER,
+  host: process.env.MYSQL_HOST,
+  database: 'mysql',
+  password: process.env.MYSQL_PASSWORD,
+  port: process.env.MYSQL_PORT
+};
 
-pool.query(`CREATE DATABASE ${process.env.DB_NAME}`, (error, result) => {
+const pool = mysql.createPool(config);
+
+pool.query(`CREATE DATABASE ${process.env.MYSQL_DATABASE}`, (error, result) => {
   if (error) throw error;
   console.log('Database created: ', result);
-  pool.end()
+  pool.end();
 });

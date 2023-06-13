@@ -24,8 +24,8 @@ const options = {
         url: "https://spdx.org/licenses/MIT.html",
       },
       contact: {
-        name: "Quan Do",
-        email: "quan.do@spremetech.vn",
+        name: "Quoc Long",
+        email: "long.ngo@spremetech.vn",
       },
     },
     servers: [

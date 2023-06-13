@@ -1,5 +1,5 @@
- # Create image based on the official Node 6 image from the dockerhub
-FROM node:10
+# Create image based on the official Node 6 image from the dockerhub
+FROM node:14
 ARG arg
 
 # Create a directory where our app will be placed

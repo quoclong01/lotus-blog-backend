@@ -5,8 +5,8 @@ module.exports = {
     await queryInterface.addColumn('Posts',
       'tags', 
       {
-        type: Sequelize.ARRAY(Sequelize.STRING),
-        defaultValue: []
+        type: DataTypes.STRING,
+        defaultValue: ''
       });
   },
 
@@ -14,8 +14,8 @@ module.exports = {
     await queryInterface.removeColumn('Posts', 
       'tags', 
       {
-        type: Sequelize.ARRAY(Sequelize.STRING),
-        defaultValue: []
+        type: DataTypes.STRING,
+        defaultValue: ''
       });
   }
 };

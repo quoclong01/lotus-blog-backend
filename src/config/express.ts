@@ -3,18 +3,21 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import routes from '../routes/v1';
-import passport from '../auth/auth';
 import session from 'express-session';
-
+import passport from '../auth/auth';
 /*
-* Express instance
-* @public
-*/
+ * Express instance
+ * @public
+ */
 const app = express();
 
 // request logging. dev: console | production: file
 // app.use(morgan(logs));
-
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'SECRET' 
+}));
 // parse body params and attache them to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,8 +38,8 @@ app.use(passport.session());
 // mount api v1 routes
 app.use('/api/v1', routes);
 
-app.use("**", (req, res, next) => {
-  res.status(404).json({message: 'Route not found!'})
-})
+app.use('**', (req, res, next) => {
+  res.status(404).json({ message: 'Route not found!' });
+});
 
 export default app;
