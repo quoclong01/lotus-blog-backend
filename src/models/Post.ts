@@ -1,12 +1,13 @@
 import { DataTypes, Model, Optional, Op, where, fn, col } from 'sequelize';
 import { PostErrors } from '../lib/api-error';
 import db from '../config/database';
-import { DEFAULT_SIZE } from '../lib/constant';
+import { DEFAULT_LANG, DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
 import { PostStatus } from '../lib/enum';
 import { User, Like, Bookmark } from '../models';
+const translate = require('translate-google')
 
 interface PostAttributes {
   id: number;
@@ -209,18 +210,27 @@ export class Post
   public static async listRecommendPosts(query: any) {
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
-    const queryStatement = new PostQueryBuilder(
-      {
-        limit: size,
-        offset,
-        order: [['createdAt', 'DESC']]
-      },
-      [],
-      { recommend: true }
-    ).getPlainObject();
-    const data = await Post.findAll({ ...queryStatement });
+    const data = await Post.findAll({
+      where: { status: PostStatus.PUBLIC },
+      attributes: [
+        'id', 'title', 'content', 'description',
+        'status', 'tags', 'userId', 'likes', 'comments',
+        'cover', 'createdAt'
+      ],
+      order: literal('COALESCE(likes, 0) + COALESCE(comments, 0) DESC'),
+      limit: size,
+      offset,
+      include: {
+        model: User, as: 'user', required: false,
+        attributes: [
+          'email', 'firstName', 'lastName',
+          'phone', 'gender', 'displayName',
+          'picture', 'dob'
+        ]
+      }
+    });
+    const length = +await Post.count({where: {status: PostStatus.PUBLIC}});
 
-    const length = +(await Post.count({ ...queryStatement }));
     const totalPage = Math.ceil(length / size);
     return {
       data,
@@ -323,12 +333,13 @@ export class Post
     return currentPost;
   }
 
-  public static async getPost(id: string, authInfo: any) {
-    let currentPost;
+  public static async getPost(id: string, query: any, authInfo: any) {
+    const lang: string = query.lang || '';
+    let currentPost: any;
     if (!authInfo) {
       currentPost = await Post.findOne({
         where: { id: id, status: PostStatus.PUBLIC },
-        include: { model: User, as: 'user', required: false }
+        include: { model: User, as: 'user', required: false },
       });
     } else {
       const result = await Post.findByPk(id, {
@@ -360,11 +371,25 @@ export class Post
               postId: id
             }
           }
-        ]
+        ],
       });
       if (result.status === PostStatus.PUBLIC || result.userId === authInfo.userId) {
         currentPost = result;
       }
+    }
+    const dataTranslation = {
+      title: currentPost.title,
+      content: currentPost.content,
+      description: currentPost.description
+    }
+    if (lang) {
+      await translate(dataTranslation, { to: lang }).then((res: any) => {
+        currentPost.dataValues.title = res.title;
+        currentPost.dataValues.content = res.content;
+        currentPost.dataValues.description = res.description;
+      }).catch((err: any) => {
+        console.log(err);
+      });
     }
 
     if (!currentPost) throw PostErrors.NOT_FOUND;
@@ -395,6 +420,20 @@ export class Post
 
     currentPost.restore();
     return 'Restore post successfully';
+  }
+
+  public static async getTags(query: any) {
+    const size = +query.size || DEFAULT_SIZE;
+    const data = await this.sequelize.query(
+      `SELECT DISTINCT tags FROM posts`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+    const listTags: string[] = [].concat.apply([], data.map((item: any) => item.tags.split(',')));
+    const newData: string[] =  [...new Set(listTags)].filter((item: string) => item).slice(0, size);
+    return { data: newData };
   }
 }
 

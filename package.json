@@ -32,6 +32,7 @@
     "babel-core": "^6.26.3",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.18.3",
+    "cloudinary": "^1.37.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
@@ -61,6 +62,7 @@
     "sequelize-cli": "^6.2.0",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.4",
+    "translate-google": "^1.5.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

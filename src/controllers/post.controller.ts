@@ -28,7 +28,7 @@ const postController = {
     return await Post.getlistDrafts(req.user);
   }),
   show: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.getPost(req.params.id, req.user);
+    return await Post.getPost(req.params.id, req.query, req.user);
   }),
   updateContent: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Post.updateContent(req.params.id, req.body, req.user);
@@ -51,7 +51,9 @@ const postController = {
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Comment.doComment(req.params.id, req.user, req.body);
   }),
-
+  getTags: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.getTags(req.query);
+  }),
 };
 
 export default postController;

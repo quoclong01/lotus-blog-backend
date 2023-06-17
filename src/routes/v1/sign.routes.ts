@@ -1,6 +1,6 @@
 import express from 'express';
 import expressjwt from 'express-jwt';
-import s3Controller from '../../controllers/s3.controller';
+import cloudinaryController from '../../controllers/cloudinary.controller';
 
 const router = express.Router();
 const jwtCheck = expressjwt({
@@ -10,7 +10,7 @@ const jwtCheck = expressjwt({
 
 router
   .route('/')
-  .get(jwtCheck, s3Controller.getSignedUrl)
+  .get(jwtCheck, cloudinaryController.getSignedUrl)
   /**
    * @swagger
    * /signatures:

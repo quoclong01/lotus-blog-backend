@@ -119,7 +119,41 @@ router
  *                   type: boolean
  *                   example: true
  */
-
+router
+  .route('/tags')
+  .get(postController.getTags)
+/**
+  * @swagger
+  *
+  * /posts/tags:
+  *   get:
+  *     tags:
+  *       - Post
+  *     produces:
+  *       - application/json
+  *     summary:
+  *       Get all tags in posts
+  *     parameters:
+  *       - name: size
+  *         in: query
+  *         description: total tags show in one page 
+  *         required: false
+  *         example: /posts/tags?size=3
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  data:
+  *                    type: array
+  *                    items:
+  *                     type: string
+  *                    example: ["React", "JS", "HTML"]
+  *                    
+  *                
+ */
 router
   .route('/recommend')
   .get(postController.recommendIndex);
