@@ -34,7 +34,7 @@ router
   .get('/google', passport.authenticate("google", { scope: ["profile", 'email'] }) , (req, res, next) => {
     const { redirect_to } = req.query;
 
-    if (!redirect_to) return res.send({mesage: 'Please provider callback URL.'});
+    if (!redirect_to) return res.send({ mesage: 'Please provider callback URL.'});
 
     const state = redirect_to.toString();
     const authenticator = passport.authenticate('google', { scope: ['email', 'profile'], state });
@@ -80,7 +80,6 @@ router
   */
   .get('/facebook', passport.authenticate("facebook", { scope: ["profile"] }), (req, res, next) => {
     const { redirect_to } = req.query;
-    console.log(redirect_to);
 
     if (!redirect_to) return res.send({mesage: 'Please provider callback URL.'});
 
@@ -135,7 +134,7 @@ router
   .get('/github', (req, res, next) => {
     const { redirect_to } = req.query;
 
-    if (!redirect_to) return res.send({mesage: 'Please provider callback URL.'});
+    if (!redirect_to) return res.send({ mesage: 'Please provider callback URL.' });
 
     const state = redirect_to.toString();
     const authenticator = passport.authenticate('github', { state });

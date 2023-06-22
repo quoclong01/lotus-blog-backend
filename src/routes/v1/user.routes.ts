@@ -185,6 +185,10 @@ router
    *               example: Logout successfully.
   */
   .post(jwtCheck, userController.logout)
+  
+router
+  .route('/search')
+  .get(jwtCheck, userController.searchUser)
 
 router
   .route('/reset-password')

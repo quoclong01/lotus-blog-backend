@@ -43,6 +43,20 @@ export class Comment extends Model<CommentAttributes, CommentCreationAttributes>
     return commentTemp;
   }
   
+  public static async deleteComment(id: string, authInfo: any) {
+    const currentComment = await Comment.findByPk(id);
+
+    if (!currentComment) throw PostErrors.NOT_FOUND;
+
+    const userTemp = await User.findOne({
+      where: { id: authInfo?.userId }
+    });
+
+    if (!userTemp.isAdmin && authInfo.userId !== currentComment.userId) throw PostErrors.INTERACT_PERMISSION;
+    
+    currentComment.destroy();
+    return 'Delete comment successfully';
+  }
 }
 
 Comment.init({

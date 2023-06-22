@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional, Op, where, fn, col } from 'sequelize';
-import { PostErrors } from '../lib/api-error';
+import { PostErrors, UserErrors } from '../lib/api-error';
 import db from '../config/database';
-import { DEFAULT_LANG, DEFAULT_SIZE } from '../lib/constant';
+import { DEFAULT_SIZE } from '../lib/constant';
 import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
@@ -58,13 +58,20 @@ class PostQueryBuilder extends QueryBuilder {
   where: any = {};
   include = { model: User, as: 'user', required: false };
 
-  constructor(baseQuery: any, tags: string[] = [], additionParams: any = {}, isPublic: boolean = true) {
+  constructor(baseQuery: any, tags: string[] = [], title: string, additionParams: any = {}, isPublic: boolean = true) {
     super(baseQuery);
     const whereAnd: any = isPublic ? [{ status: PostStatus.PUBLIC }] : [];
     if (tags.length > 0) {
       whereAnd.push({
         tags: {
           [Op.like]: `%${tags}%`
+        }
+      });
+    }
+    if (title) {
+      whereAnd.push({
+        title: {
+          [Op.like]: `%${title}%`
         }
       });
     }
@@ -103,6 +110,7 @@ export class Post
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
     const tags = query.tags;
+    const title = query.query || '';
     
     const queryStatement = new PostQueryBuilder(
       {
@@ -110,7 +118,8 @@ export class Post
         offset,
         order: [['createdAt', 'DESC']]
       },
-      tags
+      tags,
+      title
     ).getPlainObject();
     const data = await Post.findAll({ ...queryStatement });
     const length = +(await Post.count(queryStatement));
@@ -130,7 +139,8 @@ export class Post
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
     const tags = query.tags ? query.tags.split(',') : [];
-    if (tags.length > 0) {
+    const title = query.query || '';
+    if (tags.length > 0 || title) {
       return this.listPosts(query);
     } else {
       const baseQuery = `
@@ -251,6 +261,7 @@ export class Post
         order: [['createdAt', 'DESC']]
       },
       [],
+      '',
       {
         userId: authInfo.userId,
         deletedAt: { [Op.ne]: null }
@@ -402,7 +413,11 @@ export class Post
 
     if (!currentPost) throw PostErrors.NOT_FOUND;
 
-    if (authInfo.userId !== currentPost.userId) throw PostErrors.INTERACT_PERMISSION;
+    const userTemp = await User.findOne({
+      where: { id: authInfo?.userId }
+    });
+
+    if (!userTemp.isAdmin && authInfo.userId !== currentPost.userId) throw PostErrors.INTERACT_PERMISSION;
 
     currentPost.destroy();
     return 'Delete post successfully';
@@ -435,6 +450,54 @@ export class Post
     const newData: string[] =  [...new Set(listTags)].filter((item: string) => item).slice(0, size);
     return { data: newData };
   }
+
+  public static async getInfo(authInfo: any) {
+    const userTemp = await User.findOne({
+      where: { id: authInfo?.userId }
+    });
+
+    if (!userTemp.isAdmin) throw UserErrors.INTERACT_PERMISSION;
+
+    const listPosts = await this.sequelize.query(
+      `SELECT * FROM posts`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+    
+    const listUsers = await this.sequelize.query(
+      `SELECT * FROM users`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+
+    const listComments = await this.sequelize.query(
+      `SELECT * FROM comments`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+    const listLikes = await this.sequelize.query(
+      `SELECT * FROM likes`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+
+    return {
+      posts: listPosts,
+      users: listUsers,
+      totalPosts: listPosts.length,
+      totalUsers: listUsers.length,
+      totalComments: listComments.length,
+      totalLikes: listLikes.length
+    }
+  }
 }
 
 Post.init(
@@ -449,7 +512,7 @@ Post.init(
       allowNull: false
     },
     description: {
-      type: DataTypes.STRING
+      type: DataTypes.TEXT
     },
     content: {
       type: DataTypes.TEXT

@@ -38,7 +38,10 @@ const userController = {
     return await User.removeUser(req.params.id);
   }),
   restore: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return Post.restorePost(req.params.id, req.user);
+    return await Post.restorePost(req.params.id, req.user);
+  }),
+  searchUser: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await User.searchUser(req.query);
   }),
 }
 

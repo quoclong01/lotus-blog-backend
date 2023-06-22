@@ -110,7 +110,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
       attributes: [
         'id', 'email', 'firstName', 'lastName',
         'gender', 'phone', 'dob', 'displayName', 'picture',
-        'verifyAt'
+        'verifyAt', 'isAdmin'
       ]
     });
     if (!userTemp) throw UserErrors.LOGIN_FAILED;
@@ -253,6 +253,21 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     }
     if (!user) throw UserErrors.NOT_FOUND;
     return user;
+  }
+
+  public static async searchUser(query: any) {
+    const email = query.email || '';
+    const data = await this.sequelize.query(
+      `SELECT * FROM users WHERE email LIKE '%${email}%' ORDER BY id DESC;`,
+      {
+        type: QueryTypes.SELECT,
+        nest: true
+      }
+    );
+
+    return {
+      data
+    };
   }
 
   public static async getPosts(paramId: string | number, authInfo: any) {

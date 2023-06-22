@@ -1,9 +1,9 @@
 import { Comment } from './../models/Comment';
 import { Like } from './../models/Like';
-import { PostErrors } from './../lib/api-error';
 import { Request, Response, NextFunction } from 'express';
 import { Post } from '../models/Post';
 import { responseMiddleware } from '../lib/utils';
+import { Op } from 'sequelize';
 
 const postController = {
   publicIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
@@ -45,14 +45,33 @@ const postController = {
   getLikes: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Like.getLikes(req.params.id);
   }),
+  getListComments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    const comment = req.query.comment || '';
+
+    const data = await Comment.findAll({
+      where: {
+        comment: {
+          [Op.like] : `%${comment}%`
+        }
+      },
+      order: [['createdAt', 'DESC']]
+    });
+    return { data: data };
+  }),
   getComments: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Comment.getComments(req.params.id);
   }),
   comment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return Comment.doComment(req.params.id, req.user, req.body);
   }),
+  deleteComment: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return Comment.deleteComment(req.params.id, req.user);
+  }),
   getTags: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.getTags(req.query);
+  }),
+  getInfo: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+    return await Post.getInfo(req.user);
   }),
 };
 

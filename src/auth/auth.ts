@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
-// import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { User, Auth } from '../models';
 import { RequestUser } from '../models/User';
@@ -105,21 +105,21 @@ async (request: any, accessToken: string, refreshToken: string, profile: any, do
   handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.FACEBOOK, done);
 }));
 
-// passport.use(new GitHubStrategy({
-//   clientID: process.env.GITHUB_CLIENT_ID,
-//   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-//   callbackURL: `${process.env.API_URL}/auth/github/callback`,
-//   scope: ['user:email']
-// },
-// async (accessToken:string, refreshToken:string, profile:any, done:any) => {
-//   const email = profile.emails.length > 0 && profile.emails[0].value || undefined;
-//   const picture = profile.photos.length > 0 && profile.photos[0].value || undefined;
-//   const profileTemp = {
-//     email,
-//     picture
-//   };
-//   handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.GITHUB, done);
-// }));
+passport.use(new GitHubStrategy({
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: `${process.env.API_URL}/auth/github/callback`,
+  scope: ['user:email']
+},
+async (accessToken:string, refreshToken:string, profile:any, done:any) => {
+  const email = profile.emails.length > 0 && profile.emails[0].value || undefined;
+  const picture = profile.photos.length > 0 && profile.photos[0].value || undefined;
+  const profileTemp = {
+    email,
+    picture
+  };
+  handleUrlCallback(accessToken, refreshToken, profileTemp, ProviderType.GITHUB, done);
+}));
 
 passport.serializeUser((user, done) => {
   done(null, user);

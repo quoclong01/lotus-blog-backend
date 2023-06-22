@@ -15,7 +15,7 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Sharing News API docs",
+      title: "Blog App",
       version: "0.1.0",
       description:
         "This is a simple CRUD API application made with Express and documented with Swagger",
