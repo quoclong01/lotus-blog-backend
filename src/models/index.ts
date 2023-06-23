@@ -5,6 +5,8 @@ import { Auth } from './Auth';
 import { Bookmark } from './Bookmark';
 import { Post } from './Post';
 import { Follower } from './Follower';
+import { Chat } from './Chat';
+import { Message } from './Message';
 
 
 Auth.belongsTo(User, { targetKey: 'id', foreignKey: 'userId', as: 'user'});
@@ -33,5 +35,7 @@ export {
   Bookmark,
   Like,
   Comment,
-  Follower
+  Follower,
+  Chat,
+  Message
 }

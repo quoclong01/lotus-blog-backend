@@ -6,6 +6,8 @@ import authRoutes from './auth.routes';
 import postRoutes from './post.routes';
 import signRoutes from './sign.routes';
 import followerRoutes from './follower.routes';
+import ChatRoutes from './chat.routes';
+import MessageRoutes from './message.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 
@@ -65,5 +67,7 @@ router.use('/friends', followerRoutes);
 router.use('/bookmarks', bookmarkRoutes);
 router.use('/signatures', signRoutes);
 router.use('/auth', authRoutes);
+router.use('/chat', ChatRoutes);
+router.use('/message', MessageRoutes);
 
 export default router;
