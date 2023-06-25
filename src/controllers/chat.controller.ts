@@ -10,10 +10,10 @@ const chatController = {
     });
     try {
       const result = await newChat.save();
-      res.status(200).json(result);
+      return result;
     }
     catch (error: any) {
-      res.status(500).json(error);
+      return error;
     }
   }),
   userChats: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {

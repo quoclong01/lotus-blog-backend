@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { responseMiddleware } from '../lib/utils';
 
 
-const chatController = {
+const messageController = {
   addMessages: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     const { chatId, senderId, text } = req.body;
     const message = new Message({
@@ -12,10 +12,10 @@ const chatController = {
     
     try {
       const result = await message.save();
-      res.status(200).json(result);
+      return result;
     }
     catch (error) {
-      res.status(500).json(error);
+      throw new Error(error);
     }
 
   }),
@@ -28,13 +28,12 @@ const chatController = {
           chatId
         },
       });
-      res.status(200).json(data);
+      return data;
     }
     catch (error) {
-      res.status(500).json(error);
+      throw new Error(error);
     }
-
   }),
 }
 
-export default chatController;
+export default messageController;

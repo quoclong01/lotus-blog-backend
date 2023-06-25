@@ -440,7 +440,7 @@ export class Post
   public static async getTags(query: any) {
     const size = +query.size || DEFAULT_SIZE;
     const data = await this.sequelize.query(
-      `SELECT DISTINCT tags FROM posts`,
+      `SELECT DISTINCT tags FROM Posts`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -459,7 +459,7 @@ export class Post
     if (!userTemp.isAdmin) throw UserErrors.INTERACT_PERMISSION;
 
     const listPosts = await this.sequelize.query(
-      `SELECT * FROM posts`,
+      `SELECT * FROM Posts`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -467,7 +467,7 @@ export class Post
     );
     
     const listUsers = await this.sequelize.query(
-      `SELECT * FROM users`,
+      `SELECT * FROM Users`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -475,14 +475,14 @@ export class Post
     );
 
     const listComments = await this.sequelize.query(
-      `SELECT * FROM comments`,
+      `SELECT * FROM Comments`,
       {
         type: QueryTypes.SELECT,
         nest: true
       }
     );
     const listLikes = await this.sequelize.query(
-      `SELECT * FROM likes`,
+      `SELECT * FROM Likes`,
       {
         type: QueryTypes.SELECT,
         nest: true

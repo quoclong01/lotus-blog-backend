@@ -19,7 +19,7 @@ export class Chat extends Model<ChatAttributes, ChatCreationAttributes> implemen
   public static async userChats(userId: any) {
     try {
       const data = await this.sequelize.query(
-        `SELECT * FROM chat WHERE JSON_CONTAINS(members, '["${userId}"]');`,
+        `SELECT * FROM Chat WHERE JSON_CONTAINS(members, '["${userId}"]');`,
         {
           type: QueryTypes.SELECT,
           nest: true
@@ -34,7 +34,7 @@ export class Chat extends Model<ChatAttributes, ChatCreationAttributes> implemen
   public static async findChat(params: any) {
     try {
       const data = await this.sequelize.query(
-        `SELECT * FROM chat WHERE JSON_CONTAINS(members, '["${params.firstId}", "${params.secondId}"]');`,
+        `SELECT * FROM Chat WHERE JSON_CONTAINS(members, '["${params.firstId}", "${params.secondId}"]');`,
         {
           type: QueryTypes.SELECT,
           nest: true
