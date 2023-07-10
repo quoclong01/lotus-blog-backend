@@ -6,8 +6,7 @@ import { QueryBuilder } from '../lib/constructors';
 import { literal } from 'sequelize';
 import { QueryTypes } from 'sequelize';
 import { PostStatus } from '../lib/enum';
-import { User, Like, Bookmark } from '../models';
-const translate = require('translate-google')
+import { User, Like, Bookmark, Comment } from '../models';
 
 interface PostAttributes {
   id: number;
@@ -155,7 +154,7 @@ export class Post
             else FALSE
           end as isLiked
           from
-            Posts as p LEFT JOIN Bookmarks as b ON  b.userId = :userId AND b.postId = p.id
+            posts as p LEFT JOIN Bookmarks as b ON  b.userId = :userId AND b.postId = p.id
                 LEFT JOIN Likes as l ON  l.userId = :userId AND l.postId = p.id
                 INNER JOIN Followers as f on p.userId = f.followerId AND f.followingId = :userId
           WHERE p.updatedAt >= DATE_ADD(NOW(), INTERVAL 7 DAY) AND p.status = 'public' AND p.userId <> :userId AND p.deletedAt is null
@@ -172,7 +171,7 @@ export class Post
               else FALSE
           end as isLiked
           from
-              Posts as p LEFT JOIN Bookmarks as b ON  b.userId = :userId AND b.postId = p.id
+              posts as p LEFT JOIN Bookmarks as b ON  b.userId = :userId AND b.postId = p.id
                         LEFT JOIN Likes as l ON  l.userId = :userId AND l.postId = p.id
                         LEFT JOIN followers_posts_in_week as w on w.id = p.id
           WHERE w.id is null AND p.status = 'public' AND p.userId <> :userId AND p.deletedAt is null
@@ -217,30 +216,64 @@ export class Post
       };
     }
   }
-  public static async listRecommendPosts(query: any) {
+  public static async listRecommendPosts(query: any, authInfo: any) {
     const size = +query.size || DEFAULT_SIZE;
     const offset = (+query.page - 1) * size || 0;
-    const data = await Post.findAll({
-      where: { status: PostStatus.PUBLIC },
-      attributes: [
-        'id', 'title', 'content', 'description',
-        'status', 'tags', 'userId', 'likes', 'comments',
-        'cover', 'createdAt'
-      ],
-      order: literal('COALESCE(likes, 0) + COALESCE(comments, 0) DESC'),
-      limit: size,
-      offset,
-      include: {
-        model: User, as: 'user', required: false,
+    let data: any = [];
+    if (!authInfo?.userId) {
+      data = await Post.findAll({
+        where: { status: PostStatus.PUBLIC },
         attributes: [
-          'email', 'firstName', 'lastName',
-          'phone', 'gender', 'displayName',
-          'picture', 'dob'
-        ]
-      }
-    });
-    const length = +await Post.count({where: {status: PostStatus.PUBLIC}});
+          'id', 'title', 'content', 'description',
+          'status', 'tags', 'userId', 'likes', 'comments',
+          'cover', 'createdAt'
+        ],
+        order: literal('COALESCE(likes, 0) + COALESCE(comments, 0) DESC'),
+        limit: size,
+        offset,
+        include: {
+          model: User, as: 'user', required: false,
+          attributes: [
+            'email', 'firstName', 'lastName',
+            'phone', 'gender', 'displayName',
+            'picture', 'dob'
+          ]
+        }
+      });
+    } else {
+        const baseQuery = `
+          with all_users as ( 
+            select followerId as userId, followingId as friendId from followers
+            union
+            select followingId as userId, followerId as friendId from followers
+          ), follower_likes as (
+            select au.userId, p.id as postId, p.userId as createId, count(p.userId) as like_count
+            from all_users as au 
+            left join posts p on au.friendId = p.userId
+            group by au.userId, p.id
+          ), other_post as (
+          select fl.userId, fl.postId, fl.createId, fl.like_count
+          from follower_likes as fl
+          left join likes as l on fl.userId = l.userId and fl.postId = l.postId
+          inner join posts as p on p.id = fl.postId
+          where l.postId is null
+          order by fl.userId, fl.like_count desc
+          )
+          select p.*, (json_object('id', u.id, 'email', u.email, 'firstName', u.firstName, 'lastname', u.lastName, 'displayName', 
+                  u.displayName, 'gender', u.gender, 'picture', u.picture)) as user 
+          from other_post as o, posts as p, users as u
+          where o.userId = :userId and o.postId = p.id and u.id = o.createId limit :limit offset :offset;`;
+        data = await this.sequelize.query(baseQuery,
+        {
+          replacements: { userId: authInfo.userId, limit: size, offset },
+          type: QueryTypes.SELECT,
+          nest: true
+        }
+      );
+    }
 
+    const length = +await Post.count({ where: { status: PostStatus.PUBLIC } });
+    
     const totalPage = Math.ceil(length / size);
     return {
       data,
@@ -345,7 +378,6 @@ export class Post
   }
 
   public static async getPost(id: string, query: any, authInfo: any) {
-    const lang: string = query.lang || '';
     let currentPost: any;
     if (!authInfo) {
       currentPost = await Post.findOne({
@@ -388,20 +420,6 @@ export class Post
         currentPost = result;
       }
     }
-    const dataTranslation = {
-      title: currentPost.title,
-      content: currentPost.content,
-      description: currentPost.description
-    }
-    if (lang) {
-      await translate(dataTranslation, { to: lang }).then((res: any) => {
-        currentPost.dataValues.title = res.title;
-        currentPost.dataValues.content = res.content;
-        currentPost.dataValues.description = res.description;
-      }).catch((err: any) => {
-        console.log(err);
-      });
-    }
 
     if (!currentPost) throw PostErrors.NOT_FOUND;
     return currentPost;
@@ -440,7 +458,7 @@ export class Post
   public static async getTags(query: any) {
     const size = +query.size || DEFAULT_SIZE;
     const data = await this.sequelize.query(
-      `SELECT DISTINCT tags FROM Posts`,
+      `SELECT DISTINCT tags FROM posts`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -459,7 +477,7 @@ export class Post
     if (!userTemp.isAdmin) throw UserErrors.INTERACT_PERMISSION;
 
     const listPosts = await this.sequelize.query(
-      `SELECT * FROM Posts`,
+      `SELECT * FROM posts`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -467,7 +485,7 @@ export class Post
     );
     
     const listUsers = await this.sequelize.query(
-      `SELECT * FROM Users`,
+      `SELECT * FROM users`,
       {
         type: QueryTypes.SELECT,
         nest: true
@@ -475,14 +493,14 @@ export class Post
     );
 
     const listComments = await this.sequelize.query(
-      `SELECT * FROM Comments`,
+      `SELECT * FROM comments`,
       {
         type: QueryTypes.SELECT,
         nest: true
       }
     );
     const listLikes = await this.sequelize.query(
-      `SELECT * FROM Likes`,
+      `SELECT * FROM likes`,
       {
         type: QueryTypes.SELECT,
         nest: true

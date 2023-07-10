@@ -13,7 +13,7 @@ const postController = {
     return await Post.listAuthPosts(req.query, req.user);
   }),
   recommendIndex: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    return await Post.listRecommendPosts(req.query);
+    return await Post.listRecommendPosts(req.query, req.user);
   }),
   getDeletedPosts: responseMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     return await Post.listDeletedPosts(req.query, req.user);

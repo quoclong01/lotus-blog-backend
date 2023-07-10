@@ -258,7 +258,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   public static async searchUser(query: any) {
     const email = query.email || '';
     const data = await this.sequelize.query(
-      `SELECT * FROM Users WHERE email LIKE '%${email}%' ORDER BY id DESC;`,
+      `SELECT * FROM users WHERE email LIKE '%${email}%' ORDER BY id DESC;`,
       {
         type: QueryTypes.SELECT,
         nest: true

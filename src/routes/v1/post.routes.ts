@@ -154,9 +154,42 @@ router
   *                    
   *                
  */
+
+router
+  .route('/comments')
+  .get(postController.getListComments)
+  /**
+  * @swagger
+  *
+  * /posts/comments:
+  *   get:
+  *     tags:
+  *       - Post
+  *     produces:
+  *       - application/json
+  *     summary:
+  *       Get all comments in all posts
+  *     parameters:
+  *         description: no paramters
+  *     responses:
+  *       200:
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                  data:
+  *                    type: array
+  *                    items:
+  *                     type: string
+  *                    example: ["React", "JS", "HTML"]
+  *                    
+  *                
+ */
+
 router
   .route('/recommend')
-  .get(postController.recommendIndex);
+  .get(jwtCheckNoRequired, postController.recommendIndex);
 /**
  * @swagger
  *
@@ -259,40 +292,11 @@ router
  */
 
 router
-  .route('/comments')
-  .get(postController.getListComments)
-  /**
-  * @swagger
-  *
-  * /posts/comments:
-  *   get:
-  *     tags:
-  *       - Post
-  *     produces:
-  *       - application/json
-  *     summary:
-  *       Get all comments in all posts
-  *     parameters:
-  *         description: no paramters
-  *     responses:
-  *       200:
-  *         content:
-  *           application/json:
-  *             schema:
-  *               type: object
-  *               properties:
-  *                  data:
-  *                    type: array
-  *                    items:
-  *                     type: string
-  *                    example: ["React", "JS", "HTML"]
-  *                    
-  *                
- */
-
-router
   .route('/info')
   .get(jwtCheck, postController.getInfo);
+router
+  .route('/comments/:id')
+  .delete(jwtCheck, postController.deleteComment);
 router
   .route('/recyclebin')
   .get(jwtCheck, postController.getDeletedPosts);

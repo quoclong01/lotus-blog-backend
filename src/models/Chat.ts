@@ -16,10 +16,35 @@ export class Chat extends Model<ChatAttributes, ChatCreationAttributes> implemen
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
+  public static async createChat(data: any) {
+    const member = [data.senderId, data.receiverId];
+    
+    const memberOwn = await this.sequelize.query(
+        `SELECT * FROM chat WHERE JSON_CONTAINS(members, '["${data.senderId}", "${data.receiverId}"]');`,
+        {
+          type: QueryTypes.SELECT,
+          nest: true
+        }
+    );
+
+    if (memberOwn.length) return 'Create chat success';
+    
+    const newChat = new Chat({
+      members: JSON.parse(JSON.stringify(member))
+    });
+    try {
+      const result = await newChat.save();
+      return result;
+    }
+    catch (error: any) {
+      return error;
+    }
+  }
+
   public static async userChats(userId: any) {
     try {
       const data = await this.sequelize.query(
-        `SELECT * FROM Chat WHERE JSON_CONTAINS(members, '["${userId}"]');`,
+        `SELECT * FROM chat WHERE JSON_CONTAINS(members, '["${userId}"]');`,
         {
           type: QueryTypes.SELECT,
           nest: true
@@ -34,7 +59,7 @@ export class Chat extends Model<ChatAttributes, ChatCreationAttributes> implemen
   public static async findChat(params: any) {
     try {
       const data = await this.sequelize.query(
-        `SELECT * FROM Chat WHERE JSON_CONTAINS(members, '["${params.firstId}", "${params.secondId}"]');`,
+        `SELECT * FROM chat WHERE JSON_CONTAINS(members, '["${params.firstId}", "${params.secondId}"]');`,
         {
           type: QueryTypes.SELECT,
           nest: true
